@@ -20,4 +20,13 @@ router.get('/videos/:gameId', (req, res, next) => {
     .catch(error => console.error(error))
 })
 
+router.get('/trailers/:gameId', (req, res, next) => {
+  videoService.getTrailersByGame(req.params.id)
+    .then((result) => {
+      console.log('result', result)
+      res.json(result)
+    })
+    .catch(error => console.error(error))
+})
+
 module.exports = router

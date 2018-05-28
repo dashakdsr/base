@@ -135,6 +135,10 @@ gulp.task('watch', () => {
         gutil.log(chalk.magenta('File ' + event.path + ' was ' + event.type))
         gulp.start('js')
       })
+      gulp.watch(config.mainentryScriptFile, event => {
+        gutil.log(chalk.magenta('File ' + event.path + ' was ' + event.type))
+        gulp.start('js')
+      })
       gulp.watch(config.entryStyles, event => {
         gutil.log(chalk.magenta('File ' + event.path + ' was ' + event.type))
         gulp.start('styles')
