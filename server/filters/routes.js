@@ -29,15 +29,50 @@ router.post('/games-by-category', (req, res, next) => {
   res.json(query.response)
 })
 
-// router.get('/games-by-category/:tag', (req, res, next) => {
-//   filterService.getGamesByTag(req.params.tag)
-//     .then((result) => {
-//       console.log('result in cstegiry', result)
-//       res.json(result)
-//     })
-//     .catch(error => console.error(error))
-// })
+router.get('/categories', (req, res, next) => {
+  filterService.getCategories()
+    .then((result) => {
+      console.log('result in cstegiry', result)
+      res.json(result)
+    })
+    .catch(error => console.error(error))
+})
 
+router.get('/tags', (req, res, next) => {
+  filterService.getTags()
+    .then((result) => {
+      console.log('result in cstegiry', result)
+      res.json(result)
+    })
+    .catch(error => console.error(error))
+})
+
+router.get('/episodes', (req, res, next) => {
+  filterService.getEpisodes()
+    .then((result) => {
+      console.log('result in cstegiry', result)
+      res.json(result)
+    })
+    .catch(error => console.error(error))
+})
+
+router.get('/companies', (req, res, next) => {
+  filterService.getCompanies()
+    .then((result) => {
+      console.log('result in cstegiry', result)
+      res.json(result)
+    })
+    .catch(error => console.error(error))
+})
+
+router.get('/platforms', (req, res, next) => {
+  filterService.getPlatforms()
+    .then((result) => {
+      console.log('result in cstegiry', result)
+      res.json(result)
+    })
+    .catch(error => console.error(error))
+})
 // router.get('/games-by-category/:platform', (req, res, next) => {
 //   filterService.getGamesByPlatform(req.params.platform)
 //     .then((result) => {

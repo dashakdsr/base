@@ -59,6 +59,67 @@ const getGamesByEpisode = (episode) => {
     })
   })
 }
+
+const getCategories = () => {
+  return new Promise((resolve, reject) => {
+    connection.query(`SELECT * FROM Category`, [], (err, result, docs) => {
+      if (err) {
+        reject(err)
+      }
+      console.log('succesful select games', result)
+      resolve(result)
+    })
+  })
+}
+
+const getCompanies = () => {
+  return new Promise((resolve, reject) => {
+    connection.query(`SELECT * FROM Company`, [], (err, result, docs) => {
+      if (err) {
+        reject(err)
+      }
+      console.log('succesful select games', result)
+      resolve(result)
+    })
+  })
+}
+
+const getPlatforms = () => {
+  return new Promise((resolve, reject) => {
+    connection.query(`SELECT * FROM Platform`, [], (err, result, docs) => {
+      if (err) {
+        reject(err)
+      }
+      console.log('succesful select games', result)
+      resolve(result)
+    })
+  })
+}
+
+const getEpisodes = () => {
+  return new Promise((resolve, reject) => {
+    connection.query(`SELECT * FROM Episode`, [], (err, result, docs) => {
+      if (err) {
+        reject(err)
+      }
+      console.log('succesful select games', result)
+      resolve(result)
+    })
+  })
+}
+
+const getTags = () => {
+  return new Promise((resolve, reject) => {
+    connection.query(`SELECT * FROM Tag`, [], (err, result, docs) => {
+      if (err) {
+        reject(err)
+      }
+      console.log('succesful select games', result)
+      resolve(result)
+    })
+  })
+}
+
 const processing = {
   getGamesByCategory: getGamesByCategory,
   getGamesByCompany: getGamesByCompany,
@@ -81,17 +142,15 @@ const filter = (currentArray) => {
   return processing.data
 }
 
-// const multipleComparing = (data) => {
-//   for (let key in data) {
-//     filter(data[key])
-//   }
-//   return processing.data
-// }
-
 module.exports.getGamesByCategory = getGamesByCategory
 module.exports.getGamesByCompany = getGamesByCompany
 module.exports.getGamesByTag = getGamesByTag
 module.exports.getGamesByPlatform = getGamesByPlatform
 module.exports.getGamesByEpisode = getGamesByEpisode
 module.exports.getGamesMultiple = getGamesMultiple
+module.exports.getCategories = getCategories
+module.exports.getCompanies = getCompanies
+module.exports.getPlatforms = getPlatforms
+module.exports.getEpisodes = getEpisodes
+module.exports.getTags = getTags
 module.exports.filter = filter
