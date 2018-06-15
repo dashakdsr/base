@@ -4,6 +4,25 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.addUser = addUser;
+var ADD_USER = exports.ADD_USER = 'ADD_USER';
+
+function addUser(user) {
+  console.log('action', user);
+  return function (dispatch) {
+    dispatch({
+      type: ADD_USER,
+      user: user
+    });
+  };
+}
+
+},{}],2:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
 
@@ -31,6 +50,8 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = require('react-router-dom');
 
+var _reactRedux = require('react-redux');
+
 var _index = require('../constants/index.js');
 
 var _News = require('./news/News.jsx');
@@ -45,6 +66,18 @@ var _Games = require('./games/Games.jsx');
 
 var _Games2 = _interopRequireDefault(_Games);
 
+var _Login = require('./login/Login.jsx');
+
+var _Login2 = _interopRequireDefault(_Login);
+
+var _Registration = require('./registration/Registration.jsx');
+
+var _Registration2 = _interopRequireDefault(_Registration);
+
+var _AddContent = require('./addContent/AddContent.jsx');
+
+var _AddContent2 = _interopRequireDefault(_AddContent);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Home = function (_React$Component) {
@@ -56,7 +89,9 @@ var Home = function (_React$Component) {
     var _this = (0, _possibleConstructorReturn3.default)(this, (Home.__proto__ || (0, _getPrototypeOf2.default)(Home)).call(this, props));
 
     _this.state = {
-      openMenu: false
+      openMenu: false,
+      user: {},
+      menu: _index.dropdownMenu
     };
 
     _this.openMenu = _this.openMenu.bind(_this);
@@ -64,6 +99,30 @@ var Home = function (_React$Component) {
   }
 
   (0, _createClass3.default)(Home, [{
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(nextProps) {
+      var _this2 = this;
+
+      console.log('nextProps in Home', nextProps);
+      if (this.props !== nextProps) {
+        console.log('ofifififiiff');
+        this.setState({
+          user: nextProps.user
+        }, function () {
+          console.log('this state', _this2.state.user);
+          if (_this2.state.user.userId === 1) {
+            console.log('push');
+            _index.dropdownMenu.push({
+              title: 'addContent'
+            });
+            _this2.setState({
+              menu: _index.dropdownMenu
+            });
+          }
+        });
+      }
+    }
+  }, {
     key: 'openMenu',
     value: function openMenu(key, item) {
       if (item.subtitles) {
@@ -75,7 +134,7 @@ var Home = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
+      var _this3 = this;
 
       console.log('render');
       return _react2.default.createElement(
@@ -84,11 +143,12 @@ var Home = function (_React$Component) {
         _react2.default.createElement(
           'div',
           { className: 'dropdown-wrapper' },
-          _index.dropdownMenu.map(function (item, index) {
+          this.state.menu.map(function (item, index) {
+            console.log('item', item);
             return _react2.default.createElement(
               'div',
               { key: index + '' + item.title, onClick: function onClick() {
-                  return _this2.openMenu(index + '' + item.title, item);
+                  return _this3.openMenu(index + '' + item.title, item);
                 } },
               _react2.default.createElement(
                 _reactRouterDom.Link,
@@ -102,7 +162,7 @@ var Home = function (_React$Component) {
                   return _react2.default.createElement(
                     'div',
                     { key: index + '' + subItem.title, onClick: function onClick() {
-                        return _this2.openMenu(index + '' + item.title, item);
+                        return _this3.openMenu(index + '' + item.title, item);
                       } },
                     _react2.default.createElement(
                       'a',
@@ -118,16 +178,175 @@ var Home = function (_React$Component) {
         ),
         _react2.default.createElement(_reactRouterDom.Route, { path: '/news/', component: _News2.default }),
         _react2.default.createElement(_reactRouterDom.Route, { path: '/championships/', component: _Championships2.default }),
-        _react2.default.createElement(_reactRouterDom.Route, { path: '/games/', component: _Games2.default })
+        _react2.default.createElement(_reactRouterDom.Route, { path: '/games/', component: _Games2.default }),
+        _react2.default.createElement(_reactRouterDom.Route, { path: '/login/', component: _Login2.default }),
+        _react2.default.createElement(_reactRouterDom.Route, { path: '/registration/', component: _Registration2.default }),
+        _react2.default.createElement(_reactRouterDom.Route, { path: '/addcontent/', component: _AddContent2.default })
       );
     }
   }]);
   return Home;
 }(_react2.default.Component);
 
-exports.default = Home;
+function mapStateToProps(state, ownProps) {
+  return { user: state.user };
+}
 
-},{"../constants/index.js":5,"./championships/Championships.jsx":2,"./games/Games.jsx":3,"./news/News.jsx":4,"babel-runtime/core-js/object/get-prototype-of":37,"babel-runtime/helpers/classCallCheck":41,"babel-runtime/helpers/createClass":42,"babel-runtime/helpers/inherits":43,"babel-runtime/helpers/possibleConstructorReturn":44,"react":371,"react-router-dom":326}],2:[function(require,module,exports){
+function mapDispatchToProps(dispatch) {
+  return {
+    addUser: function (_addUser) {
+      function addUser(_x) {
+        return _addUser.apply(this, arguments);
+      }
+
+      addUser.toString = function () {
+        return _addUser.toString();
+      };
+
+      return addUser;
+    }(function (value) {
+      addUser(value)(dispatch);
+    })
+  };
+}
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Home);
+
+},{"../constants/index.js":9,"./addContent/AddContent.jsx":3,"./championships/Championships.jsx":4,"./games/Games.jsx":5,"./login/Login.jsx":6,"./news/News.jsx":7,"./registration/Registration.jsx":8,"babel-runtime/core-js/object/get-prototype-of":43,"babel-runtime/helpers/classCallCheck":48,"babel-runtime/helpers/createClass":49,"babel-runtime/helpers/inherits":50,"babel-runtime/helpers/possibleConstructorReturn":51,"react":562,"react-redux":500,"react-router-dom":517}],3:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
+
+var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = require('babel-runtime/helpers/createClass');
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _possibleConstructorReturn2 = require('babel-runtime/helpers/possibleConstructorReturn');
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = require('babel-runtime/helpers/inherits');
+
+var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var AddContent = function (_React$Component) {
+  (0, _inherits3.default)(AddContent, _React$Component);
+
+  function AddContent(props) {
+    (0, _classCallCheck3.default)(this, AddContent);
+
+    var _this = (0, _possibleConstructorReturn3.default)(this, (AddContent.__proto__ || (0, _getPrototypeOf2.default)(AddContent)).call(this, props));
+
+    _this.state = {
+      showTab: ''
+    };
+
+    _this.changeTab = _this.changeTab.bind(_this);
+    return _this;
+  }
+
+  (0, _createClass3.default)(AddContent, [{
+    key: 'changeTab',
+    value: function changeTab(value) {
+      this.setState({
+        showTab: value
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
+
+      console.log('render');
+      return _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement(
+          'h1',
+          null,
+          'Hello, world AddContent!'
+        ),
+        _react2.default.createElement(
+          'button',
+          { onClick: function onClick() {
+              return _this2.changeTab('game');
+            } },
+          'Add Game'
+        ),
+        _react2.default.createElement(
+          'button',
+          { onClick: function onClick() {
+              return _this2.changeTab('new');
+            } },
+          'Add New'
+        ),
+        _react2.default.createElement(
+          'button',
+          { onClick: function onClick() {
+              return _this2.changeTab('championship');
+            } },
+          'Add Championship'
+        ),
+        _react2.default.createElement(
+          'button',
+          { onClick: function onClick() {
+              return _this2.changeTab('file');
+            } },
+          'Add File'
+        ),
+        _react2.default.createElement(
+          'button',
+          { onClick: function onClick() {
+              return _this2.changeTab('video');
+            } },
+          'Add Video'
+        ),
+        this.state.showTab === 'game' ? _react2.default.createElement(
+          'div',
+          null,
+          'Add game'
+        ) : this.state.showTab === 'new' ? _react2.default.createElement(
+          'div',
+          null,
+          'Add New'
+        ) : this.state.showTab === 'championship' ? _react2.default.createElement(
+          'div',
+          null,
+          'Add Championship'
+        ) : this.state.showTab === 'file' ? _react2.default.createElement(
+          'div',
+          null,
+          'Add Fle'
+        ) : _react2.default.createElement(
+          'div',
+          null,
+          'Add Video'
+        )
+      );
+    }
+  }]);
+  return AddContent;
+}(_react2.default.Component);
+
+exports.default = AddContent;
+
+},{"babel-runtime/core-js/object/get-prototype-of":43,"babel-runtime/helpers/classCallCheck":48,"babel-runtime/helpers/createClass":49,"babel-runtime/helpers/inherits":50,"babel-runtime/helpers/possibleConstructorReturn":51,"react":562}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -192,7 +411,7 @@ var Championships = function (_React$Component) {
 
 exports.default = Championships;
 
-},{"babel-runtime/core-js/object/get-prototype-of":37,"babel-runtime/helpers/classCallCheck":41,"babel-runtime/helpers/createClass":42,"babel-runtime/helpers/inherits":43,"babel-runtime/helpers/possibleConstructorReturn":44,"react":371}],3:[function(require,module,exports){
+},{"babel-runtime/core-js/object/get-prototype-of":43,"babel-runtime/helpers/classCallCheck":48,"babel-runtime/helpers/createClass":49,"babel-runtime/helpers/inherits":50,"babel-runtime/helpers/possibleConstructorReturn":51,"react":562}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -257,7 +476,7 @@ var Games = function (_React$Component) {
 
 exports.default = Games;
 
-},{"babel-runtime/core-js/object/get-prototype-of":37,"babel-runtime/helpers/classCallCheck":41,"babel-runtime/helpers/createClass":42,"babel-runtime/helpers/inherits":43,"babel-runtime/helpers/possibleConstructorReturn":44,"react":371}],4:[function(require,module,exports){
+},{"babel-runtime/core-js/object/get-prototype-of":43,"babel-runtime/helpers/classCallCheck":48,"babel-runtime/helpers/createClass":49,"babel-runtime/helpers/inherits":50,"babel-runtime/helpers/possibleConstructorReturn":51,"react":562}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -288,6 +507,161 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactRouterDom = require('react-router-dom');
+
+var _reactRedux = require('react-redux');
+
+var _redux = require('redux');
+
+var _api = require('./../../services/api.js');
+
+var _user = require('./../../actions/user.js');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Login = function (_React$Component) {
+  (0, _inherits3.default)(Login, _React$Component);
+
+  function Login(props) {
+    (0, _classCallCheck3.default)(this, Login);
+
+    var _this = (0, _possibleConstructorReturn3.default)(this, (Login.__proto__ || (0, _getPrototypeOf2.default)(Login)).call(this, props));
+
+    _this.state = {
+      username: '',
+      pass: ''
+    };
+
+    _this.click = _this.click.bind(_this);
+    _this.goToPage = _this.goToPage.bind(_this);
+    return _this;
+  }
+
+  (0, _createClass3.default)(Login, [{
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(nextProps) {
+      if (this.props !== nextProps && nextProps.user) {
+        nextProps.history.push({
+          pathname: '/home'
+        });
+      }
+    }
+  }, {
+    key: 'click',
+    value: function click() {
+      var _this2 = this;
+
+      (0, _api.signIn)(this.state).then(function (result) {
+        if (result) {
+          _this2.props.addUser(result);
+        }
+      });
+    }
+  }, {
+    key: 'goToPage',
+    value: function goToPage() {
+      this.props.history.push({
+        pathname: '/registration'
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this3 = this;
+
+      console.log('render');
+      return _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement(
+          'label',
+          null,
+          'Username:',
+          _react2.default.createElement('input', { type: 'text', name: 'name', value: this.state.username, onChange: function onChange(event) {
+              console.log('dflkjrdlhg', event.target.value);
+              _this3.setState({
+                username: event.target.value
+              });
+            } })
+        ),
+        _react2.default.createElement(
+          'label',
+          null,
+          'Password:',
+          _react2.default.createElement('input', { type: 'password', name: 'password', value: this.state.pass, onChange: function onChange(event) {
+              console.log('valie', event.target.value);
+              _this3.setState({
+                pass: event.target.value
+              });
+            } })
+        ),
+        _react2.default.createElement(
+          'button',
+          { onClick: this.click },
+          'Login'
+        ),
+        _react2.default.createElement(
+          'button',
+          { onClick: this.goToPage },
+          'Registration'
+        )
+      );
+    }
+  }]);
+  return Login;
+}(_react2.default.Component);
+
+function mapStateToProps(state, ownProps) {
+  return { user: state.user };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    addUser: function addUser(value) {
+      (0, _user.addUser)(value)(dispatch);
+    }
+  };
+}
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Login);
+
+},{"./../../actions/user.js":1,"./../../services/api.js":13,"babel-runtime/core-js/object/get-prototype-of":43,"babel-runtime/helpers/classCallCheck":48,"babel-runtime/helpers/createClass":49,"babel-runtime/helpers/inherits":50,"babel-runtime/helpers/possibleConstructorReturn":51,"react":562,"react-redux":500,"react-router-dom":517,"redux":565}],7:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
+
+var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = require('babel-runtime/helpers/createClass');
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _possibleConstructorReturn2 = require('babel-runtime/helpers/possibleConstructorReturn');
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = require('babel-runtime/helpers/inherits');
+
+var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = require('react-redux');
+
+var _redux = require('redux');
+
+var _dateFns = require('date-fns');
+
 var _api = require('./../../services/api.js');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -309,19 +683,54 @@ var News = function (_React$Component) {
   (0, _createClass3.default)(News, [{
     key: 'componentWillMount',
     value: function componentWillMount() {
-      this.setState({
-        news: (0, _api.getNews)()
+      var _this2 = this;
+
+      console.log('this.props', this.props.news);
+      (0, _api.getNews)().then(function (result) {
+        console.log('reultrl;trkjlkght', result);
+        _this2.setState({
+          news: result
+        });
       });
+      // this.props.news().then(result => {
+      //   console.log('qwerty',result )
+      //   this.setState({
+      //     news: result
+      //   })
+      // })
     }
   }, {
     key: 'render',
     value: function render() {
-      console.log('render');
+      console.log('render', this.state.news);
       return _react2.default.createElement(
         'div',
-        { 'class': 'wrapper-news' },
+        { className: 'wrapper-news' },
         this.state.news.map(function (item) {
-          return _react2.default.createElement('div', { 'class': 'item-new' });
+          return _react2.default.createElement(
+            'div',
+            { className: 'item-new', key: item.newId },
+            _react2.default.createElement('img', { src: item.newImage, alt: item.newName }),
+            _react2.default.createElement(
+              'div',
+              { className: 'info-new-wrapper' },
+              _react2.default.createElement(
+                'p',
+                { className: 'title' },
+                item.newName
+              ),
+              _react2.default.createElement(
+                'p',
+                { className: 'desc' },
+                item.newDesc.substring(0, 250) + '...'
+              ),
+              _react2.default.createElement(
+                'p',
+                { className: 'date' },
+                (0, _dateFns.format)(item.newDate, 'DD.MM.YYYY HH:mm')
+              )
+            )
+          );
         })
       );
     }
@@ -329,9 +738,209 @@ var News = function (_React$Component) {
   return News;
 }(_react2.default.Component);
 
-exports.default = News;
+function mapStateToProps(state, ownProps) {
+  return { news: (0, _api.getNews)() };
+}
 
-},{"./../../services/api.js":8,"babel-runtime/core-js/object/get-prototype-of":37,"babel-runtime/helpers/classCallCheck":41,"babel-runtime/helpers/createClass":42,"babel-runtime/helpers/inherits":43,"babel-runtime/helpers/possibleConstructorReturn":44,"react":371}],5:[function(require,module,exports){
+function mapDispatchToProps(dispatch) {
+  return { actions: (0, _redux.bindActionCreators)(dispatch)
+  };
+}
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(News);
+
+},{"./../../services/api.js":13,"babel-runtime/core-js/object/get-prototype-of":43,"babel-runtime/helpers/classCallCheck":48,"babel-runtime/helpers/createClass":49,"babel-runtime/helpers/inherits":50,"babel-runtime/helpers/possibleConstructorReturn":51,"date-fns":220,"react":562,"react-redux":500,"redux":565}],8:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _assign = require('babel-runtime/core-js/object/assign');
+
+var _assign2 = _interopRequireDefault(_assign);
+
+var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
+
+var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = require('babel-runtime/helpers/createClass');
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _possibleConstructorReturn2 = require('babel-runtime/helpers/possibleConstructorReturn');
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = require('babel-runtime/helpers/inherits');
+
+var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = require('react-redux');
+
+var _redux = require('redux');
+
+var _api = require('./../../services/api.js');
+
+var _user = require('./../../actions/user.js');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Registration = function (_React$Component) {
+  (0, _inherits3.default)(Registration, _React$Component);
+
+  function Registration(props) {
+    (0, _classCallCheck3.default)(this, Registration);
+
+    var _this = (0, _possibleConstructorReturn3.default)(this, (Registration.__proto__ || (0, _getPrototypeOf2.default)(Registration)).call(this, props));
+
+    _this.state = {
+      user: {
+        username: '',
+        firstName: '',
+        lastName: '',
+        dateBirth: '',
+        pass: ''
+      },
+      username: '',
+      pass: ''
+    };
+
+    _this.click = _this.click.bind(_this);
+    _this.goToPage = _this.goToPage.bind(_this);
+    return _this;
+  }
+
+  (0, _createClass3.default)(Registration, [{
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(nextProps) {
+      if (this.props !== nextProps && nextProps.user) {
+        nextProps.history.push({
+          pathname: '/home'
+        });
+      }
+    }
+  }, {
+    key: 'click',
+    value: function click() {
+      var _this2 = this;
+
+      (0, _api.signUp)(this.state.user).then(function (result) {
+        if (result) {
+          _this2.props.addUser(result);
+        }
+      });
+    }
+  }, {
+    key: 'goToPage',
+    value: function goToPage() {
+      this.props.history.push({
+        pathname: '/login'
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this3 = this;
+
+      console.log('render');
+      return _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement(
+          'label',
+          null,
+          'Username:',
+          _react2.default.createElement('input', { type: 'text', name: 'name', value: this.state.user.username, onChange: function onChange(event) {
+              console.log('dflkjrdlhg', event.target.value);
+              _this3.setState({
+                user: (0, _assign2.default)(_this3.state.user, { username: event.target.value })
+              });
+            } })
+        ),
+        _react2.default.createElement(
+          'label',
+          null,
+          'Password:',
+          _react2.default.createElement('input', { type: 'password', name: 'password', value: this.state.user.pass, onChange: function onChange(event) {
+              console.log('valie', event.target.value);
+              _this3.setState({
+                user: (0, _assign2.default)(_this3.state.user, { pass: event.target.value })
+              });
+            } })
+        ),
+        _react2.default.createElement(
+          'label',
+          null,
+          'First Name:',
+          _react2.default.createElement('input', { type: 'text', name: 'firstName', value: this.state.user.firstName, onChange: function onChange(event) {
+              console.log('valie', event.target.value, _this3.state.user);
+              _this3.setState({
+                user: (0, _assign2.default)(_this3.state.user, { firstName: event.target.value })
+              });
+            } })
+        ),
+        _react2.default.createElement(
+          'label',
+          null,
+          'Last Name:',
+          _react2.default.createElement('input', { type: 'text', name: 'firstName', value: this.state.user.lastName, onChange: function onChange(event) {
+              console.log('valie', event.target.value, _this3.state.user);
+              _this3.setState({
+                user: (0, _assign2.default)(_this3.state.user, { lastName: event.target.value })
+              });
+            } })
+        ),
+        _react2.default.createElement(
+          'label',
+          null,
+          'Date of Birth:',
+          _react2.default.createElement('input', { type: 'date', name: 'firstName', value: this.state.user.dateBirth, onChange: function onChange(event) {
+              console.log('valie', event.target.value, _this3.state.user);
+              _this3.setState({
+                user: (0, _assign2.default)(_this3.state.user, { dateBirth: event.target.value })
+              });
+            } })
+        ),
+        _react2.default.createElement(
+          'button',
+          { onClick: this.click },
+          'Registrate'
+        ),
+        _react2.default.createElement(
+          'button',
+          { onClick: this.goToPage },
+          'Login'
+        )
+      );
+    }
+  }]);
+  return Registration;
+}(_react2.default.Component);
+
+function mapStateToProps(state, ownProps) {
+  return { user: state.user };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    addUser: function addUser(value) {
+      (0, _user.addUser)(value)(dispatch);
+    }
+  };
+}
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Registration);
+
+},{"./../../actions/user.js":1,"./../../services/api.js":13,"babel-runtime/core-js/object/assign":40,"babel-runtime/core-js/object/get-prototype-of":43,"babel-runtime/helpers/classCallCheck":48,"babel-runtime/helpers/createClass":49,"babel-runtime/helpers/inherits":50,"babel-runtime/helpers/possibleConstructorReturn":51,"react":562,"react-redux":500,"redux":565}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -378,9 +987,11 @@ var dropdownMenu = exports.dropdownMenu = [{
   title: 'Files'
 }, {
   title: 'Videos'
+}, {
+  title: 'Login'
 }];
 
-},{}],6:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -416,7 +1027,7 @@ _reactDom2.default.render(_react2.default.createElement(
 ), document.getElementById('mount-point'));
 // import { Switch, Route } from 'react-router-dom'
 
-},{"./components/Home.jsx":1,"./services/store.js":9,"react":371,"react-dom":173,"react-redux":309,"react-router":341,"react-router-redux":330}],7:[function(require,module,exports){
+},{"./components/Home.jsx":2,"./services/store.js":14,"react":562,"react-dom":364,"react-redux":500,"react-router":532,"react-router-redux":521}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -427,17 +1038,61 @@ var _redux = require('redux');
 
 var _reactRouterRedux = require('react-router-redux');
 
+var _user = require('./user.js');
+
+var _user2 = _interopRequireDefault(_user);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 exports.default = (0, _redux.combineReducers)({
-  router: _reactRouterRedux.routerReducer
+  router: _reactRouterRedux.routerReducer,
+  user: _user2.default
 });
 
-},{"react-router-redux":330,"redux":374}],8:[function(require,module,exports){
+},{"./user.js":12,"react-router-redux":521,"redux":565}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getNews = undefined;
+exports.default = user;
+
+var _immutabilityHelper = require('immutability-helper');
+
+var _immutabilityHelper2 = _interopRequireDefault(_immutabilityHelper);
+
+var _user = require('../actions/user');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var defaultState = {};
+
+function user() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : defaultState;
+  var action = arguments[1];
+
+  console.log('reducer', state, action);
+  switch (action.type) {
+    case _user.ADD_USER:
+      return (0, _immutabilityHelper2.default)(state, {
+        $set: action.user
+      });
+    default:
+      return state;
+  }
+}
+
+},{"../actions/user":1,"immutability-helper":343}],13:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.signUp = exports.signIn = exports.getNews = undefined;
+
+var _promise = require('babel-runtime/core-js/promise');
+
+var _promise2 = _interopRequireDefault(_promise);
 
 var _axios = require('axios');
 
@@ -448,12 +1103,39 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var serverUrl = 'http://localhost:3141/api';
 
 var getNews = exports.getNews = function getNews() {
-  return _axios2.default.get(serverUrl + '/news').then(function (response) {
-    console.log('response', response);
+  return new _promise2.default(function (resolve, reject) {
+    _axios2.default.get(serverUrl + '/allNews').then(function (response) {
+      console.log('response', response);
+      resolve(response.data);
+    }).catch(function (error) {
+      return reject(error);
+    });
   });
 };
 
-},{"axios":10}],9:[function(require,module,exports){
+var signIn = exports.signIn = function signIn(body) {
+  return new _promise2.default(function (resolve, reject) {
+    _axios2.default.post(serverUrl + '/login', body).then(function (response) {
+      console.log('response', response);
+      resolve(response.data);
+    }).catch(function (error) {
+      return reject(error);
+    });
+  });
+};
+
+var signUp = exports.signUp = function signUp(body) {
+  return new _promise2.default(function (resolve, reject) {
+    _axios2.default.post(serverUrl + '/registration', body).then(function (response) {
+      console.log('response', response);
+      resolve(response.data);
+    }).catch(function (error) {
+      return reject(error);
+    });
+  });
+};
+
+},{"axios":15,"babel-runtime/core-js/promise":45}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -483,9 +1165,9 @@ var history = exports.history = (0, _createBrowserHistory2.default)();
 
 var store = exports.store = (0, _redux.createStore)(_index2.default, (0, _developmentOnly.composeWithDevTools)((0, _redux.applyMiddleware)(_reduxThunk2.default)));
 
-},{"../reducers/index":7,"history/createBrowserHistory":147,"redux":374,"redux-devtools-extension/developmentOnly":372,"redux-thunk":373}],10:[function(require,module,exports){
+},{"../reducers/index":11,"history/createBrowserHistory":337,"redux":565,"redux-devtools-extension/developmentOnly":563,"redux-thunk":564}],15:[function(require,module,exports){
 module.exports = require('./lib/axios');
-},{"./lib/axios":12}],11:[function(require,module,exports){
+},{"./lib/axios":17}],16:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -670,7 +1352,7 @@ module.exports = function xhrAdapter(config) {
 
 }).call(this,require('_process'))
 
-},{"../core/createError":18,"./../core/settle":21,"./../helpers/btoa":25,"./../helpers/buildURL":26,"./../helpers/cookies":28,"./../helpers/isURLSameOrigin":30,"./../helpers/parseHeaders":32,"./../utils":34,"_process":166}],12:[function(require,module,exports){
+},{"../core/createError":23,"./../core/settle":26,"./../helpers/btoa":30,"./../helpers/buildURL":31,"./../helpers/cookies":33,"./../helpers/isURLSameOrigin":35,"./../helpers/parseHeaders":37,"./../utils":39,"_process":357}],17:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -724,7 +1406,7 @@ module.exports = axios;
 // Allow use of default import syntax in TypeScript
 module.exports.default = axios;
 
-},{"./cancel/Cancel":13,"./cancel/CancelToken":14,"./cancel/isCancel":15,"./core/Axios":16,"./defaults":23,"./helpers/bind":24,"./helpers/spread":33,"./utils":34}],13:[function(require,module,exports){
+},{"./cancel/Cancel":18,"./cancel/CancelToken":19,"./cancel/isCancel":20,"./core/Axios":21,"./defaults":28,"./helpers/bind":29,"./helpers/spread":38,"./utils":39}],18:[function(require,module,exports){
 'use strict';
 
 /**
@@ -745,7 +1427,7 @@ Cancel.prototype.__CANCEL__ = true;
 
 module.exports = Cancel;
 
-},{}],14:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 'use strict';
 
 var Cancel = require('./Cancel');
@@ -804,14 +1486,14 @@ CancelToken.source = function source() {
 
 module.exports = CancelToken;
 
-},{"./Cancel":13}],15:[function(require,module,exports){
+},{"./Cancel":18}],20:[function(require,module,exports){
 'use strict';
 
 module.exports = function isCancel(value) {
   return !!(value && value.__CANCEL__);
 };
 
-},{}],16:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 'use strict';
 
 var defaults = require('./../defaults');
@@ -892,7 +1574,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = Axios;
 
-},{"./../defaults":23,"./../utils":34,"./InterceptorManager":17,"./dispatchRequest":19}],17:[function(require,module,exports){
+},{"./../defaults":28,"./../utils":39,"./InterceptorManager":22,"./dispatchRequest":24}],22:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -946,7 +1628,7 @@ InterceptorManager.prototype.forEach = function forEach(fn) {
 
 module.exports = InterceptorManager;
 
-},{"./../utils":34}],18:[function(require,module,exports){
+},{"./../utils":39}],23:[function(require,module,exports){
 'use strict';
 
 var enhanceError = require('./enhanceError');
@@ -966,7 +1648,7 @@ module.exports = function createError(message, config, code, request, response) 
   return enhanceError(error, config, code, request, response);
 };
 
-},{"./enhanceError":20}],19:[function(require,module,exports){
+},{"./enhanceError":25}],24:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1054,7 +1736,7 @@ module.exports = function dispatchRequest(config) {
   });
 };
 
-},{"../cancel/isCancel":15,"../defaults":23,"./../helpers/combineURLs":27,"./../helpers/isAbsoluteURL":29,"./../utils":34,"./transformData":22}],20:[function(require,module,exports){
+},{"../cancel/isCancel":20,"../defaults":28,"./../helpers/combineURLs":32,"./../helpers/isAbsoluteURL":34,"./../utils":39,"./transformData":27}],25:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1077,7 +1759,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
   return error;
 };
 
-},{}],21:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 'use strict';
 
 var createError = require('./createError');
@@ -1105,7 +1787,7 @@ module.exports = function settle(resolve, reject, response) {
   }
 };
 
-},{"./createError":18}],22:[function(require,module,exports){
+},{"./createError":23}],27:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1127,7 +1809,7 @@ module.exports = function transformData(data, headers, fns) {
   return data;
 };
 
-},{"./../utils":34}],23:[function(require,module,exports){
+},{"./../utils":39}],28:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -1228,7 +1910,7 @@ module.exports = defaults;
 
 }).call(this,require('_process'))
 
-},{"./adapters/http":11,"./adapters/xhr":11,"./helpers/normalizeHeaderName":31,"./utils":34,"_process":166}],24:[function(require,module,exports){
+},{"./adapters/http":16,"./adapters/xhr":16,"./helpers/normalizeHeaderName":36,"./utils":39,"_process":357}],29:[function(require,module,exports){
 'use strict';
 
 module.exports = function bind(fn, thisArg) {
@@ -1241,7 +1923,7 @@ module.exports = function bind(fn, thisArg) {
   };
 };
 
-},{}],25:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 'use strict';
 
 // btoa polyfill for IE<10 courtesy https://github.com/davidchambers/Base64.js
@@ -1279,7 +1961,7 @@ function btoa(input) {
 
 module.exports = btoa;
 
-},{}],26:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1347,7 +2029,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
   return url;
 };
 
-},{"./../utils":34}],27:[function(require,module,exports){
+},{"./../utils":39}],32:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1363,7 +2045,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
     : baseURL;
 };
 
-},{}],28:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1418,7 +2100,7 @@ module.exports = (
   })()
 );
 
-},{"./../utils":34}],29:[function(require,module,exports){
+},{"./../utils":39}],34:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1434,7 +2116,7 @@ module.exports = function isAbsoluteURL(url) {
   return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
 };
 
-},{}],30:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1504,7 +2186,7 @@ module.exports = (
   })()
 );
 
-},{"./../utils":34}],31:[function(require,module,exports){
+},{"./../utils":39}],36:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -1518,7 +2200,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
   });
 };
 
-},{"../utils":34}],32:[function(require,module,exports){
+},{"../utils":39}],37:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1573,7 +2255,7 @@ module.exports = function parseHeaders(headers) {
   return parsed;
 };
 
-},{"./../utils":34}],33:[function(require,module,exports){
+},{"./../utils":39}],38:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1602,7 +2284,7 @@ module.exports = function spread(callback) {
   };
 };
 
-},{}],34:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 'use strict';
 
 var bind = require('./helpers/bind');
@@ -1907,19 +2589,23 @@ module.exports = {
   trim: trim
 };
 
-},{"./helpers/bind":24,"is-buffer":154}],35:[function(require,module,exports){
+},{"./helpers/bind":29,"is-buffer":345}],40:[function(require,module,exports){
+module.exports = { "default": require("core-js/library/fn/object/assign"), __esModule: true };
+},{"core-js/library/fn/object/assign":53}],41:[function(require,module,exports){
 module.exports = { "default": require("core-js/library/fn/object/create"), __esModule: true };
-},{"core-js/library/fn/object/create":46}],36:[function(require,module,exports){
+},{"core-js/library/fn/object/create":54}],42:[function(require,module,exports){
 module.exports = { "default": require("core-js/library/fn/object/define-property"), __esModule: true };
-},{"core-js/library/fn/object/define-property":47}],37:[function(require,module,exports){
+},{"core-js/library/fn/object/define-property":55}],43:[function(require,module,exports){
 module.exports = { "default": require("core-js/library/fn/object/get-prototype-of"), __esModule: true };
-},{"core-js/library/fn/object/get-prototype-of":48}],38:[function(require,module,exports){
+},{"core-js/library/fn/object/get-prototype-of":56}],44:[function(require,module,exports){
 module.exports = { "default": require("core-js/library/fn/object/set-prototype-of"), __esModule: true };
-},{"core-js/library/fn/object/set-prototype-of":49}],39:[function(require,module,exports){
+},{"core-js/library/fn/object/set-prototype-of":57}],45:[function(require,module,exports){
+module.exports = { "default": require("core-js/library/fn/promise"), __esModule: true };
+},{"core-js/library/fn/promise":58}],46:[function(require,module,exports){
 module.exports = { "default": require("core-js/library/fn/symbol"), __esModule: true };
-},{"core-js/library/fn/symbol":50}],40:[function(require,module,exports){
+},{"core-js/library/fn/symbol":59}],47:[function(require,module,exports){
 module.exports = { "default": require("core-js/library/fn/symbol/iterator"), __esModule: true };
-},{"core-js/library/fn/symbol/iterator":51}],41:[function(require,module,exports){
+},{"core-js/library/fn/symbol/iterator":60}],48:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -1929,7 +2615,7 @@ exports.default = function (instance, Constructor) {
     throw new TypeError("Cannot call a class as a function");
   }
 };
-},{}],42:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -1957,7 +2643,7 @@ exports.default = function () {
     return Constructor;
   };
 }();
-},{"../core-js/object/define-property":36}],43:[function(require,module,exports){
+},{"../core-js/object/define-property":42}],50:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -1991,7 +2677,7 @@ exports.default = function (subClass, superClass) {
   });
   if (superClass) _setPrototypeOf2.default ? (0, _setPrototypeOf2.default)(subClass, superClass) : subClass.__proto__ = superClass;
 };
-},{"../core-js/object/create":35,"../core-js/object/set-prototype-of":38,"../helpers/typeof":45}],44:[function(require,module,exports){
+},{"../core-js/object/create":41,"../core-js/object/set-prototype-of":44,"../helpers/typeof":52}],51:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -2009,7 +2695,7 @@ exports.default = function (self, call) {
 
   return call && ((typeof call === "undefined" ? "undefined" : (0, _typeof3.default)(call)) === "object" || typeof call === "function") ? call : self;
 };
-},{"../helpers/typeof":45}],45:[function(require,module,exports){
+},{"../helpers/typeof":52}],52:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -2031,57 +2717,77 @@ exports.default = typeof _symbol2.default === "function" && _typeof(_iterator2.d
 } : function (obj) {
   return obj && typeof _symbol2.default === "function" && obj.constructor === _symbol2.default && obj !== _symbol2.default.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof(obj);
 };
-},{"../core-js/symbol":39,"../core-js/symbol/iterator":40}],46:[function(require,module,exports){
+},{"../core-js/symbol":46,"../core-js/symbol/iterator":47}],53:[function(require,module,exports){
+require('../../modules/es6.object.assign');
+module.exports = require('../../modules/_core').Object.assign;
+
+},{"../../modules/_core":68,"../../modules/es6.object.assign":137}],54:[function(require,module,exports){
 require('../../modules/es6.object.create');
 var $Object = require('../../modules/_core').Object;
 module.exports = function create(P, D) {
   return $Object.create(P, D);
 };
 
-},{"../../modules/_core":57,"../../modules/es6.object.create":110}],47:[function(require,module,exports){
+},{"../../modules/_core":68,"../../modules/es6.object.create":138}],55:[function(require,module,exports){
 require('../../modules/es6.object.define-property');
 var $Object = require('../../modules/_core').Object;
 module.exports = function defineProperty(it, key, desc) {
   return $Object.defineProperty(it, key, desc);
 };
 
-},{"../../modules/_core":57,"../../modules/es6.object.define-property":111}],48:[function(require,module,exports){
+},{"../../modules/_core":68,"../../modules/es6.object.define-property":139}],56:[function(require,module,exports){
 require('../../modules/es6.object.get-prototype-of');
 module.exports = require('../../modules/_core').Object.getPrototypeOf;
 
-},{"../../modules/_core":57,"../../modules/es6.object.get-prototype-of":112}],49:[function(require,module,exports){
+},{"../../modules/_core":68,"../../modules/es6.object.get-prototype-of":140}],57:[function(require,module,exports){
 require('../../modules/es6.object.set-prototype-of');
 module.exports = require('../../modules/_core').Object.setPrototypeOf;
 
-},{"../../modules/_core":57,"../../modules/es6.object.set-prototype-of":113}],50:[function(require,module,exports){
+},{"../../modules/_core":68,"../../modules/es6.object.set-prototype-of":141}],58:[function(require,module,exports){
+require('../modules/es6.object.to-string');
+require('../modules/es6.string.iterator');
+require('../modules/web.dom.iterable');
+require('../modules/es6.promise');
+require('../modules/es7.promise.finally');
+require('../modules/es7.promise.try');
+module.exports = require('../modules/_core').Promise;
+
+},{"../modules/_core":68,"../modules/es6.object.to-string":142,"../modules/es6.promise":143,"../modules/es6.string.iterator":144,"../modules/es7.promise.finally":146,"../modules/es7.promise.try":147,"../modules/web.dom.iterable":150}],59:[function(require,module,exports){
 require('../../modules/es6.symbol');
 require('../../modules/es6.object.to-string');
 require('../../modules/es7.symbol.async-iterator');
 require('../../modules/es7.symbol.observable');
 module.exports = require('../../modules/_core').Symbol;
 
-},{"../../modules/_core":57,"../../modules/es6.object.to-string":114,"../../modules/es6.symbol":116,"../../modules/es7.symbol.async-iterator":117,"../../modules/es7.symbol.observable":118}],51:[function(require,module,exports){
+},{"../../modules/_core":68,"../../modules/es6.object.to-string":142,"../../modules/es6.symbol":145,"../../modules/es7.symbol.async-iterator":148,"../../modules/es7.symbol.observable":149}],60:[function(require,module,exports){
 require('../../modules/es6.string.iterator');
 require('../../modules/web.dom.iterable');
 module.exports = require('../../modules/_wks-ext').f('iterator');
 
-},{"../../modules/_wks-ext":107,"../../modules/es6.string.iterator":115,"../../modules/web.dom.iterable":119}],52:[function(require,module,exports){
+},{"../../modules/_wks-ext":133,"../../modules/es6.string.iterator":144,"../../modules/web.dom.iterable":150}],61:[function(require,module,exports){
 module.exports = function (it) {
   if (typeof it != 'function') throw TypeError(it + ' is not a function!');
   return it;
 };
 
-},{}],53:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 module.exports = function () { /* empty */ };
 
-},{}],54:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
+module.exports = function (it, Constructor, name, forbiddenField) {
+  if (!(it instanceof Constructor) || (forbiddenField !== undefined && forbiddenField in it)) {
+    throw TypeError(name + ': incorrect invocation!');
+  } return it;
+};
+
+},{}],64:[function(require,module,exports){
 var isObject = require('./_is-object');
 module.exports = function (it) {
   if (!isObject(it)) throw TypeError(it + ' is not an object!');
   return it;
 };
 
-},{"./_is-object":73}],55:[function(require,module,exports){
+},{"./_is-object":87}],65:[function(require,module,exports){
 // false -> Array#indexOf
 // true  -> Array#includes
 var toIObject = require('./_to-iobject');
@@ -2106,18 +2812,43 @@ module.exports = function (IS_INCLUDES) {
   };
 };
 
-},{"./_to-absolute-index":99,"./_to-iobject":101,"./_to-length":102}],56:[function(require,module,exports){
+},{"./_to-absolute-index":124,"./_to-iobject":126,"./_to-length":127}],66:[function(require,module,exports){
+// getting tag from 19.1.3.6 Object.prototype.toString()
+var cof = require('./_cof');
+var TAG = require('./_wks')('toStringTag');
+// ES3 wrong here
+var ARG = cof(function () { return arguments; }()) == 'Arguments';
+
+// fallback for IE11 Script Access Denied error
+var tryGet = function (it, key) {
+  try {
+    return it[key];
+  } catch (e) { /* empty */ }
+};
+
+module.exports = function (it) {
+  var O, T, B;
+  return it === undefined ? 'Undefined' : it === null ? 'Null'
+    // @@toStringTag case
+    : typeof (T = tryGet(O = Object(it), TAG)) == 'string' ? T
+    // builtinTag case
+    : ARG ? cof(O)
+    // ES3 arguments fallback
+    : (B = cof(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : B;
+};
+
+},{"./_cof":67,"./_wks":134}],67:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = function (it) {
   return toString.call(it).slice(8, -1);
 };
 
-},{}],57:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 var core = module.exports = { version: '2.5.7' };
 if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
-},{}],58:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 // optional / simple context binding
 var aFunction = require('./_a-function');
 module.exports = function (fn, that, length) {
@@ -2139,20 +2870,20 @@ module.exports = function (fn, that, length) {
   };
 };
 
-},{"./_a-function":52}],59:[function(require,module,exports){
+},{"./_a-function":61}],70:[function(require,module,exports){
 // 7.2.1 RequireObjectCoercible(argument)
 module.exports = function (it) {
   if (it == undefined) throw TypeError("Can't call method on  " + it);
   return it;
 };
 
-},{}],60:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 // Thank's IE8 for his funny defineProperty
 module.exports = !require('./_fails')(function () {
   return Object.defineProperty({}, 'a', { get: function () { return 7; } }).a != 7;
 });
 
-},{"./_fails":65}],61:[function(require,module,exports){
+},{"./_fails":76}],72:[function(require,module,exports){
 var isObject = require('./_is-object');
 var document = require('./_global').document;
 // typeof document.createElement is 'object' in old IE
@@ -2161,13 +2892,13 @@ module.exports = function (it) {
   return is ? document.createElement(it) : {};
 };
 
-},{"./_global":66,"./_is-object":73}],62:[function(require,module,exports){
+},{"./_global":78,"./_is-object":87}],73:[function(require,module,exports){
 // IE 8- don't enum bug keys
 module.exports = (
   'constructor,hasOwnProperty,isPrototypeOf,propertyIsEnumerable,toLocaleString,toString,valueOf'
 ).split(',');
 
-},{}],63:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 // all enumerable object keys, includes symbols
 var getKeys = require('./_object-keys');
 var gOPS = require('./_object-gops');
@@ -2184,7 +2915,7 @@ module.exports = function (it) {
   } return result;
 };
 
-},{"./_object-gops":86,"./_object-keys":89,"./_object-pie":90}],64:[function(require,module,exports){
+},{"./_object-gops":105,"./_object-keys":108,"./_object-pie":109}],75:[function(require,module,exports){
 var global = require('./_global');
 var core = require('./_core');
 var ctx = require('./_ctx');
@@ -2248,7 +2979,7 @@ $export.U = 64;  // safe
 $export.R = 128; // real proto method for `library`
 module.exports = $export;
 
-},{"./_core":57,"./_ctx":58,"./_global":66,"./_has":67,"./_hide":68}],65:[function(require,module,exports){
+},{"./_core":68,"./_ctx":69,"./_global":78,"./_has":79,"./_hide":80}],76:[function(require,module,exports){
 module.exports = function (exec) {
   try {
     return !!exec();
@@ -2257,7 +2988,34 @@ module.exports = function (exec) {
   }
 };
 
-},{}],66:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
+var ctx = require('./_ctx');
+var call = require('./_iter-call');
+var isArrayIter = require('./_is-array-iter');
+var anObject = require('./_an-object');
+var toLength = require('./_to-length');
+var getIterFn = require('./core.get-iterator-method');
+var BREAK = {};
+var RETURN = {};
+var exports = module.exports = function (iterable, entries, fn, that, ITERATOR) {
+  var iterFn = ITERATOR ? function () { return iterable; } : getIterFn(iterable);
+  var f = ctx(fn, that, entries ? 2 : 1);
+  var index = 0;
+  var length, step, iterator, result;
+  if (typeof iterFn != 'function') throw TypeError(iterable + ' is not iterable!');
+  // fast case for arrays with default iterator
+  if (isArrayIter(iterFn)) for (length = toLength(iterable.length); length > index; index++) {
+    result = entries ? f(anObject(step = iterable[index])[0], step[1]) : f(iterable[index]);
+    if (result === BREAK || result === RETURN) return result;
+  } else for (iterator = iterFn.call(iterable); !(step = iterator.next()).done;) {
+    result = call(iterator, f, step.value, entries);
+    if (result === BREAK || result === RETURN) return result;
+  }
+};
+exports.BREAK = BREAK;
+exports.RETURN = RETURN;
+
+},{"./_an-object":64,"./_ctx":69,"./_is-array-iter":85,"./_iter-call":88,"./_to-length":127,"./core.get-iterator-method":135}],78:[function(require,module,exports){
 // https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
 var global = module.exports = typeof window != 'undefined' && window.Math == Math
   ? window : typeof self != 'undefined' && self.Math == Math ? self
@@ -2265,13 +3023,13 @@ var global = module.exports = typeof window != 'undefined' && window.Math == Mat
   : Function('return this')();
 if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
 
-},{}],67:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 var hasOwnProperty = {}.hasOwnProperty;
 module.exports = function (it, key) {
   return hasOwnProperty.call(it, key);
 };
 
-},{}],68:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 var dP = require('./_object-dp');
 var createDesc = require('./_property-desc');
 module.exports = require('./_descriptors') ? function (object, key, value) {
@@ -2281,16 +3039,34 @@ module.exports = require('./_descriptors') ? function (object, key, value) {
   return object;
 };
 
-},{"./_descriptors":60,"./_object-dp":81,"./_property-desc":92}],69:[function(require,module,exports){
+},{"./_descriptors":71,"./_object-dp":100,"./_property-desc":113}],81:[function(require,module,exports){
 var document = require('./_global').document;
 module.exports = document && document.documentElement;
 
-},{"./_global":66}],70:[function(require,module,exports){
+},{"./_global":78}],82:[function(require,module,exports){
 module.exports = !require('./_descriptors') && !require('./_fails')(function () {
   return Object.defineProperty(require('./_dom-create')('div'), 'a', { get: function () { return 7; } }).a != 7;
 });
 
-},{"./_descriptors":60,"./_dom-create":61,"./_fails":65}],71:[function(require,module,exports){
+},{"./_descriptors":71,"./_dom-create":72,"./_fails":76}],83:[function(require,module,exports){
+// fast apply, http://jsperf.lnkit.com/fast-apply/5
+module.exports = function (fn, args, that) {
+  var un = that === undefined;
+  switch (args.length) {
+    case 0: return un ? fn()
+                      : fn.call(that);
+    case 1: return un ? fn(args[0])
+                      : fn.call(that, args[0]);
+    case 2: return un ? fn(args[0], args[1])
+                      : fn.call(that, args[0], args[1]);
+    case 3: return un ? fn(args[0], args[1], args[2])
+                      : fn.call(that, args[0], args[1], args[2]);
+    case 4: return un ? fn(args[0], args[1], args[2], args[3])
+                      : fn.call(that, args[0], args[1], args[2], args[3]);
+  } return fn.apply(that, args);
+};
+
+},{}],84:[function(require,module,exports){
 // fallback for non-array-like ES3 and non-enumerable old V8 strings
 var cof = require('./_cof');
 // eslint-disable-next-line no-prototype-builtins
@@ -2298,19 +3074,43 @@ module.exports = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
   return cof(it) == 'String' ? it.split('') : Object(it);
 };
 
-},{"./_cof":56}],72:[function(require,module,exports){
+},{"./_cof":67}],85:[function(require,module,exports){
+// check on default Array iterator
+var Iterators = require('./_iterators');
+var ITERATOR = require('./_wks')('iterator');
+var ArrayProto = Array.prototype;
+
+module.exports = function (it) {
+  return it !== undefined && (Iterators.Array === it || ArrayProto[ITERATOR] === it);
+};
+
+},{"./_iterators":93,"./_wks":134}],86:[function(require,module,exports){
 // 7.2.2 IsArray(argument)
 var cof = require('./_cof');
 module.exports = Array.isArray || function isArray(arg) {
   return cof(arg) == 'Array';
 };
 
-},{"./_cof":56}],73:[function(require,module,exports){
+},{"./_cof":67}],87:[function(require,module,exports){
 module.exports = function (it) {
   return typeof it === 'object' ? it !== null : typeof it === 'function';
 };
 
-},{}],74:[function(require,module,exports){
+},{}],88:[function(require,module,exports){
+// call something on iterator step with safe closing on error
+var anObject = require('./_an-object');
+module.exports = function (iterator, fn, value, entries) {
+  try {
+    return entries ? fn(anObject(value)[0], value[1]) : fn(value);
+  // 7.4.6 IteratorClose(iterator, completion)
+  } catch (e) {
+    var ret = iterator['return'];
+    if (ret !== undefined) anObject(ret.call(iterator));
+    throw e;
+  }
+};
+
+},{"./_an-object":64}],89:[function(require,module,exports){
 'use strict';
 var create = require('./_object-create');
 var descriptor = require('./_property-desc');
@@ -2325,7 +3125,7 @@ module.exports = function (Constructor, NAME, next) {
   setToStringTag(Constructor, NAME + ' Iterator');
 };
 
-},{"./_hide":68,"./_object-create":80,"./_property-desc":92,"./_set-to-string-tag":95,"./_wks":108}],75:[function(require,module,exports){
+},{"./_hide":80,"./_object-create":99,"./_property-desc":113,"./_set-to-string-tag":118,"./_wks":134}],90:[function(require,module,exports){
 'use strict';
 var LIBRARY = require('./_library');
 var $export = require('./_export');
@@ -2396,18 +3196,42 @@ module.exports = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
   return methods;
 };
 
-},{"./_export":64,"./_hide":68,"./_iter-create":74,"./_iterators":77,"./_library":78,"./_object-gpo":87,"./_redefine":93,"./_set-to-string-tag":95,"./_wks":108}],76:[function(require,module,exports){
+},{"./_export":75,"./_hide":80,"./_iter-create":89,"./_iterators":93,"./_library":94,"./_object-gpo":106,"./_redefine":115,"./_set-to-string-tag":118,"./_wks":134}],91:[function(require,module,exports){
+var ITERATOR = require('./_wks')('iterator');
+var SAFE_CLOSING = false;
+
+try {
+  var riter = [7][ITERATOR]();
+  riter['return'] = function () { SAFE_CLOSING = true; };
+  // eslint-disable-next-line no-throw-literal
+  Array.from(riter, function () { throw 2; });
+} catch (e) { /* empty */ }
+
+module.exports = function (exec, skipClosing) {
+  if (!skipClosing && !SAFE_CLOSING) return false;
+  var safe = false;
+  try {
+    var arr = [7];
+    var iter = arr[ITERATOR]();
+    iter.next = function () { return { done: safe = true }; };
+    arr[ITERATOR] = function () { return iter; };
+    exec(arr);
+  } catch (e) { /* empty */ }
+  return safe;
+};
+
+},{"./_wks":134}],92:[function(require,module,exports){
 module.exports = function (done, value) {
   return { value: value, done: !!done };
 };
 
-},{}],77:[function(require,module,exports){
+},{}],93:[function(require,module,exports){
 module.exports = {};
 
-},{}],78:[function(require,module,exports){
+},{}],94:[function(require,module,exports){
 module.exports = true;
 
-},{}],79:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 var META = require('./_uid')('meta');
 var isObject = require('./_is-object');
 var has = require('./_has');
@@ -2462,7 +3286,134 @@ var meta = module.exports = {
   onFreeze: onFreeze
 };
 
-},{"./_fails":65,"./_has":67,"./_is-object":73,"./_object-dp":81,"./_uid":105}],80:[function(require,module,exports){
+},{"./_fails":76,"./_has":79,"./_is-object":87,"./_object-dp":100,"./_uid":130}],96:[function(require,module,exports){
+var global = require('./_global');
+var macrotask = require('./_task').set;
+var Observer = global.MutationObserver || global.WebKitMutationObserver;
+var process = global.process;
+var Promise = global.Promise;
+var isNode = require('./_cof')(process) == 'process';
+
+module.exports = function () {
+  var head, last, notify;
+
+  var flush = function () {
+    var parent, fn;
+    if (isNode && (parent = process.domain)) parent.exit();
+    while (head) {
+      fn = head.fn;
+      head = head.next;
+      try {
+        fn();
+      } catch (e) {
+        if (head) notify();
+        else last = undefined;
+        throw e;
+      }
+    } last = undefined;
+    if (parent) parent.enter();
+  };
+
+  // Node.js
+  if (isNode) {
+    notify = function () {
+      process.nextTick(flush);
+    };
+  // browsers with MutationObserver, except iOS Safari - https://github.com/zloirock/core-js/issues/339
+  } else if (Observer && !(global.navigator && global.navigator.standalone)) {
+    var toggle = true;
+    var node = document.createTextNode('');
+    new Observer(flush).observe(node, { characterData: true }); // eslint-disable-line no-new
+    notify = function () {
+      node.data = toggle = !toggle;
+    };
+  // environments with maybe non-completely correct, but existent Promise
+  } else if (Promise && Promise.resolve) {
+    // Promise.resolve without an argument throws an error in LG WebOS 2
+    var promise = Promise.resolve(undefined);
+    notify = function () {
+      promise.then(flush);
+    };
+  // for other environments - macrotask based on:
+  // - setImmediate
+  // - MessageChannel
+  // - window.postMessag
+  // - onreadystatechange
+  // - setTimeout
+  } else {
+    notify = function () {
+      // strange IE + webpack dev server bug - use .call(global)
+      macrotask.call(global, flush);
+    };
+  }
+
+  return function (fn) {
+    var task = { fn: fn, next: undefined };
+    if (last) last.next = task;
+    if (!head) {
+      head = task;
+      notify();
+    } last = task;
+  };
+};
+
+},{"./_cof":67,"./_global":78,"./_task":123}],97:[function(require,module,exports){
+'use strict';
+// 25.4.1.5 NewPromiseCapability(C)
+var aFunction = require('./_a-function');
+
+function PromiseCapability(C) {
+  var resolve, reject;
+  this.promise = new C(function ($$resolve, $$reject) {
+    if (resolve !== undefined || reject !== undefined) throw TypeError('Bad Promise constructor');
+    resolve = $$resolve;
+    reject = $$reject;
+  });
+  this.resolve = aFunction(resolve);
+  this.reject = aFunction(reject);
+}
+
+module.exports.f = function (C) {
+  return new PromiseCapability(C);
+};
+
+},{"./_a-function":61}],98:[function(require,module,exports){
+'use strict';
+// 19.1.2.1 Object.assign(target, source, ...)
+var getKeys = require('./_object-keys');
+var gOPS = require('./_object-gops');
+var pIE = require('./_object-pie');
+var toObject = require('./_to-object');
+var IObject = require('./_iobject');
+var $assign = Object.assign;
+
+// should work with symbols and should have deterministic property order (V8 bug)
+module.exports = !$assign || require('./_fails')(function () {
+  var A = {};
+  var B = {};
+  // eslint-disable-next-line no-undef
+  var S = Symbol();
+  var K = 'abcdefghijklmnopqrst';
+  A[S] = 7;
+  K.split('').forEach(function (k) { B[k] = k; });
+  return $assign({}, A)[S] != 7 || Object.keys($assign({}, B)).join('') != K;
+}) ? function assign(target, source) { // eslint-disable-line no-unused-vars
+  var T = toObject(target);
+  var aLen = arguments.length;
+  var index = 1;
+  var getSymbols = gOPS.f;
+  var isEnum = pIE.f;
+  while (aLen > index) {
+    var S = IObject(arguments[index++]);
+    var keys = getSymbols ? getKeys(S).concat(getSymbols(S)) : getKeys(S);
+    var length = keys.length;
+    var j = 0;
+    var key;
+    while (length > j) if (isEnum.call(S, key = keys[j++])) T[key] = S[key];
+  } return T;
+} : $assign;
+
+},{"./_fails":76,"./_iobject":84,"./_object-gops":105,"./_object-keys":108,"./_object-pie":109,"./_to-object":128}],99:[function(require,module,exports){
 // 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
 var anObject = require('./_an-object');
 var dPs = require('./_object-dps');
@@ -2505,7 +3456,7 @@ module.exports = Object.create || function create(O, Properties) {
   return Properties === undefined ? result : dPs(result, Properties);
 };
 
-},{"./_an-object":54,"./_dom-create":61,"./_enum-bug-keys":62,"./_html":69,"./_object-dps":82,"./_shared-key":96}],81:[function(require,module,exports){
+},{"./_an-object":64,"./_dom-create":72,"./_enum-bug-keys":73,"./_html":81,"./_object-dps":101,"./_shared-key":119}],100:[function(require,module,exports){
 var anObject = require('./_an-object');
 var IE8_DOM_DEFINE = require('./_ie8-dom-define');
 var toPrimitive = require('./_to-primitive');
@@ -2523,7 +3474,7 @@ exports.f = require('./_descriptors') ? Object.defineProperty : function defineP
   return O;
 };
 
-},{"./_an-object":54,"./_descriptors":60,"./_ie8-dom-define":70,"./_to-primitive":104}],82:[function(require,module,exports){
+},{"./_an-object":64,"./_descriptors":71,"./_ie8-dom-define":82,"./_to-primitive":129}],101:[function(require,module,exports){
 var dP = require('./_object-dp');
 var anObject = require('./_an-object');
 var getKeys = require('./_object-keys');
@@ -2538,7 +3489,7 @@ module.exports = require('./_descriptors') ? Object.defineProperties : function 
   return O;
 };
 
-},{"./_an-object":54,"./_descriptors":60,"./_object-dp":81,"./_object-keys":89}],83:[function(require,module,exports){
+},{"./_an-object":64,"./_descriptors":71,"./_object-dp":100,"./_object-keys":108}],102:[function(require,module,exports){
 var pIE = require('./_object-pie');
 var createDesc = require('./_property-desc');
 var toIObject = require('./_to-iobject');
@@ -2556,7 +3507,7 @@ exports.f = require('./_descriptors') ? gOPD : function getOwnPropertyDescriptor
   if (has(O, P)) return createDesc(!pIE.f.call(O, P), O[P]);
 };
 
-},{"./_descriptors":60,"./_has":67,"./_ie8-dom-define":70,"./_object-pie":90,"./_property-desc":92,"./_to-iobject":101,"./_to-primitive":104}],84:[function(require,module,exports){
+},{"./_descriptors":71,"./_has":79,"./_ie8-dom-define":82,"./_object-pie":109,"./_property-desc":113,"./_to-iobject":126,"./_to-primitive":129}],103:[function(require,module,exports){
 // fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
 var toIObject = require('./_to-iobject');
 var gOPN = require('./_object-gopn').f;
@@ -2577,7 +3528,7 @@ module.exports.f = function getOwnPropertyNames(it) {
   return windowNames && toString.call(it) == '[object Window]' ? getWindowNames(it) : gOPN(toIObject(it));
 };
 
-},{"./_object-gopn":85,"./_to-iobject":101}],85:[function(require,module,exports){
+},{"./_object-gopn":104,"./_to-iobject":126}],104:[function(require,module,exports){
 // 19.1.2.7 / 15.2.3.4 Object.getOwnPropertyNames(O)
 var $keys = require('./_object-keys-internal');
 var hiddenKeys = require('./_enum-bug-keys').concat('length', 'prototype');
@@ -2586,10 +3537,10 @@ exports.f = Object.getOwnPropertyNames || function getOwnPropertyNames(O) {
   return $keys(O, hiddenKeys);
 };
 
-},{"./_enum-bug-keys":62,"./_object-keys-internal":88}],86:[function(require,module,exports){
+},{"./_enum-bug-keys":73,"./_object-keys-internal":107}],105:[function(require,module,exports){
 exports.f = Object.getOwnPropertySymbols;
 
-},{}],87:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 // 19.1.2.9 / 15.2.3.2 Object.getPrototypeOf(O)
 var has = require('./_has');
 var toObject = require('./_to-object');
@@ -2604,7 +3555,7 @@ module.exports = Object.getPrototypeOf || function (O) {
   } return O instanceof Object ? ObjectProto : null;
 };
 
-},{"./_has":67,"./_shared-key":96,"./_to-object":103}],88:[function(require,module,exports){
+},{"./_has":79,"./_shared-key":119,"./_to-object":128}],107:[function(require,module,exports){
 var has = require('./_has');
 var toIObject = require('./_to-iobject');
 var arrayIndexOf = require('./_array-includes')(false);
@@ -2623,7 +3574,7 @@ module.exports = function (object, names) {
   return result;
 };
 
-},{"./_array-includes":55,"./_has":67,"./_shared-key":96,"./_to-iobject":101}],89:[function(require,module,exports){
+},{"./_array-includes":65,"./_has":79,"./_shared-key":119,"./_to-iobject":126}],108:[function(require,module,exports){
 // 19.1.2.14 / 15.2.3.14 Object.keys(O)
 var $keys = require('./_object-keys-internal');
 var enumBugKeys = require('./_enum-bug-keys');
@@ -2632,10 +3583,10 @@ module.exports = Object.keys || function keys(O) {
   return $keys(O, enumBugKeys);
 };
 
-},{"./_enum-bug-keys":62,"./_object-keys-internal":88}],90:[function(require,module,exports){
+},{"./_enum-bug-keys":73,"./_object-keys-internal":107}],109:[function(require,module,exports){
 exports.f = {}.propertyIsEnumerable;
 
-},{}],91:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 // most Object methods by ES6 should accept primitives
 var $export = require('./_export');
 var core = require('./_core');
@@ -2647,7 +3598,30 @@ module.exports = function (KEY, exec) {
   $export($export.S + $export.F * fails(function () { fn(1); }), 'Object', exp);
 };
 
-},{"./_core":57,"./_export":64,"./_fails":65}],92:[function(require,module,exports){
+},{"./_core":68,"./_export":75,"./_fails":76}],111:[function(require,module,exports){
+module.exports = function (exec) {
+  try {
+    return { e: false, v: exec() };
+  } catch (e) {
+    return { e: true, v: e };
+  }
+};
+
+},{}],112:[function(require,module,exports){
+var anObject = require('./_an-object');
+var isObject = require('./_is-object');
+var newPromiseCapability = require('./_new-promise-capability');
+
+module.exports = function (C, x) {
+  anObject(C);
+  if (isObject(x) && x.constructor === C) return x;
+  var promiseCapability = newPromiseCapability.f(C);
+  var resolve = promiseCapability.resolve;
+  resolve(x);
+  return promiseCapability.promise;
+};
+
+},{"./_an-object":64,"./_is-object":87,"./_new-promise-capability":97}],113:[function(require,module,exports){
 module.exports = function (bitmap, value) {
   return {
     enumerable: !(bitmap & 1),
@@ -2657,10 +3631,19 @@ module.exports = function (bitmap, value) {
   };
 };
 
-},{}],93:[function(require,module,exports){
+},{}],114:[function(require,module,exports){
+var hide = require('./_hide');
+module.exports = function (target, src, safe) {
+  for (var key in src) {
+    if (safe && target[key]) target[key] = src[key];
+    else hide(target, key, src[key]);
+  } return target;
+};
+
+},{"./_hide":80}],115:[function(require,module,exports){
 module.exports = require('./_hide');
 
-},{"./_hide":68}],94:[function(require,module,exports){
+},{"./_hide":80}],116:[function(require,module,exports){
 // Works with __proto__ only. Old v8 can't work with null proto objects.
 /* eslint-disable no-proto */
 var isObject = require('./_is-object');
@@ -2687,7 +3670,23 @@ module.exports = {
   check: check
 };
 
-},{"./_an-object":54,"./_ctx":58,"./_is-object":73,"./_object-gopd":83}],95:[function(require,module,exports){
+},{"./_an-object":64,"./_ctx":69,"./_is-object":87,"./_object-gopd":102}],117:[function(require,module,exports){
+'use strict';
+var global = require('./_global');
+var core = require('./_core');
+var dP = require('./_object-dp');
+var DESCRIPTORS = require('./_descriptors');
+var SPECIES = require('./_wks')('species');
+
+module.exports = function (KEY) {
+  var C = typeof core[KEY] == 'function' ? core[KEY] : global[KEY];
+  if (DESCRIPTORS && C && !C[SPECIES]) dP.f(C, SPECIES, {
+    configurable: true,
+    get: function () { return this; }
+  });
+};
+
+},{"./_core":68,"./_descriptors":71,"./_global":78,"./_object-dp":100,"./_wks":134}],118:[function(require,module,exports){
 var def = require('./_object-dp').f;
 var has = require('./_has');
 var TAG = require('./_wks')('toStringTag');
@@ -2696,14 +3695,14 @@ module.exports = function (it, tag, stat) {
   if (it && !has(it = stat ? it : it.prototype, TAG)) def(it, TAG, { configurable: true, value: tag });
 };
 
-},{"./_has":67,"./_object-dp":81,"./_wks":108}],96:[function(require,module,exports){
+},{"./_has":79,"./_object-dp":100,"./_wks":134}],119:[function(require,module,exports){
 var shared = require('./_shared')('keys');
 var uid = require('./_uid');
 module.exports = function (key) {
   return shared[key] || (shared[key] = uid(key));
 };
 
-},{"./_shared":97,"./_uid":105}],97:[function(require,module,exports){
+},{"./_shared":120,"./_uid":130}],120:[function(require,module,exports){
 var core = require('./_core');
 var global = require('./_global');
 var SHARED = '__core-js_shared__';
@@ -2717,7 +3716,18 @@ var store = global[SHARED] || (global[SHARED] = {});
   copyright: '© 2018 Denis Pushkarev (zloirock.ru)'
 });
 
-},{"./_core":57,"./_global":66,"./_library":78}],98:[function(require,module,exports){
+},{"./_core":68,"./_global":78,"./_library":94}],121:[function(require,module,exports){
+// 7.3.20 SpeciesConstructor(O, defaultConstructor)
+var anObject = require('./_an-object');
+var aFunction = require('./_a-function');
+var SPECIES = require('./_wks')('species');
+module.exports = function (O, D) {
+  var C = anObject(O).constructor;
+  var S;
+  return C === undefined || (S = anObject(C)[SPECIES]) == undefined ? D : aFunction(S);
+};
+
+},{"./_a-function":61,"./_an-object":64,"./_wks":134}],122:[function(require,module,exports){
 var toInteger = require('./_to-integer');
 var defined = require('./_defined');
 // true  -> String#at
@@ -2736,7 +3746,93 @@ module.exports = function (TO_STRING) {
   };
 };
 
-},{"./_defined":59,"./_to-integer":100}],99:[function(require,module,exports){
+},{"./_defined":70,"./_to-integer":125}],123:[function(require,module,exports){
+var ctx = require('./_ctx');
+var invoke = require('./_invoke');
+var html = require('./_html');
+var cel = require('./_dom-create');
+var global = require('./_global');
+var process = global.process;
+var setTask = global.setImmediate;
+var clearTask = global.clearImmediate;
+var MessageChannel = global.MessageChannel;
+var Dispatch = global.Dispatch;
+var counter = 0;
+var queue = {};
+var ONREADYSTATECHANGE = 'onreadystatechange';
+var defer, channel, port;
+var run = function () {
+  var id = +this;
+  // eslint-disable-next-line no-prototype-builtins
+  if (queue.hasOwnProperty(id)) {
+    var fn = queue[id];
+    delete queue[id];
+    fn();
+  }
+};
+var listener = function (event) {
+  run.call(event.data);
+};
+// Node.js 0.9+ & IE10+ has setImmediate, otherwise:
+if (!setTask || !clearTask) {
+  setTask = function setImmediate(fn) {
+    var args = [];
+    var i = 1;
+    while (arguments.length > i) args.push(arguments[i++]);
+    queue[++counter] = function () {
+      // eslint-disable-next-line no-new-func
+      invoke(typeof fn == 'function' ? fn : Function(fn), args);
+    };
+    defer(counter);
+    return counter;
+  };
+  clearTask = function clearImmediate(id) {
+    delete queue[id];
+  };
+  // Node.js 0.8-
+  if (require('./_cof')(process) == 'process') {
+    defer = function (id) {
+      process.nextTick(ctx(run, id, 1));
+    };
+  // Sphere (JS game engine) Dispatch API
+  } else if (Dispatch && Dispatch.now) {
+    defer = function (id) {
+      Dispatch.now(ctx(run, id, 1));
+    };
+  // Browsers with MessageChannel, includes WebWorkers
+  } else if (MessageChannel) {
+    channel = new MessageChannel();
+    port = channel.port2;
+    channel.port1.onmessage = listener;
+    defer = ctx(port.postMessage, port, 1);
+  // Browsers with postMessage, skip WebWorkers
+  // IE8 has postMessage, but it's sync & typeof its postMessage is 'object'
+  } else if (global.addEventListener && typeof postMessage == 'function' && !global.importScripts) {
+    defer = function (id) {
+      global.postMessage(id + '', '*');
+    };
+    global.addEventListener('message', listener, false);
+  // IE8-
+  } else if (ONREADYSTATECHANGE in cel('script')) {
+    defer = function (id) {
+      html.appendChild(cel('script'))[ONREADYSTATECHANGE] = function () {
+        html.removeChild(this);
+        run.call(id);
+      };
+    };
+  // Rest old browsers
+  } else {
+    defer = function (id) {
+      setTimeout(ctx(run, id, 1), 0);
+    };
+  }
+}
+module.exports = {
+  set: setTask,
+  clear: clearTask
+};
+
+},{"./_cof":67,"./_ctx":69,"./_dom-create":72,"./_global":78,"./_html":81,"./_invoke":83}],124:[function(require,module,exports){
 var toInteger = require('./_to-integer');
 var max = Math.max;
 var min = Math.min;
@@ -2745,7 +3841,7 @@ module.exports = function (index, length) {
   return index < 0 ? max(index + length, 0) : min(index, length);
 };
 
-},{"./_to-integer":100}],100:[function(require,module,exports){
+},{"./_to-integer":125}],125:[function(require,module,exports){
 // 7.1.4 ToInteger
 var ceil = Math.ceil;
 var floor = Math.floor;
@@ -2753,7 +3849,7 @@ module.exports = function (it) {
   return isNaN(it = +it) ? 0 : (it > 0 ? floor : ceil)(it);
 };
 
-},{}],101:[function(require,module,exports){
+},{}],126:[function(require,module,exports){
 // to indexed object, toObject with fallback for non-array-like ES3 strings
 var IObject = require('./_iobject');
 var defined = require('./_defined');
@@ -2761,7 +3857,7 @@ module.exports = function (it) {
   return IObject(defined(it));
 };
 
-},{"./_defined":59,"./_iobject":71}],102:[function(require,module,exports){
+},{"./_defined":70,"./_iobject":84}],127:[function(require,module,exports){
 // 7.1.15 ToLength
 var toInteger = require('./_to-integer');
 var min = Math.min;
@@ -2769,14 +3865,14 @@ module.exports = function (it) {
   return it > 0 ? min(toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
 };
 
-},{"./_to-integer":100}],103:[function(require,module,exports){
+},{"./_to-integer":125}],128:[function(require,module,exports){
 // 7.1.13 ToObject(argument)
 var defined = require('./_defined');
 module.exports = function (it) {
   return Object(defined(it));
 };
 
-},{"./_defined":59}],104:[function(require,module,exports){
+},{"./_defined":70}],129:[function(require,module,exports){
 // 7.1.1 ToPrimitive(input [, PreferredType])
 var isObject = require('./_is-object');
 // instead of the ES6 spec version, we didn't implement @@toPrimitive case
@@ -2790,14 +3886,20 @@ module.exports = function (it, S) {
   throw TypeError("Can't convert object to primitive value");
 };
 
-},{"./_is-object":73}],105:[function(require,module,exports){
+},{"./_is-object":87}],130:[function(require,module,exports){
 var id = 0;
 var px = Math.random();
 module.exports = function (key) {
   return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
 };
 
-},{}],106:[function(require,module,exports){
+},{}],131:[function(require,module,exports){
+var global = require('./_global');
+var navigator = global.navigator;
+
+module.exports = navigator && navigator.userAgent || '';
+
+},{"./_global":78}],132:[function(require,module,exports){
 var global = require('./_global');
 var core = require('./_core');
 var LIBRARY = require('./_library');
@@ -2808,10 +3910,10 @@ module.exports = function (name) {
   if (name.charAt(0) != '_' && !(name in $Symbol)) defineProperty($Symbol, name, { value: wksExt.f(name) });
 };
 
-},{"./_core":57,"./_global":66,"./_library":78,"./_object-dp":81,"./_wks-ext":107}],107:[function(require,module,exports){
+},{"./_core":68,"./_global":78,"./_library":94,"./_object-dp":100,"./_wks-ext":133}],133:[function(require,module,exports){
 exports.f = require('./_wks');
 
-},{"./_wks":108}],108:[function(require,module,exports){
+},{"./_wks":134}],134:[function(require,module,exports){
 var store = require('./_shared')('wks');
 var uid = require('./_uid');
 var Symbol = require('./_global').Symbol;
@@ -2824,7 +3926,17 @@ var $exports = module.exports = function (name) {
 
 $exports.store = store;
 
-},{"./_global":66,"./_shared":97,"./_uid":105}],109:[function(require,module,exports){
+},{"./_global":78,"./_shared":120,"./_uid":130}],135:[function(require,module,exports){
+var classof = require('./_classof');
+var ITERATOR = require('./_wks')('iterator');
+var Iterators = require('./_iterators');
+module.exports = require('./_core').getIteratorMethod = function (it) {
+  if (it != undefined) return it[ITERATOR]
+    || it['@@iterator']
+    || Iterators[classof(it)];
+};
+
+},{"./_classof":66,"./_core":68,"./_iterators":93,"./_wks":134}],136:[function(require,module,exports){
 'use strict';
 var addToUnscopables = require('./_add-to-unscopables');
 var step = require('./_iter-step');
@@ -2860,17 +3972,23 @@ addToUnscopables('keys');
 addToUnscopables('values');
 addToUnscopables('entries');
 
-},{"./_add-to-unscopables":53,"./_iter-define":75,"./_iter-step":76,"./_iterators":77,"./_to-iobject":101}],110:[function(require,module,exports){
+},{"./_add-to-unscopables":62,"./_iter-define":90,"./_iter-step":92,"./_iterators":93,"./_to-iobject":126}],137:[function(require,module,exports){
+// 19.1.3.1 Object.assign(target, source)
+var $export = require('./_export');
+
+$export($export.S + $export.F, 'Object', { assign: require('./_object-assign') });
+
+},{"./_export":75,"./_object-assign":98}],138:[function(require,module,exports){
 var $export = require('./_export');
 // 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
 $export($export.S, 'Object', { create: require('./_object-create') });
 
-},{"./_export":64,"./_object-create":80}],111:[function(require,module,exports){
+},{"./_export":75,"./_object-create":99}],139:[function(require,module,exports){
 var $export = require('./_export');
 // 19.1.2.4 / 15.2.3.6 Object.defineProperty(O, P, Attributes)
 $export($export.S + $export.F * !require('./_descriptors'), 'Object', { defineProperty: require('./_object-dp').f });
 
-},{"./_descriptors":60,"./_export":64,"./_object-dp":81}],112:[function(require,module,exports){
+},{"./_descriptors":71,"./_export":75,"./_object-dp":100}],140:[function(require,module,exports){
 // 19.1.2.9 Object.getPrototypeOf(O)
 var toObject = require('./_to-object');
 var $getPrototypeOf = require('./_object-gpo');
@@ -2881,14 +3999,302 @@ require('./_object-sap')('getPrototypeOf', function () {
   };
 });
 
-},{"./_object-gpo":87,"./_object-sap":91,"./_to-object":103}],113:[function(require,module,exports){
+},{"./_object-gpo":106,"./_object-sap":110,"./_to-object":128}],141:[function(require,module,exports){
 // 19.1.3.19 Object.setPrototypeOf(O, proto)
 var $export = require('./_export');
 $export($export.S, 'Object', { setPrototypeOf: require('./_set-proto').set });
 
-},{"./_export":64,"./_set-proto":94}],114:[function(require,module,exports){
+},{"./_export":75,"./_set-proto":116}],142:[function(require,module,exports){
 
-},{}],115:[function(require,module,exports){
+},{}],143:[function(require,module,exports){
+'use strict';
+var LIBRARY = require('./_library');
+var global = require('./_global');
+var ctx = require('./_ctx');
+var classof = require('./_classof');
+var $export = require('./_export');
+var isObject = require('./_is-object');
+var aFunction = require('./_a-function');
+var anInstance = require('./_an-instance');
+var forOf = require('./_for-of');
+var speciesConstructor = require('./_species-constructor');
+var task = require('./_task').set;
+var microtask = require('./_microtask')();
+var newPromiseCapabilityModule = require('./_new-promise-capability');
+var perform = require('./_perform');
+var userAgent = require('./_user-agent');
+var promiseResolve = require('./_promise-resolve');
+var PROMISE = 'Promise';
+var TypeError = global.TypeError;
+var process = global.process;
+var versions = process && process.versions;
+var v8 = versions && versions.v8 || '';
+var $Promise = global[PROMISE];
+var isNode = classof(process) == 'process';
+var empty = function () { /* empty */ };
+var Internal, newGenericPromiseCapability, OwnPromiseCapability, Wrapper;
+var newPromiseCapability = newGenericPromiseCapability = newPromiseCapabilityModule.f;
+
+var USE_NATIVE = !!function () {
+  try {
+    // correct subclassing with @@species support
+    var promise = $Promise.resolve(1);
+    var FakePromise = (promise.constructor = {})[require('./_wks')('species')] = function (exec) {
+      exec(empty, empty);
+    };
+    // unhandled rejections tracking support, NodeJS Promise without it fails @@species test
+    return (isNode || typeof PromiseRejectionEvent == 'function')
+      && promise.then(empty) instanceof FakePromise
+      // v8 6.6 (Node 10 and Chrome 66) have a bug with resolving custom thenables
+      // https://bugs.chromium.org/p/chromium/issues/detail?id=830565
+      // we can't detect it synchronously, so just check versions
+      && v8.indexOf('6.6') !== 0
+      && userAgent.indexOf('Chrome/66') === -1;
+  } catch (e) { /* empty */ }
+}();
+
+// helpers
+var isThenable = function (it) {
+  var then;
+  return isObject(it) && typeof (then = it.then) == 'function' ? then : false;
+};
+var notify = function (promise, isReject) {
+  if (promise._n) return;
+  promise._n = true;
+  var chain = promise._c;
+  microtask(function () {
+    var value = promise._v;
+    var ok = promise._s == 1;
+    var i = 0;
+    var run = function (reaction) {
+      var handler = ok ? reaction.ok : reaction.fail;
+      var resolve = reaction.resolve;
+      var reject = reaction.reject;
+      var domain = reaction.domain;
+      var result, then, exited;
+      try {
+        if (handler) {
+          if (!ok) {
+            if (promise._h == 2) onHandleUnhandled(promise);
+            promise._h = 1;
+          }
+          if (handler === true) result = value;
+          else {
+            if (domain) domain.enter();
+            result = handler(value); // may throw
+            if (domain) {
+              domain.exit();
+              exited = true;
+            }
+          }
+          if (result === reaction.promise) {
+            reject(TypeError('Promise-chain cycle'));
+          } else if (then = isThenable(result)) {
+            then.call(result, resolve, reject);
+          } else resolve(result);
+        } else reject(value);
+      } catch (e) {
+        if (domain && !exited) domain.exit();
+        reject(e);
+      }
+    };
+    while (chain.length > i) run(chain[i++]); // variable length - can't use forEach
+    promise._c = [];
+    promise._n = false;
+    if (isReject && !promise._h) onUnhandled(promise);
+  });
+};
+var onUnhandled = function (promise) {
+  task.call(global, function () {
+    var value = promise._v;
+    var unhandled = isUnhandled(promise);
+    var result, handler, console;
+    if (unhandled) {
+      result = perform(function () {
+        if (isNode) {
+          process.emit('unhandledRejection', value, promise);
+        } else if (handler = global.onunhandledrejection) {
+          handler({ promise: promise, reason: value });
+        } else if ((console = global.console) && console.error) {
+          console.error('Unhandled promise rejection', value);
+        }
+      });
+      // Browsers should not trigger `rejectionHandled` event if it was handled here, NodeJS - should
+      promise._h = isNode || isUnhandled(promise) ? 2 : 1;
+    } promise._a = undefined;
+    if (unhandled && result.e) throw result.v;
+  });
+};
+var isUnhandled = function (promise) {
+  return promise._h !== 1 && (promise._a || promise._c).length === 0;
+};
+var onHandleUnhandled = function (promise) {
+  task.call(global, function () {
+    var handler;
+    if (isNode) {
+      process.emit('rejectionHandled', promise);
+    } else if (handler = global.onrejectionhandled) {
+      handler({ promise: promise, reason: promise._v });
+    }
+  });
+};
+var $reject = function (value) {
+  var promise = this;
+  if (promise._d) return;
+  promise._d = true;
+  promise = promise._w || promise; // unwrap
+  promise._v = value;
+  promise._s = 2;
+  if (!promise._a) promise._a = promise._c.slice();
+  notify(promise, true);
+};
+var $resolve = function (value) {
+  var promise = this;
+  var then;
+  if (promise._d) return;
+  promise._d = true;
+  promise = promise._w || promise; // unwrap
+  try {
+    if (promise === value) throw TypeError("Promise can't be resolved itself");
+    if (then = isThenable(value)) {
+      microtask(function () {
+        var wrapper = { _w: promise, _d: false }; // wrap
+        try {
+          then.call(value, ctx($resolve, wrapper, 1), ctx($reject, wrapper, 1));
+        } catch (e) {
+          $reject.call(wrapper, e);
+        }
+      });
+    } else {
+      promise._v = value;
+      promise._s = 1;
+      notify(promise, false);
+    }
+  } catch (e) {
+    $reject.call({ _w: promise, _d: false }, e); // wrap
+  }
+};
+
+// constructor polyfill
+if (!USE_NATIVE) {
+  // 25.4.3.1 Promise(executor)
+  $Promise = function Promise(executor) {
+    anInstance(this, $Promise, PROMISE, '_h');
+    aFunction(executor);
+    Internal.call(this);
+    try {
+      executor(ctx($resolve, this, 1), ctx($reject, this, 1));
+    } catch (err) {
+      $reject.call(this, err);
+    }
+  };
+  // eslint-disable-next-line no-unused-vars
+  Internal = function Promise(executor) {
+    this._c = [];             // <- awaiting reactions
+    this._a = undefined;      // <- checked in isUnhandled reactions
+    this._s = 0;              // <- state
+    this._d = false;          // <- done
+    this._v = undefined;      // <- value
+    this._h = 0;              // <- rejection state, 0 - default, 1 - handled, 2 - unhandled
+    this._n = false;          // <- notify
+  };
+  Internal.prototype = require('./_redefine-all')($Promise.prototype, {
+    // 25.4.5.3 Promise.prototype.then(onFulfilled, onRejected)
+    then: function then(onFulfilled, onRejected) {
+      var reaction = newPromiseCapability(speciesConstructor(this, $Promise));
+      reaction.ok = typeof onFulfilled == 'function' ? onFulfilled : true;
+      reaction.fail = typeof onRejected == 'function' && onRejected;
+      reaction.domain = isNode ? process.domain : undefined;
+      this._c.push(reaction);
+      if (this._a) this._a.push(reaction);
+      if (this._s) notify(this, false);
+      return reaction.promise;
+    },
+    // 25.4.5.1 Promise.prototype.catch(onRejected)
+    'catch': function (onRejected) {
+      return this.then(undefined, onRejected);
+    }
+  });
+  OwnPromiseCapability = function () {
+    var promise = new Internal();
+    this.promise = promise;
+    this.resolve = ctx($resolve, promise, 1);
+    this.reject = ctx($reject, promise, 1);
+  };
+  newPromiseCapabilityModule.f = newPromiseCapability = function (C) {
+    return C === $Promise || C === Wrapper
+      ? new OwnPromiseCapability(C)
+      : newGenericPromiseCapability(C);
+  };
+}
+
+$export($export.G + $export.W + $export.F * !USE_NATIVE, { Promise: $Promise });
+require('./_set-to-string-tag')($Promise, PROMISE);
+require('./_set-species')(PROMISE);
+Wrapper = require('./_core')[PROMISE];
+
+// statics
+$export($export.S + $export.F * !USE_NATIVE, PROMISE, {
+  // 25.4.4.5 Promise.reject(r)
+  reject: function reject(r) {
+    var capability = newPromiseCapability(this);
+    var $$reject = capability.reject;
+    $$reject(r);
+    return capability.promise;
+  }
+});
+$export($export.S + $export.F * (LIBRARY || !USE_NATIVE), PROMISE, {
+  // 25.4.4.6 Promise.resolve(x)
+  resolve: function resolve(x) {
+    return promiseResolve(LIBRARY && this === Wrapper ? $Promise : this, x);
+  }
+});
+$export($export.S + $export.F * !(USE_NATIVE && require('./_iter-detect')(function (iter) {
+  $Promise.all(iter)['catch'](empty);
+})), PROMISE, {
+  // 25.4.4.1 Promise.all(iterable)
+  all: function all(iterable) {
+    var C = this;
+    var capability = newPromiseCapability(C);
+    var resolve = capability.resolve;
+    var reject = capability.reject;
+    var result = perform(function () {
+      var values = [];
+      var index = 0;
+      var remaining = 1;
+      forOf(iterable, false, function (promise) {
+        var $index = index++;
+        var alreadyCalled = false;
+        values.push(undefined);
+        remaining++;
+        C.resolve(promise).then(function (value) {
+          if (alreadyCalled) return;
+          alreadyCalled = true;
+          values[$index] = value;
+          --remaining || resolve(values);
+        }, reject);
+      });
+      --remaining || resolve(values);
+    });
+    if (result.e) reject(result.v);
+    return capability.promise;
+  },
+  // 25.4.4.4 Promise.race(iterable)
+  race: function race(iterable) {
+    var C = this;
+    var capability = newPromiseCapability(C);
+    var reject = capability.reject;
+    var result = perform(function () {
+      forOf(iterable, false, function (promise) {
+        C.resolve(promise).then(capability.resolve, reject);
+      });
+    });
+    if (result.e) reject(result.v);
+    return capability.promise;
+  }
+});
+
+},{"./_a-function":61,"./_an-instance":63,"./_classof":66,"./_core":68,"./_ctx":69,"./_export":75,"./_for-of":77,"./_global":78,"./_is-object":87,"./_iter-detect":91,"./_library":94,"./_microtask":96,"./_new-promise-capability":97,"./_perform":111,"./_promise-resolve":112,"./_redefine-all":114,"./_set-species":117,"./_set-to-string-tag":118,"./_species-constructor":121,"./_task":123,"./_user-agent":131,"./_wks":134}],144:[function(require,module,exports){
 'use strict';
 var $at = require('./_string-at')(true);
 
@@ -2907,7 +4313,7 @@ require('./_iter-define')(String, 'String', function (iterated) {
   return { value: point, done: false };
 });
 
-},{"./_iter-define":75,"./_string-at":98}],116:[function(require,module,exports){
+},{"./_iter-define":90,"./_string-at":122}],145:[function(require,module,exports){
 'use strict';
 // ECMAScript 6 symbols shim
 var global = require('./_global');
@@ -3143,13 +4549,49 @@ setToStringTag(Math, 'Math', true);
 // 24.3.3 JSON[@@toStringTag]
 setToStringTag(global.JSON, 'JSON', true);
 
-},{"./_an-object":54,"./_descriptors":60,"./_enum-keys":63,"./_export":64,"./_fails":65,"./_global":66,"./_has":67,"./_hide":68,"./_is-array":72,"./_is-object":73,"./_library":78,"./_meta":79,"./_object-create":80,"./_object-dp":81,"./_object-gopd":83,"./_object-gopn":85,"./_object-gopn-ext":84,"./_object-gops":86,"./_object-keys":89,"./_object-pie":90,"./_property-desc":92,"./_redefine":93,"./_set-to-string-tag":95,"./_shared":97,"./_to-iobject":101,"./_to-primitive":104,"./_uid":105,"./_wks":108,"./_wks-define":106,"./_wks-ext":107}],117:[function(require,module,exports){
+},{"./_an-object":64,"./_descriptors":71,"./_enum-keys":74,"./_export":75,"./_fails":76,"./_global":78,"./_has":79,"./_hide":80,"./_is-array":86,"./_is-object":87,"./_library":94,"./_meta":95,"./_object-create":99,"./_object-dp":100,"./_object-gopd":102,"./_object-gopn":104,"./_object-gopn-ext":103,"./_object-gops":105,"./_object-keys":108,"./_object-pie":109,"./_property-desc":113,"./_redefine":115,"./_set-to-string-tag":118,"./_shared":120,"./_to-iobject":126,"./_to-primitive":129,"./_uid":130,"./_wks":134,"./_wks-define":132,"./_wks-ext":133}],146:[function(require,module,exports){
+// https://github.com/tc39/proposal-promise-finally
+'use strict';
+var $export = require('./_export');
+var core = require('./_core');
+var global = require('./_global');
+var speciesConstructor = require('./_species-constructor');
+var promiseResolve = require('./_promise-resolve');
+
+$export($export.P + $export.R, 'Promise', { 'finally': function (onFinally) {
+  var C = speciesConstructor(this, core.Promise || global.Promise);
+  var isFunction = typeof onFinally == 'function';
+  return this.then(
+    isFunction ? function (x) {
+      return promiseResolve(C, onFinally()).then(function () { return x; });
+    } : onFinally,
+    isFunction ? function (e) {
+      return promiseResolve(C, onFinally()).then(function () { throw e; });
+    } : onFinally
+  );
+} });
+
+},{"./_core":68,"./_export":75,"./_global":78,"./_promise-resolve":112,"./_species-constructor":121}],147:[function(require,module,exports){
+'use strict';
+// https://github.com/tc39/proposal-promise-try
+var $export = require('./_export');
+var newPromiseCapability = require('./_new-promise-capability');
+var perform = require('./_perform');
+
+$export($export.S, 'Promise', { 'try': function (callbackfn) {
+  var promiseCapability = newPromiseCapability.f(this);
+  var result = perform(callbackfn);
+  (result.e ? promiseCapability.reject : promiseCapability.resolve)(result.v);
+  return promiseCapability.promise;
+} });
+
+},{"./_export":75,"./_new-promise-capability":97,"./_perform":111}],148:[function(require,module,exports){
 require('./_wks-define')('asyncIterator');
 
-},{"./_wks-define":106}],118:[function(require,module,exports){
+},{"./_wks-define":132}],149:[function(require,module,exports){
 require('./_wks-define')('observable');
 
-},{"./_wks-define":106}],119:[function(require,module,exports){
+},{"./_wks-define":132}],150:[function(require,module,exports){
 require('./es6.array.iterator');
 var global = require('./_global');
 var hide = require('./_hide');
@@ -3170,7 +4612,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
   Iterators[NAME] = Iterators.Array;
 }
 
-},{"./_global":66,"./_hide":68,"./_iterators":77,"./_wks":108,"./es6.array.iterator":109}],120:[function(require,module,exports){
+},{"./_global":78,"./_hide":80,"./_iterators":93,"./_wks":134,"./es6.array.iterator":136}],151:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -4101,7 +5543,6111 @@ module.exports = factory;
 
 }).call(this,require('_process'))
 
-},{"_process":166,"fbjs/lib/emptyObject":129,"fbjs/lib/invariant":136,"fbjs/lib/warning":143,"object-assign":165}],121:[function(require,module,exports){
+},{"_process":357,"fbjs/lib/emptyObject":319,"fbjs/lib/invariant":326,"fbjs/lib/warning":333,"object-assign":356}],152:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Day Helpers
+ * @summary Add the specified number of days to the given date.
+ *
+ * @description
+ * Add the specified number of days to the given date.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} amount - the amount of days to be added
+ * @returns {Date} the new date with the days added
+ *
+ * @example
+ * // Add 10 days to 1 September 2014:
+ * var result = addDays(new Date(2014, 8, 1), 10)
+ * //=> Thu Sep 11 2014 00:00:00
+ */
+function addDays (dirtyDate, dirtyAmount) {
+  var date = parse(dirtyDate)
+  var amount = Number(dirtyAmount)
+  date.setDate(date.getDate() + amount)
+  return date
+}
+
+module.exports = addDays
+
+},{"../parse/index.js":274}],153:[function(require,module,exports){
+var addMilliseconds = require('../add_milliseconds/index.js')
+
+var MILLISECONDS_IN_HOUR = 3600000
+
+/**
+ * @category Hour Helpers
+ * @summary Add the specified number of hours to the given date.
+ *
+ * @description
+ * Add the specified number of hours to the given date.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} amount - the amount of hours to be added
+ * @returns {Date} the new date with the hours added
+ *
+ * @example
+ * // Add 2 hours to 10 July 2014 23:00:00:
+ * var result = addHours(new Date(2014, 6, 10, 23, 0), 2)
+ * //=> Fri Jul 11 2014 01:00:00
+ */
+function addHours (dirtyDate, dirtyAmount) {
+  var amount = Number(dirtyAmount)
+  return addMilliseconds(dirtyDate, amount * MILLISECONDS_IN_HOUR)
+}
+
+module.exports = addHours
+
+},{"../add_milliseconds/index.js":155}],154:[function(require,module,exports){
+var getISOYear = require('../get_iso_year/index.js')
+var setISOYear = require('../set_iso_year/index.js')
+
+/**
+ * @category ISO Week-Numbering Year Helpers
+ * @summary Add the specified number of ISO week-numbering years to the given date.
+ *
+ * @description
+ * Add the specified number of ISO week-numbering years to the given date.
+ *
+ * ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} amount - the amount of ISO week-numbering years to be added
+ * @returns {Date} the new date with the ISO week-numbering years added
+ *
+ * @example
+ * // Add 5 ISO week-numbering years to 2 July 2010:
+ * var result = addISOYears(new Date(2010, 6, 2), 5)
+ * //=> Fri Jun 26 2015 00:00:00
+ */
+function addISOYears (dirtyDate, dirtyAmount) {
+  var amount = Number(dirtyAmount)
+  return setISOYear(dirtyDate, getISOYear(dirtyDate) + amount)
+}
+
+module.exports = addISOYears
+
+},{"../get_iso_year/index.js":211,"../set_iso_year/index.js":281}],155:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Millisecond Helpers
+ * @summary Add the specified number of milliseconds to the given date.
+ *
+ * @description
+ * Add the specified number of milliseconds to the given date.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} amount - the amount of milliseconds to be added
+ * @returns {Date} the new date with the milliseconds added
+ *
+ * @example
+ * // Add 750 milliseconds to 10 July 2014 12:45:30.000:
+ * var result = addMilliseconds(new Date(2014, 6, 10, 12, 45, 30, 0), 750)
+ * //=> Thu Jul 10 2014 12:45:30.750
+ */
+function addMilliseconds (dirtyDate, dirtyAmount) {
+  var timestamp = parse(dirtyDate).getTime()
+  var amount = Number(dirtyAmount)
+  return new Date(timestamp + amount)
+}
+
+module.exports = addMilliseconds
+
+},{"../parse/index.js":274}],156:[function(require,module,exports){
+var addMilliseconds = require('../add_milliseconds/index.js')
+
+var MILLISECONDS_IN_MINUTE = 60000
+
+/**
+ * @category Minute Helpers
+ * @summary Add the specified number of minutes to the given date.
+ *
+ * @description
+ * Add the specified number of minutes to the given date.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} amount - the amount of minutes to be added
+ * @returns {Date} the new date with the minutes added
+ *
+ * @example
+ * // Add 30 minutes to 10 July 2014 12:00:00:
+ * var result = addMinutes(new Date(2014, 6, 10, 12, 0), 30)
+ * //=> Thu Jul 10 2014 12:30:00
+ */
+function addMinutes (dirtyDate, dirtyAmount) {
+  var amount = Number(dirtyAmount)
+  return addMilliseconds(dirtyDate, amount * MILLISECONDS_IN_MINUTE)
+}
+
+module.exports = addMinutes
+
+},{"../add_milliseconds/index.js":155}],157:[function(require,module,exports){
+var parse = require('../parse/index.js')
+var getDaysInMonth = require('../get_days_in_month/index.js')
+
+/**
+ * @category Month Helpers
+ * @summary Add the specified number of months to the given date.
+ *
+ * @description
+ * Add the specified number of months to the given date.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} amount - the amount of months to be added
+ * @returns {Date} the new date with the months added
+ *
+ * @example
+ * // Add 5 months to 1 September 2014:
+ * var result = addMonths(new Date(2014, 8, 1), 5)
+ * //=> Sun Feb 01 2015 00:00:00
+ */
+function addMonths (dirtyDate, dirtyAmount) {
+  var date = parse(dirtyDate)
+  var amount = Number(dirtyAmount)
+  var desiredMonth = date.getMonth() + amount
+  var dateWithDesiredMonth = new Date(0)
+  dateWithDesiredMonth.setFullYear(date.getFullYear(), desiredMonth, 1)
+  dateWithDesiredMonth.setHours(0, 0, 0, 0)
+  var daysInMonth = getDaysInMonth(dateWithDesiredMonth)
+  // Set the last day of the new month
+  // if the original date was the last day of the longer month
+  date.setMonth(desiredMonth, Math.min(daysInMonth, date.getDate()))
+  return date
+}
+
+module.exports = addMonths
+
+},{"../get_days_in_month/index.js":205,"../parse/index.js":274}],158:[function(require,module,exports){
+var addMonths = require('../add_months/index.js')
+
+/**
+ * @category Quarter Helpers
+ * @summary Add the specified number of year quarters to the given date.
+ *
+ * @description
+ * Add the specified number of year quarters to the given date.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} amount - the amount of quarters to be added
+ * @returns {Date} the new date with the quarters added
+ *
+ * @example
+ * // Add 1 quarter to 1 September 2014:
+ * var result = addQuarters(new Date(2014, 8, 1), 1)
+ * //=> Mon Dec 01 2014 00:00:00
+ */
+function addQuarters (dirtyDate, dirtyAmount) {
+  var amount = Number(dirtyAmount)
+  var months = amount * 3
+  return addMonths(dirtyDate, months)
+}
+
+module.exports = addQuarters
+
+},{"../add_months/index.js":157}],159:[function(require,module,exports){
+var addMilliseconds = require('../add_milliseconds/index.js')
+
+/**
+ * @category Second Helpers
+ * @summary Add the specified number of seconds to the given date.
+ *
+ * @description
+ * Add the specified number of seconds to the given date.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} amount - the amount of seconds to be added
+ * @returns {Date} the new date with the seconds added
+ *
+ * @example
+ * // Add 30 seconds to 10 July 2014 12:45:00:
+ * var result = addSeconds(new Date(2014, 6, 10, 12, 45, 0), 30)
+ * //=> Thu Jul 10 2014 12:45:30
+ */
+function addSeconds (dirtyDate, dirtyAmount) {
+  var amount = Number(dirtyAmount)
+  return addMilliseconds(dirtyDate, amount * 1000)
+}
+
+module.exports = addSeconds
+
+},{"../add_milliseconds/index.js":155}],160:[function(require,module,exports){
+var addDays = require('../add_days/index.js')
+
+/**
+ * @category Week Helpers
+ * @summary Add the specified number of weeks to the given date.
+ *
+ * @description
+ * Add the specified number of week to the given date.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} amount - the amount of weeks to be added
+ * @returns {Date} the new date with the weeks added
+ *
+ * @example
+ * // Add 4 weeks to 1 September 2014:
+ * var result = addWeeks(new Date(2014, 8, 1), 4)
+ * //=> Mon Sep 29 2014 00:00:00
+ */
+function addWeeks (dirtyDate, dirtyAmount) {
+  var amount = Number(dirtyAmount)
+  var days = amount * 7
+  return addDays(dirtyDate, days)
+}
+
+module.exports = addWeeks
+
+},{"../add_days/index.js":152}],161:[function(require,module,exports){
+var addMonths = require('../add_months/index.js')
+
+/**
+ * @category Year Helpers
+ * @summary Add the specified number of years to the given date.
+ *
+ * @description
+ * Add the specified number of years to the given date.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} amount - the amount of years to be added
+ * @returns {Date} the new date with the years added
+ *
+ * @example
+ * // Add 5 years to 1 September 2014:
+ * var result = addYears(new Date(2014, 8, 1), 5)
+ * //=> Sun Sep 01 2019 00:00:00
+ */
+function addYears (dirtyDate, dirtyAmount) {
+  var amount = Number(dirtyAmount)
+  return addMonths(dirtyDate, amount * 12)
+}
+
+module.exports = addYears
+
+},{"../add_months/index.js":157}],162:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Range Helpers
+ * @summary Is the given date range overlapping with another date range?
+ *
+ * @description
+ * Is the given date range overlapping with another date range?
+ *
+ * @param {Date|String|Number} initialRangeStartDate - the start of the initial range
+ * @param {Date|String|Number} initialRangeEndDate - the end of the initial range
+ * @param {Date|String|Number} comparedRangeStartDate - the start of the range to compare it with
+ * @param {Date|String|Number} comparedRangeEndDate - the end of the range to compare it with
+ * @returns {Boolean} whether the date ranges are overlapping
+ * @throws {Error} startDate of a date range cannot be after its endDate
+ *
+ * @example
+ * // For overlapping date ranges:
+ * areRangesOverlapping(
+ *   new Date(2014, 0, 10), new Date(2014, 0, 20), new Date(2014, 0, 17), new Date(2014, 0, 21)
+ * )
+ * //=> true
+ *
+ * @example
+ * // For non-overlapping date ranges:
+ * areRangesOverlapping(
+ *   new Date(2014, 0, 10), new Date(2014, 0, 20), new Date(2014, 0, 21), new Date(2014, 0, 22)
+ * )
+ * //=> false
+ */
+function areRangesOverlapping (dirtyInitialRangeStartDate, dirtyInitialRangeEndDate, dirtyComparedRangeStartDate, dirtyComparedRangeEndDate) {
+  var initialStartTime = parse(dirtyInitialRangeStartDate).getTime()
+  var initialEndTime = parse(dirtyInitialRangeEndDate).getTime()
+  var comparedStartTime = parse(dirtyComparedRangeStartDate).getTime()
+  var comparedEndTime = parse(dirtyComparedRangeEndDate).getTime()
+
+  if (initialStartTime > initialEndTime || comparedStartTime > comparedEndTime) {
+    throw new Error('The start of the range cannot be after the end of the range')
+  }
+
+  return initialStartTime < comparedEndTime && comparedStartTime < initialEndTime
+}
+
+module.exports = areRangesOverlapping
+
+},{"../parse/index.js":274}],163:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Common Helpers
+ * @summary Return an index of the closest date from the array comparing to the given date.
+ *
+ * @description
+ * Return an index of the closest date from the array comparing to the given date.
+ *
+ * @param {Date|String|Number} dateToCompare - the date to compare with
+ * @param {Date[]|String[]|Number[]} datesArray - the array to search
+ * @returns {Number} an index of the date closest to the given date
+ * @throws {TypeError} the second argument must be an instance of Array
+ *
+ * @example
+ * // Which date is closer to 6 September 2015?
+ * var dateToCompare = new Date(2015, 8, 6)
+ * var datesArray = [
+ *   new Date(2015, 0, 1),
+ *   new Date(2016, 0, 1),
+ *   new Date(2017, 0, 1)
+ * ]
+ * var result = closestIndexTo(dateToCompare, datesArray)
+ * //=> 1
+ */
+function closestIndexTo (dirtyDateToCompare, dirtyDatesArray) {
+  if (!(dirtyDatesArray instanceof Array)) {
+    throw new TypeError(toString.call(dirtyDatesArray) + ' is not an instance of Array')
+  }
+
+  var dateToCompare = parse(dirtyDateToCompare)
+  var timeToCompare = dateToCompare.getTime()
+
+  var result
+  var minDistance
+
+  dirtyDatesArray.forEach(function (dirtyDate, index) {
+    var currentDate = parse(dirtyDate)
+    var distance = Math.abs(timeToCompare - currentDate.getTime())
+    if (result === undefined || distance < minDistance) {
+      result = index
+      minDistance = distance
+    }
+  })
+
+  return result
+}
+
+module.exports = closestIndexTo
+
+},{"../parse/index.js":274}],164:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Common Helpers
+ * @summary Return a date from the array closest to the given date.
+ *
+ * @description
+ * Return a date from the array closest to the given date.
+ *
+ * @param {Date|String|Number} dateToCompare - the date to compare with
+ * @param {Date[]|String[]|Number[]} datesArray - the array to search
+ * @returns {Date} the date from the array closest to the given date
+ * @throws {TypeError} the second argument must be an instance of Array
+ *
+ * @example
+ * // Which date is closer to 6 September 2015: 1 January 2000 or 1 January 2030?
+ * var dateToCompare = new Date(2015, 8, 6)
+ * var result = closestTo(dateToCompare, [
+ *   new Date(2000, 0, 1),
+ *   new Date(2030, 0, 1)
+ * ])
+ * //=> Tue Jan 01 2030 00:00:00
+ */
+function closestTo (dirtyDateToCompare, dirtyDatesArray) {
+  if (!(dirtyDatesArray instanceof Array)) {
+    throw new TypeError(toString.call(dirtyDatesArray) + ' is not an instance of Array')
+  }
+
+  var dateToCompare = parse(dirtyDateToCompare)
+  var timeToCompare = dateToCompare.getTime()
+
+  var result
+  var minDistance
+
+  dirtyDatesArray.forEach(function (dirtyDate) {
+    var currentDate = parse(dirtyDate)
+    var distance = Math.abs(timeToCompare - currentDate.getTime())
+    if (result === undefined || distance < minDistance) {
+      result = currentDate
+      minDistance = distance
+    }
+  })
+
+  return result
+}
+
+module.exports = closestTo
+
+},{"../parse/index.js":274}],165:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Common Helpers
+ * @summary Compare the two dates and return -1, 0 or 1.
+ *
+ * @description
+ * Compare the two dates and return 1 if the first date is after the second,
+ * -1 if the first date is before the second or 0 if dates are equal.
+ *
+ * @param {Date|String|Number} dateLeft - the first date to compare
+ * @param {Date|String|Number} dateRight - the second date to compare
+ * @returns {Number} the result of the comparison
+ *
+ * @example
+ * // Compare 11 February 1987 and 10 July 1989:
+ * var result = compareAsc(
+ *   new Date(1987, 1, 11),
+ *   new Date(1989, 6, 10)
+ * )
+ * //=> -1
+ *
+ * @example
+ * // Sort the array of dates:
+ * var result = [
+ *   new Date(1995, 6, 2),
+ *   new Date(1987, 1, 11),
+ *   new Date(1989, 6, 10)
+ * ].sort(compareAsc)
+ * //=> [
+ * //   Wed Feb 11 1987 00:00:00,
+ * //   Mon Jul 10 1989 00:00:00,
+ * //   Sun Jul 02 1995 00:00:00
+ * // ]
+ */
+function compareAsc (dirtyDateLeft, dirtyDateRight) {
+  var dateLeft = parse(dirtyDateLeft)
+  var timeLeft = dateLeft.getTime()
+  var dateRight = parse(dirtyDateRight)
+  var timeRight = dateRight.getTime()
+
+  if (timeLeft < timeRight) {
+    return -1
+  } else if (timeLeft > timeRight) {
+    return 1
+  } else {
+    return 0
+  }
+}
+
+module.exports = compareAsc
+
+},{"../parse/index.js":274}],166:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Common Helpers
+ * @summary Compare the two dates reverse chronologically and return -1, 0 or 1.
+ *
+ * @description
+ * Compare the two dates and return -1 if the first date is after the second,
+ * 1 if the first date is before the second or 0 if dates are equal.
+ *
+ * @param {Date|String|Number} dateLeft - the first date to compare
+ * @param {Date|String|Number} dateRight - the second date to compare
+ * @returns {Number} the result of the comparison
+ *
+ * @example
+ * // Compare 11 February 1987 and 10 July 1989 reverse chronologically:
+ * var result = compareDesc(
+ *   new Date(1987, 1, 11),
+ *   new Date(1989, 6, 10)
+ * )
+ * //=> 1
+ *
+ * @example
+ * // Sort the array of dates in reverse chronological order:
+ * var result = [
+ *   new Date(1995, 6, 2),
+ *   new Date(1987, 1, 11),
+ *   new Date(1989, 6, 10)
+ * ].sort(compareDesc)
+ * //=> [
+ * //   Sun Jul 02 1995 00:00:00,
+ * //   Mon Jul 10 1989 00:00:00,
+ * //   Wed Feb 11 1987 00:00:00
+ * // ]
+ */
+function compareDesc (dirtyDateLeft, dirtyDateRight) {
+  var dateLeft = parse(dirtyDateLeft)
+  var timeLeft = dateLeft.getTime()
+  var dateRight = parse(dirtyDateRight)
+  var timeRight = dateRight.getTime()
+
+  if (timeLeft > timeRight) {
+    return -1
+  } else if (timeLeft < timeRight) {
+    return 1
+  } else {
+    return 0
+  }
+}
+
+module.exports = compareDesc
+
+},{"../parse/index.js":274}],167:[function(require,module,exports){
+var startOfDay = require('../start_of_day/index.js')
+
+var MILLISECONDS_IN_MINUTE = 60000
+var MILLISECONDS_IN_DAY = 86400000
+
+/**
+ * @category Day Helpers
+ * @summary Get the number of calendar days between the given dates.
+ *
+ * @description
+ * Get the number of calendar days between the given dates.
+ *
+ * @param {Date|String|Number} dateLeft - the later date
+ * @param {Date|String|Number} dateRight - the earlier date
+ * @returns {Number} the number of calendar days
+ *
+ * @example
+ * // How many calendar days are between
+ * // 2 July 2011 23:00:00 and 2 July 2012 00:00:00?
+ * var result = differenceInCalendarDays(
+ *   new Date(2012, 6, 2, 0, 0),
+ *   new Date(2011, 6, 2, 23, 0)
+ * )
+ * //=> 366
+ */
+function differenceInCalendarDays (dirtyDateLeft, dirtyDateRight) {
+  var startOfDayLeft = startOfDay(dirtyDateLeft)
+  var startOfDayRight = startOfDay(dirtyDateRight)
+
+  var timestampLeft = startOfDayLeft.getTime() -
+    startOfDayLeft.getTimezoneOffset() * MILLISECONDS_IN_MINUTE
+  var timestampRight = startOfDayRight.getTime() -
+    startOfDayRight.getTimezoneOffset() * MILLISECONDS_IN_MINUTE
+
+  // Round the number of days to the nearest integer
+  // because the number of milliseconds in a day is not constant
+  // (e.g. it's different in the day of the daylight saving time clock shift)
+  return Math.round((timestampLeft - timestampRight) / MILLISECONDS_IN_DAY)
+}
+
+module.exports = differenceInCalendarDays
+
+},{"../start_of_day/index.js":288}],168:[function(require,module,exports){
+var startOfISOWeek = require('../start_of_iso_week/index.js')
+
+var MILLISECONDS_IN_MINUTE = 60000
+var MILLISECONDS_IN_WEEK = 604800000
+
+/**
+ * @category ISO Week Helpers
+ * @summary Get the number of calendar ISO weeks between the given dates.
+ *
+ * @description
+ * Get the number of calendar ISO weeks between the given dates.
+ *
+ * ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
+ *
+ * @param {Date|String|Number} dateLeft - the later date
+ * @param {Date|String|Number} dateRight - the earlier date
+ * @returns {Number} the number of calendar ISO weeks
+ *
+ * @example
+ * // How many calendar ISO weeks are between 6 July 2014 and 21 July 2014?
+ * var result = differenceInCalendarISOWeeks(
+ *   new Date(2014, 6, 21),
+ *   new Date(2014, 6, 6)
+ * )
+ * //=> 3
+ */
+function differenceInCalendarISOWeeks (dirtyDateLeft, dirtyDateRight) {
+  var startOfISOWeekLeft = startOfISOWeek(dirtyDateLeft)
+  var startOfISOWeekRight = startOfISOWeek(dirtyDateRight)
+
+  var timestampLeft = startOfISOWeekLeft.getTime() -
+    startOfISOWeekLeft.getTimezoneOffset() * MILLISECONDS_IN_MINUTE
+  var timestampRight = startOfISOWeekRight.getTime() -
+    startOfISOWeekRight.getTimezoneOffset() * MILLISECONDS_IN_MINUTE
+
+  // Round the number of days to the nearest integer
+  // because the number of milliseconds in a week is not constant
+  // (e.g. it's different in the week of the daylight saving time clock shift)
+  return Math.round((timestampLeft - timestampRight) / MILLISECONDS_IN_WEEK)
+}
+
+module.exports = differenceInCalendarISOWeeks
+
+},{"../start_of_iso_week/index.js":290}],169:[function(require,module,exports){
+var getISOYear = require('../get_iso_year/index.js')
+
+/**
+ * @category ISO Week-Numbering Year Helpers
+ * @summary Get the number of calendar ISO week-numbering years between the given dates.
+ *
+ * @description
+ * Get the number of calendar ISO week-numbering years between the given dates.
+ *
+ * ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
+ *
+ * @param {Date|String|Number} dateLeft - the later date
+ * @param {Date|String|Number} dateRight - the earlier date
+ * @returns {Number} the number of calendar ISO week-numbering years
+ *
+ * @example
+ * // How many calendar ISO week-numbering years are 1 January 2010 and 1 January 2012?
+ * var result = differenceInCalendarISOYears(
+ *   new Date(2012, 0, 1),
+ *   new Date(2010, 0, 1)
+ * )
+ * //=> 2
+ */
+function differenceInCalendarISOYears (dirtyDateLeft, dirtyDateRight) {
+  return getISOYear(dirtyDateLeft) - getISOYear(dirtyDateRight)
+}
+
+module.exports = differenceInCalendarISOYears
+
+},{"../get_iso_year/index.js":211}],170:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Month Helpers
+ * @summary Get the number of calendar months between the given dates.
+ *
+ * @description
+ * Get the number of calendar months between the given dates.
+ *
+ * @param {Date|String|Number} dateLeft - the later date
+ * @param {Date|String|Number} dateRight - the earlier date
+ * @returns {Number} the number of calendar months
+ *
+ * @example
+ * // How many calendar months are between 31 January 2014 and 1 September 2014?
+ * var result = differenceInCalendarMonths(
+ *   new Date(2014, 8, 1),
+ *   new Date(2014, 0, 31)
+ * )
+ * //=> 8
+ */
+function differenceInCalendarMonths (dirtyDateLeft, dirtyDateRight) {
+  var dateLeft = parse(dirtyDateLeft)
+  var dateRight = parse(dirtyDateRight)
+
+  var yearDiff = dateLeft.getFullYear() - dateRight.getFullYear()
+  var monthDiff = dateLeft.getMonth() - dateRight.getMonth()
+
+  return yearDiff * 12 + monthDiff
+}
+
+module.exports = differenceInCalendarMonths
+
+},{"../parse/index.js":274}],171:[function(require,module,exports){
+var getQuarter = require('../get_quarter/index.js')
+var parse = require('../parse/index.js')
+
+/**
+ * @category Quarter Helpers
+ * @summary Get the number of calendar quarters between the given dates.
+ *
+ * @description
+ * Get the number of calendar quarters between the given dates.
+ *
+ * @param {Date|String|Number} dateLeft - the later date
+ * @param {Date|String|Number} dateRight - the earlier date
+ * @returns {Number} the number of calendar quarters
+ *
+ * @example
+ * // How many calendar quarters are between 31 December 2013 and 2 July 2014?
+ * var result = differenceInCalendarQuarters(
+ *   new Date(2014, 6, 2),
+ *   new Date(2013, 11, 31)
+ * )
+ * //=> 3
+ */
+function differenceInCalendarQuarters (dirtyDateLeft, dirtyDateRight) {
+  var dateLeft = parse(dirtyDateLeft)
+  var dateRight = parse(dirtyDateRight)
+
+  var yearDiff = dateLeft.getFullYear() - dateRight.getFullYear()
+  var quarterDiff = getQuarter(dateLeft) - getQuarter(dateRight)
+
+  return yearDiff * 4 + quarterDiff
+}
+
+module.exports = differenceInCalendarQuarters
+
+},{"../get_quarter/index.js":216,"../parse/index.js":274}],172:[function(require,module,exports){
+var startOfWeek = require('../start_of_week/index.js')
+
+var MILLISECONDS_IN_MINUTE = 60000
+var MILLISECONDS_IN_WEEK = 604800000
+
+/**
+ * @category Week Helpers
+ * @summary Get the number of calendar weeks between the given dates.
+ *
+ * @description
+ * Get the number of calendar weeks between the given dates.
+ *
+ * @param {Date|String|Number} dateLeft - the later date
+ * @param {Date|String|Number} dateRight - the earlier date
+ * @param {Object} [options] - the object with options
+ * @param {Number} [options.weekStartsOn=0] - the index of the first day of the week (0 - Sunday)
+ * @returns {Number} the number of calendar weeks
+ *
+ * @example
+ * // How many calendar weeks are between 5 July 2014 and 20 July 2014?
+ * var result = differenceInCalendarWeeks(
+ *   new Date(2014, 6, 20),
+ *   new Date(2014, 6, 5)
+ * )
+ * //=> 3
+ *
+ * @example
+ * // If the week starts on Monday,
+ * // how many calendar weeks are between 5 July 2014 and 20 July 2014?
+ * var result = differenceInCalendarWeeks(
+ *   new Date(2014, 6, 20),
+ *   new Date(2014, 6, 5),
+ *   {weekStartsOn: 1}
+ * )
+ * //=> 2
+ */
+function differenceInCalendarWeeks (dirtyDateLeft, dirtyDateRight, dirtyOptions) {
+  var startOfWeekLeft = startOfWeek(dirtyDateLeft, dirtyOptions)
+  var startOfWeekRight = startOfWeek(dirtyDateRight, dirtyOptions)
+
+  var timestampLeft = startOfWeekLeft.getTime() -
+    startOfWeekLeft.getTimezoneOffset() * MILLISECONDS_IN_MINUTE
+  var timestampRight = startOfWeekRight.getTime() -
+    startOfWeekRight.getTimezoneOffset() * MILLISECONDS_IN_MINUTE
+
+  // Round the number of days to the nearest integer
+  // because the number of milliseconds in a week is not constant
+  // (e.g. it's different in the week of the daylight saving time clock shift)
+  return Math.round((timestampLeft - timestampRight) / MILLISECONDS_IN_WEEK)
+}
+
+module.exports = differenceInCalendarWeeks
+
+},{"../start_of_week/index.js":298}],173:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Year Helpers
+ * @summary Get the number of calendar years between the given dates.
+ *
+ * @description
+ * Get the number of calendar years between the given dates.
+ *
+ * @param {Date|String|Number} dateLeft - the later date
+ * @param {Date|String|Number} dateRight - the earlier date
+ * @returns {Number} the number of calendar years
+ *
+ * @example
+ * // How many calendar years are between 31 December 2013 and 11 February 2015?
+ * var result = differenceInCalendarYears(
+ *   new Date(2015, 1, 11),
+ *   new Date(2013, 11, 31)
+ * )
+ * //=> 2
+ */
+function differenceInCalendarYears (dirtyDateLeft, dirtyDateRight) {
+  var dateLeft = parse(dirtyDateLeft)
+  var dateRight = parse(dirtyDateRight)
+
+  return dateLeft.getFullYear() - dateRight.getFullYear()
+}
+
+module.exports = differenceInCalendarYears
+
+},{"../parse/index.js":274}],174:[function(require,module,exports){
+var parse = require('../parse/index.js')
+var differenceInCalendarDays = require('../difference_in_calendar_days/index.js')
+var compareAsc = require('../compare_asc/index.js')
+
+/**
+ * @category Day Helpers
+ * @summary Get the number of full days between the given dates.
+ *
+ * @description
+ * Get the number of full days between the given dates.
+ *
+ * @param {Date|String|Number} dateLeft - the later date
+ * @param {Date|String|Number} dateRight - the earlier date
+ * @returns {Number} the number of full days
+ *
+ * @example
+ * // How many full days are between
+ * // 2 July 2011 23:00:00 and 2 July 2012 00:00:00?
+ * var result = differenceInDays(
+ *   new Date(2012, 6, 2, 0, 0),
+ *   new Date(2011, 6, 2, 23, 0)
+ * )
+ * //=> 365
+ */
+function differenceInDays (dirtyDateLeft, dirtyDateRight) {
+  var dateLeft = parse(dirtyDateLeft)
+  var dateRight = parse(dirtyDateRight)
+
+  var sign = compareAsc(dateLeft, dateRight)
+  var difference = Math.abs(differenceInCalendarDays(dateLeft, dateRight))
+  dateLeft.setDate(dateLeft.getDate() - sign * difference)
+
+  // Math.abs(diff in full days - diff in calendar days) === 1 if last calendar day is not full
+  // If so, result must be decreased by 1 in absolute value
+  var isLastDayNotFull = compareAsc(dateLeft, dateRight) === -sign
+  return sign * (difference - isLastDayNotFull)
+}
+
+module.exports = differenceInDays
+
+},{"../compare_asc/index.js":165,"../difference_in_calendar_days/index.js":167,"../parse/index.js":274}],175:[function(require,module,exports){
+var differenceInMilliseconds = require('../difference_in_milliseconds/index.js')
+
+var MILLISECONDS_IN_HOUR = 3600000
+
+/**
+ * @category Hour Helpers
+ * @summary Get the number of hours between the given dates.
+ *
+ * @description
+ * Get the number of hours between the given dates.
+ *
+ * @param {Date|String|Number} dateLeft - the later date
+ * @param {Date|String|Number} dateRight - the earlier date
+ * @returns {Number} the number of hours
+ *
+ * @example
+ * // How many hours are between 2 July 2014 06:50:00 and 2 July 2014 19:00:00?
+ * var result = differenceInHours(
+ *   new Date(2014, 6, 2, 19, 0),
+ *   new Date(2014, 6, 2, 6, 50)
+ * )
+ * //=> 12
+ */
+function differenceInHours (dirtyDateLeft, dirtyDateRight) {
+  var diff = differenceInMilliseconds(dirtyDateLeft, dirtyDateRight) / MILLISECONDS_IN_HOUR
+  return diff > 0 ? Math.floor(diff) : Math.ceil(diff)
+}
+
+module.exports = differenceInHours
+
+},{"../difference_in_milliseconds/index.js":177}],176:[function(require,module,exports){
+var parse = require('../parse/index.js')
+var differenceInCalendarISOYears = require('../difference_in_calendar_iso_years/index.js')
+var compareAsc = require('../compare_asc/index.js')
+var subISOYears = require('../sub_iso_years/index.js')
+
+/**
+ * @category ISO Week-Numbering Year Helpers
+ * @summary Get the number of full ISO week-numbering years between the given dates.
+ *
+ * @description
+ * Get the number of full ISO week-numbering years between the given dates.
+ *
+ * ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
+ *
+ * @param {Date|String|Number} dateLeft - the later date
+ * @param {Date|String|Number} dateRight - the earlier date
+ * @returns {Number} the number of full ISO week-numbering years
+ *
+ * @example
+ * // How many full ISO week-numbering years are between 1 January 2010 and 1 January 2012?
+ * var result = differenceInISOYears(
+ *   new Date(2012, 0, 1),
+ *   new Date(2010, 0, 1)
+ * )
+ * //=> 1
+ */
+function differenceInISOYears (dirtyDateLeft, dirtyDateRight) {
+  var dateLeft = parse(dirtyDateLeft)
+  var dateRight = parse(dirtyDateRight)
+
+  var sign = compareAsc(dateLeft, dateRight)
+  var difference = Math.abs(differenceInCalendarISOYears(dateLeft, dateRight))
+  dateLeft = subISOYears(dateLeft, sign * difference)
+
+  // Math.abs(diff in full ISO years - diff in calendar ISO years) === 1
+  // if last calendar ISO year is not full
+  // If so, result must be decreased by 1 in absolute value
+  var isLastISOYearNotFull = compareAsc(dateLeft, dateRight) === -sign
+  return sign * (difference - isLastISOYearNotFull)
+}
+
+module.exports = differenceInISOYears
+
+},{"../compare_asc/index.js":165,"../difference_in_calendar_iso_years/index.js":169,"../parse/index.js":274,"../sub_iso_years/index.js":303}],177:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Millisecond Helpers
+ * @summary Get the number of milliseconds between the given dates.
+ *
+ * @description
+ * Get the number of milliseconds between the given dates.
+ *
+ * @param {Date|String|Number} dateLeft - the later date
+ * @param {Date|String|Number} dateRight - the earlier date
+ * @returns {Number} the number of milliseconds
+ *
+ * @example
+ * // How many milliseconds are between
+ * // 2 July 2014 12:30:20.600 and 2 July 2014 12:30:21.700?
+ * var result = differenceInMilliseconds(
+ *   new Date(2014, 6, 2, 12, 30, 21, 700),
+ *   new Date(2014, 6, 2, 12, 30, 20, 600)
+ * )
+ * //=> 1100
+ */
+function differenceInMilliseconds (dirtyDateLeft, dirtyDateRight) {
+  var dateLeft = parse(dirtyDateLeft)
+  var dateRight = parse(dirtyDateRight)
+  return dateLeft.getTime() - dateRight.getTime()
+}
+
+module.exports = differenceInMilliseconds
+
+},{"../parse/index.js":274}],178:[function(require,module,exports){
+var differenceInMilliseconds = require('../difference_in_milliseconds/index.js')
+
+var MILLISECONDS_IN_MINUTE = 60000
+
+/**
+ * @category Minute Helpers
+ * @summary Get the number of minutes between the given dates.
+ *
+ * @description
+ * Get the number of minutes between the given dates.
+ *
+ * @param {Date|String|Number} dateLeft - the later date
+ * @param {Date|String|Number} dateRight - the earlier date
+ * @returns {Number} the number of minutes
+ *
+ * @example
+ * // How many minutes are between 2 July 2014 12:07:59 and 2 July 2014 12:20:00?
+ * var result = differenceInMinutes(
+ *   new Date(2014, 6, 2, 12, 20, 0),
+ *   new Date(2014, 6, 2, 12, 7, 59)
+ * )
+ * //=> 12
+ */
+function differenceInMinutes (dirtyDateLeft, dirtyDateRight) {
+  var diff = differenceInMilliseconds(dirtyDateLeft, dirtyDateRight) / MILLISECONDS_IN_MINUTE
+  return diff > 0 ? Math.floor(diff) : Math.ceil(diff)
+}
+
+module.exports = differenceInMinutes
+
+},{"../difference_in_milliseconds/index.js":177}],179:[function(require,module,exports){
+var parse = require('../parse/index.js')
+var differenceInCalendarMonths = require('../difference_in_calendar_months/index.js')
+var compareAsc = require('../compare_asc/index.js')
+
+/**
+ * @category Month Helpers
+ * @summary Get the number of full months between the given dates.
+ *
+ * @description
+ * Get the number of full months between the given dates.
+ *
+ * @param {Date|String|Number} dateLeft - the later date
+ * @param {Date|String|Number} dateRight - the earlier date
+ * @returns {Number} the number of full months
+ *
+ * @example
+ * // How many full months are between 31 January 2014 and 1 September 2014?
+ * var result = differenceInMonths(
+ *   new Date(2014, 8, 1),
+ *   new Date(2014, 0, 31)
+ * )
+ * //=> 7
+ */
+function differenceInMonths (dirtyDateLeft, dirtyDateRight) {
+  var dateLeft = parse(dirtyDateLeft)
+  var dateRight = parse(dirtyDateRight)
+
+  var sign = compareAsc(dateLeft, dateRight)
+  var difference = Math.abs(differenceInCalendarMonths(dateLeft, dateRight))
+  dateLeft.setMonth(dateLeft.getMonth() - sign * difference)
+
+  // Math.abs(diff in full months - diff in calendar months) === 1 if last calendar month is not full
+  // If so, result must be decreased by 1 in absolute value
+  var isLastMonthNotFull = compareAsc(dateLeft, dateRight) === -sign
+  return sign * (difference - isLastMonthNotFull)
+}
+
+module.exports = differenceInMonths
+
+},{"../compare_asc/index.js":165,"../difference_in_calendar_months/index.js":170,"../parse/index.js":274}],180:[function(require,module,exports){
+var differenceInMonths = require('../difference_in_months/index.js')
+
+/**
+ * @category Quarter Helpers
+ * @summary Get the number of full quarters between the given dates.
+ *
+ * @description
+ * Get the number of full quarters between the given dates.
+ *
+ * @param {Date|String|Number} dateLeft - the later date
+ * @param {Date|String|Number} dateRight - the earlier date
+ * @returns {Number} the number of full quarters
+ *
+ * @example
+ * // How many full quarters are between 31 December 2013 and 2 July 2014?
+ * var result = differenceInQuarters(
+ *   new Date(2014, 6, 2),
+ *   new Date(2013, 11, 31)
+ * )
+ * //=> 2
+ */
+function differenceInQuarters (dirtyDateLeft, dirtyDateRight) {
+  var diff = differenceInMonths(dirtyDateLeft, dirtyDateRight) / 3
+  return diff > 0 ? Math.floor(diff) : Math.ceil(diff)
+}
+
+module.exports = differenceInQuarters
+
+},{"../difference_in_months/index.js":179}],181:[function(require,module,exports){
+var differenceInMilliseconds = require('../difference_in_milliseconds/index.js')
+
+/**
+ * @category Second Helpers
+ * @summary Get the number of seconds between the given dates.
+ *
+ * @description
+ * Get the number of seconds between the given dates.
+ *
+ * @param {Date|String|Number} dateLeft - the later date
+ * @param {Date|String|Number} dateRight - the earlier date
+ * @returns {Number} the number of seconds
+ *
+ * @example
+ * // How many seconds are between
+ * // 2 July 2014 12:30:07.999 and 2 July 2014 12:30:20.000?
+ * var result = differenceInSeconds(
+ *   new Date(2014, 6, 2, 12, 30, 20, 0),
+ *   new Date(2014, 6, 2, 12, 30, 7, 999)
+ * )
+ * //=> 12
+ */
+function differenceInSeconds (dirtyDateLeft, dirtyDateRight) {
+  var diff = differenceInMilliseconds(dirtyDateLeft, dirtyDateRight) / 1000
+  return diff > 0 ? Math.floor(diff) : Math.ceil(diff)
+}
+
+module.exports = differenceInSeconds
+
+},{"../difference_in_milliseconds/index.js":177}],182:[function(require,module,exports){
+var differenceInDays = require('../difference_in_days/index.js')
+
+/**
+ * @category Week Helpers
+ * @summary Get the number of full weeks between the given dates.
+ *
+ * @description
+ * Get the number of full weeks between the given dates.
+ *
+ * @param {Date|String|Number} dateLeft - the later date
+ * @param {Date|String|Number} dateRight - the earlier date
+ * @returns {Number} the number of full weeks
+ *
+ * @example
+ * // How many full weeks are between 5 July 2014 and 20 July 2014?
+ * var result = differenceInWeeks(
+ *   new Date(2014, 6, 20),
+ *   new Date(2014, 6, 5)
+ * )
+ * //=> 2
+ */
+function differenceInWeeks (dirtyDateLeft, dirtyDateRight) {
+  var diff = differenceInDays(dirtyDateLeft, dirtyDateRight) / 7
+  return diff > 0 ? Math.floor(diff) : Math.ceil(diff)
+}
+
+module.exports = differenceInWeeks
+
+},{"../difference_in_days/index.js":174}],183:[function(require,module,exports){
+var parse = require('../parse/index.js')
+var differenceInCalendarYears = require('../difference_in_calendar_years/index.js')
+var compareAsc = require('../compare_asc/index.js')
+
+/**
+ * @category Year Helpers
+ * @summary Get the number of full years between the given dates.
+ *
+ * @description
+ * Get the number of full years between the given dates.
+ *
+ * @param {Date|String|Number} dateLeft - the later date
+ * @param {Date|String|Number} dateRight - the earlier date
+ * @returns {Number} the number of full years
+ *
+ * @example
+ * // How many full years are between 31 December 2013 and 11 February 2015?
+ * var result = differenceInYears(
+ *   new Date(2015, 1, 11),
+ *   new Date(2013, 11, 31)
+ * )
+ * //=> 1
+ */
+function differenceInYears (dirtyDateLeft, dirtyDateRight) {
+  var dateLeft = parse(dirtyDateLeft)
+  var dateRight = parse(dirtyDateRight)
+
+  var sign = compareAsc(dateLeft, dateRight)
+  var difference = Math.abs(differenceInCalendarYears(dateLeft, dateRight))
+  dateLeft.setFullYear(dateLeft.getFullYear() - sign * difference)
+
+  // Math.abs(diff in full years - diff in calendar years) === 1 if last calendar year is not full
+  // If so, result must be decreased by 1 in absolute value
+  var isLastYearNotFull = compareAsc(dateLeft, dateRight) === -sign
+  return sign * (difference - isLastYearNotFull)
+}
+
+module.exports = differenceInYears
+
+},{"../compare_asc/index.js":165,"../difference_in_calendar_years/index.js":173,"../parse/index.js":274}],184:[function(require,module,exports){
+var compareDesc = require('../compare_desc/index.js')
+var parse = require('../parse/index.js')
+var differenceInSeconds = require('../difference_in_seconds/index.js')
+var differenceInMonths = require('../difference_in_months/index.js')
+var enLocale = require('../locale/en/index.js')
+
+var MINUTES_IN_DAY = 1440
+var MINUTES_IN_ALMOST_TWO_DAYS = 2520
+var MINUTES_IN_MONTH = 43200
+var MINUTES_IN_TWO_MONTHS = 86400
+
+/**
+ * @category Common Helpers
+ * @summary Return the distance between the given dates in words.
+ *
+ * @description
+ * Return the distance between the given dates in words.
+ *
+ * | Distance between dates                                            | Result              |
+ * |-------------------------------------------------------------------|---------------------|
+ * | 0 ... 30 secs                                                     | less than a minute  |
+ * | 30 secs ... 1 min 30 secs                                         | 1 minute            |
+ * | 1 min 30 secs ... 44 mins 30 secs                                 | [2..44] minutes     |
+ * | 44 mins ... 30 secs ... 89 mins 30 secs                           | about 1 hour        |
+ * | 89 mins 30 secs ... 23 hrs 59 mins 30 secs                        | about [2..24] hours |
+ * | 23 hrs 59 mins 30 secs ... 41 hrs 59 mins 30 secs                 | 1 day               |
+ * | 41 hrs 59 mins 30 secs ... 29 days 23 hrs 59 mins 30 secs         | [2..30] days        |
+ * | 29 days 23 hrs 59 mins 30 secs ... 44 days 23 hrs 59 mins 30 secs | about 1 month       |
+ * | 44 days 23 hrs 59 mins 30 secs ... 59 days 23 hrs 59 mins 30 secs | about 2 months      |
+ * | 59 days 23 hrs 59 mins 30 secs ... 1 yr                           | [2..12] months      |
+ * | 1 yr ... 1 yr 3 months                                            | about 1 year        |
+ * | 1 yr 3 months ... 1 yr 9 month s                                  | over 1 year         |
+ * | 1 yr 9 months ... 2 yrs                                           | almost 2 years      |
+ * | N yrs ... N yrs 3 months                                          | about N years       |
+ * | N yrs 3 months ... N yrs 9 months                                 | over N years        |
+ * | N yrs 9 months ... N+1 yrs                                        | almost N+1 years    |
+ *
+ * With `options.includeSeconds == true`:
+ * | Distance between dates | Result               |
+ * |------------------------|----------------------|
+ * | 0 secs ... 5 secs      | less than 5 seconds  |
+ * | 5 secs ... 10 secs     | less than 10 seconds |
+ * | 10 secs ... 20 secs    | less than 20 seconds |
+ * | 20 secs ... 40 secs    | half a minute        |
+ * | 40 secs ... 60 secs    | less than a minute   |
+ * | 60 secs ... 90 secs    | 1 minute             |
+ *
+ * @param {Date|String|Number} dateToCompare - the date to compare with
+ * @param {Date|String|Number} date - the other date
+ * @param {Object} [options] - the object with options
+ * @param {Boolean} [options.includeSeconds=false] - distances less than a minute are more detailed
+ * @param {Boolean} [options.addSuffix=false] - result indicates if the second date is earlier or later than the first
+ * @param {Object} [options.locale=enLocale] - the locale object
+ * @returns {String} the distance in words
+ *
+ * @example
+ * // What is the distance between 2 July 2014 and 1 January 2015?
+ * var result = distanceInWords(
+ *   new Date(2014, 6, 2),
+ *   new Date(2015, 0, 1)
+ * )
+ * //=> '6 months'
+ *
+ * @example
+ * // What is the distance between 1 January 2015 00:00:15
+ * // and 1 January 2015 00:00:00, including seconds?
+ * var result = distanceInWords(
+ *   new Date(2015, 0, 1, 0, 0, 15),
+ *   new Date(2015, 0, 1, 0, 0, 0),
+ *   {includeSeconds: true}
+ * )
+ * //=> 'less than 20 seconds'
+ *
+ * @example
+ * // What is the distance from 1 January 2016
+ * // to 1 January 2015, with a suffix?
+ * var result = distanceInWords(
+ *   new Date(2016, 0, 1),
+ *   new Date(2015, 0, 1),
+ *   {addSuffix: true}
+ * )
+ * //=> 'about 1 year ago'
+ *
+ * @example
+ * // What is the distance between 1 August 2016 and 1 January 2015 in Esperanto?
+ * var eoLocale = require('date-fns/locale/eo')
+ * var result = distanceInWords(
+ *   new Date(2016, 7, 1),
+ *   new Date(2015, 0, 1),
+ *   {locale: eoLocale}
+ * )
+ * //=> 'pli ol 1 jaro'
+ */
+function distanceInWords (dirtyDateToCompare, dirtyDate, dirtyOptions) {
+  var options = dirtyOptions || {}
+
+  var comparison = compareDesc(dirtyDateToCompare, dirtyDate)
+
+  var locale = options.locale
+  var localize = enLocale.distanceInWords.localize
+  if (locale && locale.distanceInWords && locale.distanceInWords.localize) {
+    localize = locale.distanceInWords.localize
+  }
+
+  var localizeOptions = {
+    addSuffix: Boolean(options.addSuffix),
+    comparison: comparison
+  }
+
+  var dateLeft, dateRight
+  if (comparison > 0) {
+    dateLeft = parse(dirtyDateToCompare)
+    dateRight = parse(dirtyDate)
+  } else {
+    dateLeft = parse(dirtyDate)
+    dateRight = parse(dirtyDateToCompare)
+  }
+
+  var seconds = differenceInSeconds(dateRight, dateLeft)
+  var offset = dateRight.getTimezoneOffset() - dateLeft.getTimezoneOffset()
+  var minutes = Math.round(seconds / 60) - offset
+  var months
+
+  // 0 up to 2 mins
+  if (minutes < 2) {
+    if (options.includeSeconds) {
+      if (seconds < 5) {
+        return localize('lessThanXSeconds', 5, localizeOptions)
+      } else if (seconds < 10) {
+        return localize('lessThanXSeconds', 10, localizeOptions)
+      } else if (seconds < 20) {
+        return localize('lessThanXSeconds', 20, localizeOptions)
+      } else if (seconds < 40) {
+        return localize('halfAMinute', null, localizeOptions)
+      } else if (seconds < 60) {
+        return localize('lessThanXMinutes', 1, localizeOptions)
+      } else {
+        return localize('xMinutes', 1, localizeOptions)
+      }
+    } else {
+      if (minutes === 0) {
+        return localize('lessThanXMinutes', 1, localizeOptions)
+      } else {
+        return localize('xMinutes', minutes, localizeOptions)
+      }
+    }
+
+  // 2 mins up to 0.75 hrs
+  } else if (minutes < 45) {
+    return localize('xMinutes', minutes, localizeOptions)
+
+  // 0.75 hrs up to 1.5 hrs
+  } else if (minutes < 90) {
+    return localize('aboutXHours', 1, localizeOptions)
+
+  // 1.5 hrs up to 24 hrs
+  } else if (minutes < MINUTES_IN_DAY) {
+    var hours = Math.round(minutes / 60)
+    return localize('aboutXHours', hours, localizeOptions)
+
+  // 1 day up to 1.75 days
+  } else if (minutes < MINUTES_IN_ALMOST_TWO_DAYS) {
+    return localize('xDays', 1, localizeOptions)
+
+  // 1.75 days up to 30 days
+  } else if (minutes < MINUTES_IN_MONTH) {
+    var days = Math.round(minutes / MINUTES_IN_DAY)
+    return localize('xDays', days, localizeOptions)
+
+  // 1 month up to 2 months
+  } else if (minutes < MINUTES_IN_TWO_MONTHS) {
+    months = Math.round(minutes / MINUTES_IN_MONTH)
+    return localize('aboutXMonths', months, localizeOptions)
+  }
+
+  months = differenceInMonths(dateRight, dateLeft)
+
+  // 2 months up to 12 months
+  if (months < 12) {
+    var nearestMonth = Math.round(minutes / MINUTES_IN_MONTH)
+    return localize('xMonths', nearestMonth, localizeOptions)
+
+  // 1 year up to max Date
+  } else {
+    var monthsSinceStartOfYear = months % 12
+    var years = Math.floor(months / 12)
+
+    // N years up to 1 years 3 months
+    if (monthsSinceStartOfYear < 3) {
+      return localize('aboutXYears', years, localizeOptions)
+
+    // N years 3 months up to N years 9 months
+    } else if (monthsSinceStartOfYear < 9) {
+      return localize('overXYears', years, localizeOptions)
+
+    // N years 9 months up to N year 12 months
+    } else {
+      return localize('almostXYears', years + 1, localizeOptions)
+    }
+  }
+}
+
+module.exports = distanceInWords
+
+},{"../compare_desc/index.js":166,"../difference_in_months/index.js":179,"../difference_in_seconds/index.js":181,"../locale/en/index.js":271,"../parse/index.js":274}],185:[function(require,module,exports){
+var compareDesc = require('../compare_desc/index.js')
+var parse = require('../parse/index.js')
+var differenceInSeconds = require('../difference_in_seconds/index.js')
+var enLocale = require('../locale/en/index.js')
+
+var MINUTES_IN_DAY = 1440
+var MINUTES_IN_MONTH = 43200
+var MINUTES_IN_YEAR = 525600
+
+/**
+ * @category Common Helpers
+ * @summary Return the distance between the given dates in words.
+ *
+ * @description
+ * Return the distance between the given dates in words, using strict units.
+ * This is like `distanceInWords`, but does not use helpers like 'almost', 'over',
+ * 'less than' and the like.
+ *
+ * | Distance between dates | Result              |
+ * |------------------------|---------------------|
+ * | 0 ... 59 secs          | [0..59] seconds     |
+ * | 1 ... 59 mins          | [1..59] minutes     |
+ * | 1 ... 23 hrs           | [1..23] hours       |
+ * | 1 ... 29 days          | [1..29] days        |
+ * | 1 ... 11 months        | [1..11] months      |
+ * | 1 ... N years          | [1..N]  years       |
+ *
+ * @param {Date|String|Number} dateToCompare - the date to compare with
+ * @param {Date|String|Number} date - the other date
+ * @param {Object} [options] - the object with options
+ * @param {Boolean} [options.addSuffix=false] - result indicates if the second date is earlier or later than the first
+ * @param {'s'|'m'|'h'|'d'|'M'|'Y'} [options.unit] - if specified, will force a unit
+ * @param {'floor'|'ceil'|'round'} [options.partialMethod='floor'] - which way to round partial units
+ * @param {Object} [options.locale=enLocale] - the locale object
+ * @returns {String} the distance in words
+ *
+ * @example
+ * // What is the distance between 2 July 2014 and 1 January 2015?
+ * var result = distanceInWordsStrict(
+ *   new Date(2014, 6, 2),
+ *   new Date(2015, 0, 2)
+ * )
+ * //=> '6 months'
+ *
+ * @example
+ * // What is the distance between 1 January 2015 00:00:15
+ * // and 1 January 2015 00:00:00?
+ * var result = distanceInWordsStrict(
+ *   new Date(2015, 0, 1, 0, 0, 15),
+ *   new Date(2015, 0, 1, 0, 0, 0),
+ * )
+ * //=> '15 seconds'
+ *
+ * @example
+ * // What is the distance from 1 January 2016
+ * // to 1 January 2015, with a suffix?
+ * var result = distanceInWordsStrict(
+ *   new Date(2016, 0, 1),
+ *   new Date(2015, 0, 1),
+ *   {addSuffix: true}
+ * )
+ * //=> '1 year ago'
+ *
+ * @example
+ * // What is the distance from 1 January 2016
+ * // to 1 January 2015, in minutes?
+ * var result = distanceInWordsStrict(
+ *   new Date(2016, 0, 1),
+ *   new Date(2015, 0, 1),
+ *   {unit: 'm'}
+ * )
+ * //=> '525600 minutes'
+ *
+ * @example
+ * // What is the distance from 1 January 2016
+ * // to 28 January 2015, in months, rounded up?
+ * var result = distanceInWordsStrict(
+ *   new Date(2015, 0, 28),
+ *   new Date(2015, 0, 1),
+ *   {unit: 'M', partialMethod: 'ceil'}
+ * )
+ * //=> '1 month'
+ *
+ * @example
+ * // What is the distance between 1 August 2016 and 1 January 2015 in Esperanto?
+ * var eoLocale = require('date-fns/locale/eo')
+ * var result = distanceInWordsStrict(
+ *   new Date(2016, 7, 1),
+ *   new Date(2015, 0, 1),
+ *   {locale: eoLocale}
+ * )
+ * //=> '1 jaro'
+ */
+function distanceInWordsStrict (dirtyDateToCompare, dirtyDate, dirtyOptions) {
+  var options = dirtyOptions || {}
+
+  var comparison = compareDesc(dirtyDateToCompare, dirtyDate)
+
+  var locale = options.locale
+  var localize = enLocale.distanceInWords.localize
+  if (locale && locale.distanceInWords && locale.distanceInWords.localize) {
+    localize = locale.distanceInWords.localize
+  }
+
+  var localizeOptions = {
+    addSuffix: Boolean(options.addSuffix),
+    comparison: comparison
+  }
+
+  var dateLeft, dateRight
+  if (comparison > 0) {
+    dateLeft = parse(dirtyDateToCompare)
+    dateRight = parse(dirtyDate)
+  } else {
+    dateLeft = parse(dirtyDate)
+    dateRight = parse(dirtyDateToCompare)
+  }
+
+  var unit
+  var mathPartial = Math[options.partialMethod ? String(options.partialMethod) : 'floor']
+  var seconds = differenceInSeconds(dateRight, dateLeft)
+  var offset = dateRight.getTimezoneOffset() - dateLeft.getTimezoneOffset()
+  var minutes = mathPartial(seconds / 60) - offset
+  var hours, days, months, years
+
+  if (options.unit) {
+    unit = String(options.unit)
+  } else {
+    if (minutes < 1) {
+      unit = 's'
+    } else if (minutes < 60) {
+      unit = 'm'
+    } else if (minutes < MINUTES_IN_DAY) {
+      unit = 'h'
+    } else if (minutes < MINUTES_IN_MONTH) {
+      unit = 'd'
+    } else if (minutes < MINUTES_IN_YEAR) {
+      unit = 'M'
+    } else {
+      unit = 'Y'
+    }
+  }
+
+  // 0 up to 60 seconds
+  if (unit === 's') {
+    return localize('xSeconds', seconds, localizeOptions)
+
+  // 1 up to 60 mins
+  } else if (unit === 'm') {
+    return localize('xMinutes', minutes, localizeOptions)
+
+  // 1 up to 24 hours
+  } else if (unit === 'h') {
+    hours = mathPartial(minutes / 60)
+    return localize('xHours', hours, localizeOptions)
+
+  // 1 up to 30 days
+  } else if (unit === 'd') {
+    days = mathPartial(minutes / MINUTES_IN_DAY)
+    return localize('xDays', days, localizeOptions)
+
+  // 1 up to 12 months
+  } else if (unit === 'M') {
+    months = mathPartial(minutes / MINUTES_IN_MONTH)
+    return localize('xMonths', months, localizeOptions)
+
+  // 1 year up to max Date
+  } else if (unit === 'Y') {
+    years = mathPartial(minutes / MINUTES_IN_YEAR)
+    return localize('xYears', years, localizeOptions)
+  }
+
+  throw new Error('Unknown unit: ' + unit)
+}
+
+module.exports = distanceInWordsStrict
+
+},{"../compare_desc/index.js":166,"../difference_in_seconds/index.js":181,"../locale/en/index.js":271,"../parse/index.js":274}],186:[function(require,module,exports){
+var distanceInWords = require('../distance_in_words/index.js')
+
+/**
+ * @category Common Helpers
+ * @summary Return the distance between the given date and now in words.
+ *
+ * @description
+ * Return the distance between the given date and now in words.
+ *
+ * | Distance to now                                                   | Result              |
+ * |-------------------------------------------------------------------|---------------------|
+ * | 0 ... 30 secs                                                     | less than a minute  |
+ * | 30 secs ... 1 min 30 secs                                         | 1 minute            |
+ * | 1 min 30 secs ... 44 mins 30 secs                                 | [2..44] minutes     |
+ * | 44 mins ... 30 secs ... 89 mins 30 secs                           | about 1 hour        |
+ * | 89 mins 30 secs ... 23 hrs 59 mins 30 secs                        | about [2..24] hours |
+ * | 23 hrs 59 mins 30 secs ... 41 hrs 59 mins 30 secs                 | 1 day               |
+ * | 41 hrs 59 mins 30 secs ... 29 days 23 hrs 59 mins 30 secs         | [2..30] days        |
+ * | 29 days 23 hrs 59 mins 30 secs ... 44 days 23 hrs 59 mins 30 secs | about 1 month       |
+ * | 44 days 23 hrs 59 mins 30 secs ... 59 days 23 hrs 59 mins 30 secs | about 2 months      |
+ * | 59 days 23 hrs 59 mins 30 secs ... 1 yr                           | [2..12] months      |
+ * | 1 yr ... 1 yr 3 months                                            | about 1 year        |
+ * | 1 yr 3 months ... 1 yr 9 month s                                  | over 1 year         |
+ * | 1 yr 9 months ... 2 yrs                                           | almost 2 years      |
+ * | N yrs ... N yrs 3 months                                          | about N years       |
+ * | N yrs 3 months ... N yrs 9 months                                 | over N years        |
+ * | N yrs 9 months ... N+1 yrs                                        | almost N+1 years    |
+ *
+ * With `options.includeSeconds == true`:
+ * | Distance to now     | Result               |
+ * |---------------------|----------------------|
+ * | 0 secs ... 5 secs   | less than 5 seconds  |
+ * | 5 secs ... 10 secs  | less than 10 seconds |
+ * | 10 secs ... 20 secs | less than 20 seconds |
+ * | 20 secs ... 40 secs | half a minute        |
+ * | 40 secs ... 60 secs | less than a minute   |
+ * | 60 secs ... 90 secs | 1 minute             |
+ *
+ * @param {Date|String|Number} date - the given date
+ * @param {Object} [options] - the object with options
+ * @param {Boolean} [options.includeSeconds=false] - distances less than a minute are more detailed
+ * @param {Boolean} [options.addSuffix=false] - result specifies if the second date is earlier or later than the first
+ * @param {Object} [options.locale=enLocale] - the locale object
+ * @returns {String} the distance in words
+ *
+ * @example
+ * // If today is 1 January 2015, what is the distance to 2 July 2014?
+ * var result = distanceInWordsToNow(
+ *   new Date(2014, 6, 2)
+ * )
+ * //=> '6 months'
+ *
+ * @example
+ * // If now is 1 January 2015 00:00:00,
+ * // what is the distance to 1 January 2015 00:00:15, including seconds?
+ * var result = distanceInWordsToNow(
+ *   new Date(2015, 0, 1, 0, 0, 15),
+ *   {includeSeconds: true}
+ * )
+ * //=> 'less than 20 seconds'
+ *
+ * @example
+ * // If today is 1 January 2015,
+ * // what is the distance to 1 January 2016, with a suffix?
+ * var result = distanceInWordsToNow(
+ *   new Date(2016, 0, 1),
+ *   {addSuffix: true}
+ * )
+ * //=> 'in about 1 year'
+ *
+ * @example
+ * // If today is 1 January 2015,
+ * // what is the distance to 1 August 2016 in Esperanto?
+ * var eoLocale = require('date-fns/locale/eo')
+ * var result = distanceInWordsToNow(
+ *   new Date(2016, 7, 1),
+ *   {locale: eoLocale}
+ * )
+ * //=> 'pli ol 1 jaro'
+ */
+function distanceInWordsToNow (dirtyDate, dirtyOptions) {
+  return distanceInWords(Date.now(), dirtyDate, dirtyOptions)
+}
+
+module.exports = distanceInWordsToNow
+
+},{"../distance_in_words/index.js":184}],187:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Day Helpers
+ * @summary Return the array of dates within the specified range.
+ *
+ * @description
+ * Return the array of dates within the specified range.
+ *
+ * @param {Date|String|Number} startDate - the first date
+ * @param {Date|String|Number} endDate - the last date
+ * @param {Number} [step=1] - the step between each day
+ * @returns {Date[]} the array with starts of days from the day of startDate to the day of endDate
+ * @throws {Error} startDate cannot be after endDate
+ *
+ * @example
+ * // Each day between 6 October 2014 and 10 October 2014:
+ * var result = eachDay(
+ *   new Date(2014, 9, 6),
+ *   new Date(2014, 9, 10)
+ * )
+ * //=> [
+ * //   Mon Oct 06 2014 00:00:00,
+ * //   Tue Oct 07 2014 00:00:00,
+ * //   Wed Oct 08 2014 00:00:00,
+ * //   Thu Oct 09 2014 00:00:00,
+ * //   Fri Oct 10 2014 00:00:00
+ * // ]
+ */
+function eachDay (dirtyStartDate, dirtyEndDate, dirtyStep) {
+  var startDate = parse(dirtyStartDate)
+  var endDate = parse(dirtyEndDate)
+  var step = dirtyStep !== undefined ? dirtyStep : 1
+
+  var endTime = endDate.getTime()
+
+  if (startDate.getTime() > endTime) {
+    throw new Error('The first date cannot be after the second date')
+  }
+
+  var dates = []
+
+  var currentDate = startDate
+  currentDate.setHours(0, 0, 0, 0)
+
+  while (currentDate.getTime() <= endTime) {
+    dates.push(parse(currentDate))
+    currentDate.setDate(currentDate.getDate() + step)
+  }
+
+  return dates
+}
+
+module.exports = eachDay
+
+},{"../parse/index.js":274}],188:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Day Helpers
+ * @summary Return the end of a day for the given date.
+ *
+ * @description
+ * Return the end of a day for the given date.
+ * The result will be in the local timezone.
+ *
+ * @param {Date|String|Number} date - the original date
+ * @returns {Date} the end of a day
+ *
+ * @example
+ * // The end of a day for 2 September 2014 11:55:00:
+ * var result = endOfDay(new Date(2014, 8, 2, 11, 55, 0))
+ * //=> Tue Sep 02 2014 23:59:59.999
+ */
+function endOfDay (dirtyDate) {
+  var date = parse(dirtyDate)
+  date.setHours(23, 59, 59, 999)
+  return date
+}
+
+module.exports = endOfDay
+
+},{"../parse/index.js":274}],189:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Hour Helpers
+ * @summary Return the end of an hour for the given date.
+ *
+ * @description
+ * Return the end of an hour for the given date.
+ * The result will be in the local timezone.
+ *
+ * @param {Date|String|Number} date - the original date
+ * @returns {Date} the end of an hour
+ *
+ * @example
+ * // The end of an hour for 2 September 2014 11:55:00:
+ * var result = endOfHour(new Date(2014, 8, 2, 11, 55))
+ * //=> Tue Sep 02 2014 11:59:59.999
+ */
+function endOfHour (dirtyDate) {
+  var date = parse(dirtyDate)
+  date.setMinutes(59, 59, 999)
+  return date
+}
+
+module.exports = endOfHour
+
+},{"../parse/index.js":274}],190:[function(require,module,exports){
+var endOfWeek = require('../end_of_week/index.js')
+
+/**
+ * @category ISO Week Helpers
+ * @summary Return the end of an ISO week for the given date.
+ *
+ * @description
+ * Return the end of an ISO week for the given date.
+ * The result will be in the local timezone.
+ *
+ * ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
+ *
+ * @param {Date|String|Number} date - the original date
+ * @returns {Date} the end of an ISO week
+ *
+ * @example
+ * // The end of an ISO week for 2 September 2014 11:55:00:
+ * var result = endOfISOWeek(new Date(2014, 8, 2, 11, 55, 0))
+ * //=> Sun Sep 07 2014 23:59:59.999
+ */
+function endOfISOWeek (dirtyDate) {
+  return endOfWeek(dirtyDate, {weekStartsOn: 1})
+}
+
+module.exports = endOfISOWeek
+
+},{"../end_of_week/index.js":198}],191:[function(require,module,exports){
+var getISOYear = require('../get_iso_year/index.js')
+var startOfISOWeek = require('../start_of_iso_week/index.js')
+
+/**
+ * @category ISO Week-Numbering Year Helpers
+ * @summary Return the end of an ISO week-numbering year for the given date.
+ *
+ * @description
+ * Return the end of an ISO week-numbering year,
+ * which always starts 3 days before the year's first Thursday.
+ * The result will be in the local timezone.
+ *
+ * ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
+ *
+ * @param {Date|String|Number} date - the original date
+ * @returns {Date} the end of an ISO week-numbering year
+ *
+ * @example
+ * // The end of an ISO week-numbering year for 2 July 2005:
+ * var result = endOfISOYear(new Date(2005, 6, 2))
+ * //=> Sun Jan 01 2006 23:59:59.999
+ */
+function endOfISOYear (dirtyDate) {
+  var year = getISOYear(dirtyDate)
+  var fourthOfJanuaryOfNextYear = new Date(0)
+  fourthOfJanuaryOfNextYear.setFullYear(year + 1, 0, 4)
+  fourthOfJanuaryOfNextYear.setHours(0, 0, 0, 0)
+  var date = startOfISOWeek(fourthOfJanuaryOfNextYear)
+  date.setMilliseconds(date.getMilliseconds() - 1)
+  return date
+}
+
+module.exports = endOfISOYear
+
+},{"../get_iso_year/index.js":211,"../start_of_iso_week/index.js":290}],192:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Minute Helpers
+ * @summary Return the end of a minute for the given date.
+ *
+ * @description
+ * Return the end of a minute for the given date.
+ * The result will be in the local timezone.
+ *
+ * @param {Date|String|Number} date - the original date
+ * @returns {Date} the end of a minute
+ *
+ * @example
+ * // The end of a minute for 1 December 2014 22:15:45.400:
+ * var result = endOfMinute(new Date(2014, 11, 1, 22, 15, 45, 400))
+ * //=> Mon Dec 01 2014 22:15:59.999
+ */
+function endOfMinute (dirtyDate) {
+  var date = parse(dirtyDate)
+  date.setSeconds(59, 999)
+  return date
+}
+
+module.exports = endOfMinute
+
+},{"../parse/index.js":274}],193:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Month Helpers
+ * @summary Return the end of a month for the given date.
+ *
+ * @description
+ * Return the end of a month for the given date.
+ * The result will be in the local timezone.
+ *
+ * @param {Date|String|Number} date - the original date
+ * @returns {Date} the end of a month
+ *
+ * @example
+ * // The end of a month for 2 September 2014 11:55:00:
+ * var result = endOfMonth(new Date(2014, 8, 2, 11, 55, 0))
+ * //=> Tue Sep 30 2014 23:59:59.999
+ */
+function endOfMonth (dirtyDate) {
+  var date = parse(dirtyDate)
+  var month = date.getMonth()
+  date.setFullYear(date.getFullYear(), month + 1, 0)
+  date.setHours(23, 59, 59, 999)
+  return date
+}
+
+module.exports = endOfMonth
+
+},{"../parse/index.js":274}],194:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Quarter Helpers
+ * @summary Return the end of a year quarter for the given date.
+ *
+ * @description
+ * Return the end of a year quarter for the given date.
+ * The result will be in the local timezone.
+ *
+ * @param {Date|String|Number} date - the original date
+ * @returns {Date} the end of a quarter
+ *
+ * @example
+ * // The end of a quarter for 2 September 2014 11:55:00:
+ * var result = endOfQuarter(new Date(2014, 8, 2, 11, 55, 0))
+ * //=> Tue Sep 30 2014 23:59:59.999
+ */
+function endOfQuarter (dirtyDate) {
+  var date = parse(dirtyDate)
+  var currentMonth = date.getMonth()
+  var month = currentMonth - currentMonth % 3 + 3
+  date.setMonth(month, 0)
+  date.setHours(23, 59, 59, 999)
+  return date
+}
+
+module.exports = endOfQuarter
+
+},{"../parse/index.js":274}],195:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Second Helpers
+ * @summary Return the end of a second for the given date.
+ *
+ * @description
+ * Return the end of a second for the given date.
+ * The result will be in the local timezone.
+ *
+ * @param {Date|String|Number} date - the original date
+ * @returns {Date} the end of a second
+ *
+ * @example
+ * // The end of a second for 1 December 2014 22:15:45.400:
+ * var result = endOfSecond(new Date(2014, 11, 1, 22, 15, 45, 400))
+ * //=> Mon Dec 01 2014 22:15:45.999
+ */
+function endOfSecond (dirtyDate) {
+  var date = parse(dirtyDate)
+  date.setMilliseconds(999)
+  return date
+}
+
+module.exports = endOfSecond
+
+},{"../parse/index.js":274}],196:[function(require,module,exports){
+var endOfDay = require('../end_of_day/index.js')
+
+/**
+ * @category Day Helpers
+ * @summary Return the end of today.
+ *
+ * @description
+ * Return the end of today.
+ *
+ * @returns {Date} the end of today
+ *
+ * @example
+ * // If today is 6 October 2014:
+ * var result = endOfToday()
+ * //=> Mon Oct 6 2014 23:59:59.999
+ */
+function endOfToday () {
+  return endOfDay(new Date())
+}
+
+module.exports = endOfToday
+
+},{"../end_of_day/index.js":188}],197:[function(require,module,exports){
+/**
+ * @category Day Helpers
+ * @summary Return the end of tomorrow.
+ *
+ * @description
+ * Return the end of tomorrow.
+ *
+ * @returns {Date} the end of tomorrow
+ *
+ * @example
+ * // If today is 6 October 2014:
+ * var result = endOfTomorrow()
+ * //=> Tue Oct 7 2014 23:59:59.999
+ */
+function endOfTomorrow () {
+  var now = new Date()
+  var year = now.getFullYear()
+  var month = now.getMonth()
+  var day = now.getDate()
+
+  var date = new Date(0)
+  date.setFullYear(year, month, day + 1)
+  date.setHours(23, 59, 59, 999)
+  return date
+}
+
+module.exports = endOfTomorrow
+
+},{}],198:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Week Helpers
+ * @summary Return the end of a week for the given date.
+ *
+ * @description
+ * Return the end of a week for the given date.
+ * The result will be in the local timezone.
+ *
+ * @param {Date|String|Number} date - the original date
+ * @param {Object} [options] - the object with options
+ * @param {Number} [options.weekStartsOn=0] - the index of the first day of the week (0 - Sunday)
+ * @returns {Date} the end of a week
+ *
+ * @example
+ * // The end of a week for 2 September 2014 11:55:00:
+ * var result = endOfWeek(new Date(2014, 8, 2, 11, 55, 0))
+ * //=> Sat Sep 06 2014 23:59:59.999
+ *
+ * @example
+ * // If the week starts on Monday, the end of the week for 2 September 2014 11:55:00:
+ * var result = endOfWeek(new Date(2014, 8, 2, 11, 55, 0), {weekStartsOn: 1})
+ * //=> Sun Sep 07 2014 23:59:59.999
+ */
+function endOfWeek (dirtyDate, dirtyOptions) {
+  var weekStartsOn = dirtyOptions ? (Number(dirtyOptions.weekStartsOn) || 0) : 0
+
+  var date = parse(dirtyDate)
+  var day = date.getDay()
+  var diff = (day < weekStartsOn ? -7 : 0) + 6 - (day - weekStartsOn)
+
+  date.setDate(date.getDate() + diff)
+  date.setHours(23, 59, 59, 999)
+  return date
+}
+
+module.exports = endOfWeek
+
+},{"../parse/index.js":274}],199:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Year Helpers
+ * @summary Return the end of a year for the given date.
+ *
+ * @description
+ * Return the end of a year for the given date.
+ * The result will be in the local timezone.
+ *
+ * @param {Date|String|Number} date - the original date
+ * @returns {Date} the end of a year
+ *
+ * @example
+ * // The end of a year for 2 September 2014 11:55:00:
+ * var result = endOfYear(new Date(2014, 8, 2, 11, 55, 00))
+ * //=> Wed Dec 31 2014 23:59:59.999
+ */
+function endOfYear (dirtyDate) {
+  var date = parse(dirtyDate)
+  var year = date.getFullYear()
+  date.setFullYear(year + 1, 0, 0)
+  date.setHours(23, 59, 59, 999)
+  return date
+}
+
+module.exports = endOfYear
+
+},{"../parse/index.js":274}],200:[function(require,module,exports){
+/**
+ * @category Day Helpers
+ * @summary Return the end of yesterday.
+ *
+ * @description
+ * Return the end of yesterday.
+ *
+ * @returns {Date} the end of yesterday
+ *
+ * @example
+ * // If today is 6 October 2014:
+ * var result = endOfYesterday()
+ * //=> Sun Oct 5 2014 23:59:59.999
+ */
+function endOfYesterday () {
+  var now = new Date()
+  var year = now.getFullYear()
+  var month = now.getMonth()
+  var day = now.getDate()
+
+  var date = new Date(0)
+  date.setFullYear(year, month, day - 1)
+  date.setHours(23, 59, 59, 999)
+  return date
+}
+
+module.exports = endOfYesterday
+
+},{}],201:[function(require,module,exports){
+var getDayOfYear = require('../get_day_of_year/index.js')
+var getISOWeek = require('../get_iso_week/index.js')
+var getISOYear = require('../get_iso_year/index.js')
+var parse = require('../parse/index.js')
+var isValid = require('../is_valid/index.js')
+var enLocale = require('../locale/en/index.js')
+
+/**
+ * @category Common Helpers
+ * @summary Format the date.
+ *
+ * @description
+ * Return the formatted date string in the given format.
+ *
+ * Accepted tokens:
+ * | Unit                    | Token | Result examples                  |
+ * |-------------------------|-------|----------------------------------|
+ * | Month                   | M     | 1, 2, ..., 12                    |
+ * |                         | Mo    | 1st, 2nd, ..., 12th              |
+ * |                         | MM    | 01, 02, ..., 12                  |
+ * |                         | MMM   | Jan, Feb, ..., Dec               |
+ * |                         | MMMM  | January, February, ..., December |
+ * | Quarter                 | Q     | 1, 2, 3, 4                       |
+ * |                         | Qo    | 1st, 2nd, 3rd, 4th               |
+ * | Day of month            | D     | 1, 2, ..., 31                    |
+ * |                         | Do    | 1st, 2nd, ..., 31st              |
+ * |                         | DD    | 01, 02, ..., 31                  |
+ * | Day of year             | DDD   | 1, 2, ..., 366                   |
+ * |                         | DDDo  | 1st, 2nd, ..., 366th             |
+ * |                         | DDDD  | 001, 002, ..., 366               |
+ * | Day of week             | d     | 0, 1, ..., 6                     |
+ * |                         | do    | 0th, 1st, ..., 6th               |
+ * |                         | dd    | Su, Mo, ..., Sa                  |
+ * |                         | ddd   | Sun, Mon, ..., Sat               |
+ * |                         | dddd  | Sunday, Monday, ..., Saturday    |
+ * | Day of ISO week         | E     | 1, 2, ..., 7                     |
+ * | ISO week                | W     | 1, 2, ..., 53                    |
+ * |                         | Wo    | 1st, 2nd, ..., 53rd              |
+ * |                         | WW    | 01, 02, ..., 53                  |
+ * | Year                    | YY    | 00, 01, ..., 99                  |
+ * |                         | YYYY  | 1900, 1901, ..., 2099            |
+ * | ISO week-numbering year | GG    | 00, 01, ..., 99                  |
+ * |                         | GGGG  | 1900, 1901, ..., 2099            |
+ * | AM/PM                   | A     | AM, PM                           |
+ * |                         | a     | am, pm                           |
+ * |                         | aa    | a.m., p.m.                       |
+ * | Hour                    | H     | 0, 1, ... 23                     |
+ * |                         | HH    | 00, 01, ... 23                   |
+ * |                         | h     | 1, 2, ..., 12                    |
+ * |                         | hh    | 01, 02, ..., 12                  |
+ * | Minute                  | m     | 0, 1, ..., 59                    |
+ * |                         | mm    | 00, 01, ..., 59                  |
+ * | Second                  | s     | 0, 1, ..., 59                    |
+ * |                         | ss    | 00, 01, ..., 59                  |
+ * | 1/10 of second          | S     | 0, 1, ..., 9                     |
+ * | 1/100 of second         | SS    | 00, 01, ..., 99                  |
+ * | Millisecond             | SSS   | 000, 001, ..., 999               |
+ * | Timezone                | Z     | -01:00, +00:00, ... +12:00       |
+ * |                         | ZZ    | -0100, +0000, ..., +1200         |
+ * | Seconds timestamp       | X     | 512969520                        |
+ * | Milliseconds timestamp  | x     | 512969520900                     |
+ *
+ * The characters wrapped in square brackets are escaped.
+ *
+ * The result may vary by locale.
+ *
+ * @param {Date|String|Number} date - the original date
+ * @param {String} [format='YYYY-MM-DDTHH:mm:ss.SSSZ'] - the string of tokens
+ * @param {Object} [options] - the object with options
+ * @param {Object} [options.locale=enLocale] - the locale object
+ * @returns {String} the formatted date string
+ *
+ * @example
+ * // Represent 11 February 2014 in middle-endian format:
+ * var result = format(
+ *   new Date(2014, 1, 11),
+ *   'MM/DD/YYYY'
+ * )
+ * //=> '02/11/2014'
+ *
+ * @example
+ * // Represent 2 July 2014 in Esperanto:
+ * var eoLocale = require('date-fns/locale/eo')
+ * var result = format(
+ *   new Date(2014, 6, 2),
+ *   'Do [de] MMMM YYYY',
+ *   {locale: eoLocale}
+ * )
+ * //=> '2-a de julio 2014'
+ */
+function format (dirtyDate, dirtyFormatStr, dirtyOptions) {
+  var formatStr = dirtyFormatStr ? String(dirtyFormatStr) : 'YYYY-MM-DDTHH:mm:ss.SSSZ'
+  var options = dirtyOptions || {}
+
+  var locale = options.locale
+  var localeFormatters = enLocale.format.formatters
+  var formattingTokensRegExp = enLocale.format.formattingTokensRegExp
+  if (locale && locale.format && locale.format.formatters) {
+    localeFormatters = locale.format.formatters
+
+    if (locale.format.formattingTokensRegExp) {
+      formattingTokensRegExp = locale.format.formattingTokensRegExp
+    }
+  }
+
+  var date = parse(dirtyDate)
+
+  if (!isValid(date)) {
+    return 'Invalid Date'
+  }
+
+  var formatFn = buildFormatFn(formatStr, localeFormatters, formattingTokensRegExp)
+
+  return formatFn(date)
+}
+
+var formatters = {
+  // Month: 1, 2, ..., 12
+  'M': function (date) {
+    return date.getMonth() + 1
+  },
+
+  // Month: 01, 02, ..., 12
+  'MM': function (date) {
+    return addLeadingZeros(date.getMonth() + 1, 2)
+  },
+
+  // Quarter: 1, 2, 3, 4
+  'Q': function (date) {
+    return Math.ceil((date.getMonth() + 1) / 3)
+  },
+
+  // Day of month: 1, 2, ..., 31
+  'D': function (date) {
+    return date.getDate()
+  },
+
+  // Day of month: 01, 02, ..., 31
+  'DD': function (date) {
+    return addLeadingZeros(date.getDate(), 2)
+  },
+
+  // Day of year: 1, 2, ..., 366
+  'DDD': function (date) {
+    return getDayOfYear(date)
+  },
+
+  // Day of year: 001, 002, ..., 366
+  'DDDD': function (date) {
+    return addLeadingZeros(getDayOfYear(date), 3)
+  },
+
+  // Day of week: 0, 1, ..., 6
+  'd': function (date) {
+    return date.getDay()
+  },
+
+  // Day of ISO week: 1, 2, ..., 7
+  'E': function (date) {
+    return date.getDay() || 7
+  },
+
+  // ISO week: 1, 2, ..., 53
+  'W': function (date) {
+    return getISOWeek(date)
+  },
+
+  // ISO week: 01, 02, ..., 53
+  'WW': function (date) {
+    return addLeadingZeros(getISOWeek(date), 2)
+  },
+
+  // Year: 00, 01, ..., 99
+  'YY': function (date) {
+    return addLeadingZeros(date.getFullYear(), 4).substr(2)
+  },
+
+  // Year: 1900, 1901, ..., 2099
+  'YYYY': function (date) {
+    return addLeadingZeros(date.getFullYear(), 4)
+  },
+
+  // ISO week-numbering year: 00, 01, ..., 99
+  'GG': function (date) {
+    return String(getISOYear(date)).substr(2)
+  },
+
+  // ISO week-numbering year: 1900, 1901, ..., 2099
+  'GGGG': function (date) {
+    return getISOYear(date)
+  },
+
+  // Hour: 0, 1, ... 23
+  'H': function (date) {
+    return date.getHours()
+  },
+
+  // Hour: 00, 01, ..., 23
+  'HH': function (date) {
+    return addLeadingZeros(date.getHours(), 2)
+  },
+
+  // Hour: 1, 2, ..., 12
+  'h': function (date) {
+    var hours = date.getHours()
+    if (hours === 0) {
+      return 12
+    } else if (hours > 12) {
+      return hours % 12
+    } else {
+      return hours
+    }
+  },
+
+  // Hour: 01, 02, ..., 12
+  'hh': function (date) {
+    return addLeadingZeros(formatters['h'](date), 2)
+  },
+
+  // Minute: 0, 1, ..., 59
+  'm': function (date) {
+    return date.getMinutes()
+  },
+
+  // Minute: 00, 01, ..., 59
+  'mm': function (date) {
+    return addLeadingZeros(date.getMinutes(), 2)
+  },
+
+  // Second: 0, 1, ..., 59
+  's': function (date) {
+    return date.getSeconds()
+  },
+
+  // Second: 00, 01, ..., 59
+  'ss': function (date) {
+    return addLeadingZeros(date.getSeconds(), 2)
+  },
+
+  // 1/10 of second: 0, 1, ..., 9
+  'S': function (date) {
+    return Math.floor(date.getMilliseconds() / 100)
+  },
+
+  // 1/100 of second: 00, 01, ..., 99
+  'SS': function (date) {
+    return addLeadingZeros(Math.floor(date.getMilliseconds() / 10), 2)
+  },
+
+  // Millisecond: 000, 001, ..., 999
+  'SSS': function (date) {
+    return addLeadingZeros(date.getMilliseconds(), 3)
+  },
+
+  // Timezone: -01:00, +00:00, ... +12:00
+  'Z': function (date) {
+    return formatTimezone(date.getTimezoneOffset(), ':')
+  },
+
+  // Timezone: -0100, +0000, ... +1200
+  'ZZ': function (date) {
+    return formatTimezone(date.getTimezoneOffset())
+  },
+
+  // Seconds timestamp: 512969520
+  'X': function (date) {
+    return Math.floor(date.getTime() / 1000)
+  },
+
+  // Milliseconds timestamp: 512969520900
+  'x': function (date) {
+    return date.getTime()
+  }
+}
+
+function buildFormatFn (formatStr, localeFormatters, formattingTokensRegExp) {
+  var array = formatStr.match(formattingTokensRegExp)
+  var length = array.length
+
+  var i
+  var formatter
+  for (i = 0; i < length; i++) {
+    formatter = localeFormatters[array[i]] || formatters[array[i]]
+    if (formatter) {
+      array[i] = formatter
+    } else {
+      array[i] = removeFormattingTokens(array[i])
+    }
+  }
+
+  return function (date) {
+    var output = ''
+    for (var i = 0; i < length; i++) {
+      if (array[i] instanceof Function) {
+        output += array[i](date, formatters)
+      } else {
+        output += array[i]
+      }
+    }
+    return output
+  }
+}
+
+function removeFormattingTokens (input) {
+  if (input.match(/\[[\s\S]/)) {
+    return input.replace(/^\[|]$/g, '')
+  }
+  return input.replace(/\\/g, '')
+}
+
+function formatTimezone (offset, delimeter) {
+  delimeter = delimeter || ''
+  var sign = offset > 0 ? '-' : '+'
+  var absOffset = Math.abs(offset)
+  var hours = Math.floor(absOffset / 60)
+  var minutes = absOffset % 60
+  return sign + addLeadingZeros(hours, 2) + delimeter + addLeadingZeros(minutes, 2)
+}
+
+function addLeadingZeros (number, targetLength) {
+  var output = Math.abs(number).toString()
+  while (output.length < targetLength) {
+    output = '0' + output
+  }
+  return output
+}
+
+module.exports = format
+
+},{"../get_day_of_year/index.js":204,"../get_iso_week/index.js":209,"../get_iso_year/index.js":211,"../is_valid/index.js":257,"../locale/en/index.js":271,"../parse/index.js":274}],202:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Day Helpers
+ * @summary Get the day of the month of the given date.
+ *
+ * @description
+ * Get the day of the month of the given date.
+ *
+ * @param {Date|String|Number} date - the given date
+ * @returns {Number} the day of month
+ *
+ * @example
+ * // Which day of the month is 29 February 2012?
+ * var result = getDate(new Date(2012, 1, 29))
+ * //=> 29
+ */
+function getDate (dirtyDate) {
+  var date = parse(dirtyDate)
+  var dayOfMonth = date.getDate()
+  return dayOfMonth
+}
+
+module.exports = getDate
+
+},{"../parse/index.js":274}],203:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Weekday Helpers
+ * @summary Get the day of the week of the given date.
+ *
+ * @description
+ * Get the day of the week of the given date.
+ *
+ * @param {Date|String|Number} date - the given date
+ * @returns {Number} the day of week
+ *
+ * @example
+ * // Which day of the week is 29 February 2012?
+ * var result = getDay(new Date(2012, 1, 29))
+ * //=> 3
+ */
+function getDay (dirtyDate) {
+  var date = parse(dirtyDate)
+  var day = date.getDay()
+  return day
+}
+
+module.exports = getDay
+
+},{"../parse/index.js":274}],204:[function(require,module,exports){
+var parse = require('../parse/index.js')
+var startOfYear = require('../start_of_year/index.js')
+var differenceInCalendarDays = require('../difference_in_calendar_days/index.js')
+
+/**
+ * @category Day Helpers
+ * @summary Get the day of the year of the given date.
+ *
+ * @description
+ * Get the day of the year of the given date.
+ *
+ * @param {Date|String|Number} date - the given date
+ * @returns {Number} the day of year
+ *
+ * @example
+ * // Which day of the year is 2 July 2014?
+ * var result = getDayOfYear(new Date(2014, 6, 2))
+ * //=> 183
+ */
+function getDayOfYear (dirtyDate) {
+  var date = parse(dirtyDate)
+  var diff = differenceInCalendarDays(date, startOfYear(date))
+  var dayOfYear = diff + 1
+  return dayOfYear
+}
+
+module.exports = getDayOfYear
+
+},{"../difference_in_calendar_days/index.js":167,"../parse/index.js":274,"../start_of_year/index.js":299}],205:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Month Helpers
+ * @summary Get the number of days in a month of the given date.
+ *
+ * @description
+ * Get the number of days in a month of the given date.
+ *
+ * @param {Date|String|Number} date - the given date
+ * @returns {Number} the number of days in a month
+ *
+ * @example
+ * // How many days are in February 2000?
+ * var result = getDaysInMonth(new Date(2000, 1))
+ * //=> 29
+ */
+function getDaysInMonth (dirtyDate) {
+  var date = parse(dirtyDate)
+  var year = date.getFullYear()
+  var monthIndex = date.getMonth()
+  var lastDayOfMonth = new Date(0)
+  lastDayOfMonth.setFullYear(year, monthIndex + 1, 0)
+  lastDayOfMonth.setHours(0, 0, 0, 0)
+  return lastDayOfMonth.getDate()
+}
+
+module.exports = getDaysInMonth
+
+},{"../parse/index.js":274}],206:[function(require,module,exports){
+var isLeapYear = require('../is_leap_year/index.js')
+
+/**
+ * @category Year Helpers
+ * @summary Get the number of days in a year of the given date.
+ *
+ * @description
+ * Get the number of days in a year of the given date.
+ *
+ * @param {Date|String|Number} date - the given date
+ * @returns {Number} the number of days in a year
+ *
+ * @example
+ * // How many days are in 2012?
+ * var result = getDaysInYear(new Date(2012, 0, 1))
+ * //=> 366
+ */
+function getDaysInYear (dirtyDate) {
+  return isLeapYear(dirtyDate) ? 366 : 365
+}
+
+module.exports = getDaysInYear
+
+},{"../is_leap_year/index.js":229}],207:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Hour Helpers
+ * @summary Get the hours of the given date.
+ *
+ * @description
+ * Get the hours of the given date.
+ *
+ * @param {Date|String|Number} date - the given date
+ * @returns {Number} the hours
+ *
+ * @example
+ * // Get the hours of 29 February 2012 11:45:00:
+ * var result = getHours(new Date(2012, 1, 29, 11, 45))
+ * //=> 11
+ */
+function getHours (dirtyDate) {
+  var date = parse(dirtyDate)
+  var hours = date.getHours()
+  return hours
+}
+
+module.exports = getHours
+
+},{"../parse/index.js":274}],208:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Weekday Helpers
+ * @summary Get the day of the ISO week of the given date.
+ *
+ * @description
+ * Get the day of the ISO week of the given date,
+ * which is 7 for Sunday, 1 for Monday etc.
+ *
+ * ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
+ *
+ * @param {Date|String|Number} date - the given date
+ * @returns {Number} the day of ISO week
+ *
+ * @example
+ * // Which day of the ISO week is 26 February 2012?
+ * var result = getISODay(new Date(2012, 1, 26))
+ * //=> 7
+ */
+function getISODay (dirtyDate) {
+  var date = parse(dirtyDate)
+  var day = date.getDay()
+
+  if (day === 0) {
+    day = 7
+  }
+
+  return day
+}
+
+module.exports = getISODay
+
+},{"../parse/index.js":274}],209:[function(require,module,exports){
+var parse = require('../parse/index.js')
+var startOfISOWeek = require('../start_of_iso_week/index.js')
+var startOfISOYear = require('../start_of_iso_year/index.js')
+
+var MILLISECONDS_IN_WEEK = 604800000
+
+/**
+ * @category ISO Week Helpers
+ * @summary Get the ISO week of the given date.
+ *
+ * @description
+ * Get the ISO week of the given date.
+ *
+ * ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
+ *
+ * @param {Date|String|Number} date - the given date
+ * @returns {Number} the ISO week
+ *
+ * @example
+ * // Which week of the ISO-week numbering year is 2 January 2005?
+ * var result = getISOWeek(new Date(2005, 0, 2))
+ * //=> 53
+ */
+function getISOWeek (dirtyDate) {
+  var date = parse(dirtyDate)
+  var diff = startOfISOWeek(date).getTime() - startOfISOYear(date).getTime()
+
+  // Round the number of days to the nearest integer
+  // because the number of milliseconds in a week is not constant
+  // (e.g. it's different in the week of the daylight saving time clock shift)
+  return Math.round(diff / MILLISECONDS_IN_WEEK) + 1
+}
+
+module.exports = getISOWeek
+
+},{"../parse/index.js":274,"../start_of_iso_week/index.js":290,"../start_of_iso_year/index.js":291}],210:[function(require,module,exports){
+var startOfISOYear = require('../start_of_iso_year/index.js')
+var addWeeks = require('../add_weeks/index.js')
+
+var MILLISECONDS_IN_WEEK = 604800000
+
+/**
+ * @category ISO Week-Numbering Year Helpers
+ * @summary Get the number of weeks in an ISO week-numbering year of the given date.
+ *
+ * @description
+ * Get the number of weeks in an ISO week-numbering year of the given date.
+ *
+ * ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
+ *
+ * @param {Date|String|Number} date - the given date
+ * @returns {Number} the number of ISO weeks in a year
+ *
+ * @example
+ * // How many weeks are in ISO week-numbering year 2015?
+ * var result = getISOWeeksInYear(new Date(2015, 1, 11))
+ * //=> 53
+ */
+function getISOWeeksInYear (dirtyDate) {
+  var thisYear = startOfISOYear(dirtyDate)
+  var nextYear = startOfISOYear(addWeeks(thisYear, 60))
+  var diff = nextYear.valueOf() - thisYear.valueOf()
+  // Round the number of weeks to the nearest integer
+  // because the number of milliseconds in a week is not constant
+  // (e.g. it's different in the week of the daylight saving time clock shift)
+  return Math.round(diff / MILLISECONDS_IN_WEEK)
+}
+
+module.exports = getISOWeeksInYear
+
+},{"../add_weeks/index.js":160,"../start_of_iso_year/index.js":291}],211:[function(require,module,exports){
+var parse = require('../parse/index.js')
+var startOfISOWeek = require('../start_of_iso_week/index.js')
+
+/**
+ * @category ISO Week-Numbering Year Helpers
+ * @summary Get the ISO week-numbering year of the given date.
+ *
+ * @description
+ * Get the ISO week-numbering year of the given date,
+ * which always starts 3 days before the year's first Thursday.
+ *
+ * ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
+ *
+ * @param {Date|String|Number} date - the given date
+ * @returns {Number} the ISO week-numbering year
+ *
+ * @example
+ * // Which ISO-week numbering year is 2 January 2005?
+ * var result = getISOYear(new Date(2005, 0, 2))
+ * //=> 2004
+ */
+function getISOYear (dirtyDate) {
+  var date = parse(dirtyDate)
+  var year = date.getFullYear()
+
+  var fourthOfJanuaryOfNextYear = new Date(0)
+  fourthOfJanuaryOfNextYear.setFullYear(year + 1, 0, 4)
+  fourthOfJanuaryOfNextYear.setHours(0, 0, 0, 0)
+  var startOfNextYear = startOfISOWeek(fourthOfJanuaryOfNextYear)
+
+  var fourthOfJanuaryOfThisYear = new Date(0)
+  fourthOfJanuaryOfThisYear.setFullYear(year, 0, 4)
+  fourthOfJanuaryOfThisYear.setHours(0, 0, 0, 0)
+  var startOfThisYear = startOfISOWeek(fourthOfJanuaryOfThisYear)
+
+  if (date.getTime() >= startOfNextYear.getTime()) {
+    return year + 1
+  } else if (date.getTime() >= startOfThisYear.getTime()) {
+    return year
+  } else {
+    return year - 1
+  }
+}
+
+module.exports = getISOYear
+
+},{"../parse/index.js":274,"../start_of_iso_week/index.js":290}],212:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Millisecond Helpers
+ * @summary Get the milliseconds of the given date.
+ *
+ * @description
+ * Get the milliseconds of the given date.
+ *
+ * @param {Date|String|Number} date - the given date
+ * @returns {Number} the milliseconds
+ *
+ * @example
+ * // Get the milliseconds of 29 February 2012 11:45:05.123:
+ * var result = getMilliseconds(new Date(2012, 1, 29, 11, 45, 5, 123))
+ * //=> 123
+ */
+function getMilliseconds (dirtyDate) {
+  var date = parse(dirtyDate)
+  var milliseconds = date.getMilliseconds()
+  return milliseconds
+}
+
+module.exports = getMilliseconds
+
+},{"../parse/index.js":274}],213:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Minute Helpers
+ * @summary Get the minutes of the given date.
+ *
+ * @description
+ * Get the minutes of the given date.
+ *
+ * @param {Date|String|Number} date - the given date
+ * @returns {Number} the minutes
+ *
+ * @example
+ * // Get the minutes of 29 February 2012 11:45:05:
+ * var result = getMinutes(new Date(2012, 1, 29, 11, 45, 5))
+ * //=> 45
+ */
+function getMinutes (dirtyDate) {
+  var date = parse(dirtyDate)
+  var minutes = date.getMinutes()
+  return minutes
+}
+
+module.exports = getMinutes
+
+},{"../parse/index.js":274}],214:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Month Helpers
+ * @summary Get the month of the given date.
+ *
+ * @description
+ * Get the month of the given date.
+ *
+ * @param {Date|String|Number} date - the given date
+ * @returns {Number} the month
+ *
+ * @example
+ * // Which month is 29 February 2012?
+ * var result = getMonth(new Date(2012, 1, 29))
+ * //=> 1
+ */
+function getMonth (dirtyDate) {
+  var date = parse(dirtyDate)
+  var month = date.getMonth()
+  return month
+}
+
+module.exports = getMonth
+
+},{"../parse/index.js":274}],215:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+var MILLISECONDS_IN_DAY = 24 * 60 * 60 * 1000
+
+/**
+ * @category Range Helpers
+ * @summary Get the number of days that overlap in two date ranges
+ *
+ * @description
+ * Get the number of days that overlap in two date ranges
+ *
+ * @param {Date|String|Number} initialRangeStartDate - the start of the initial range
+ * @param {Date|String|Number} initialRangeEndDate - the end of the initial range
+ * @param {Date|String|Number} comparedRangeStartDate - the start of the range to compare it with
+ * @param {Date|String|Number} comparedRangeEndDate - the end of the range to compare it with
+ * @returns {Number} the number of days that overlap in two date ranges
+ * @throws {Error} startDate of a date range cannot be after its endDate
+ *
+ * @example
+ * // For overlapping date ranges adds 1 for each started overlapping day:
+ * getOverlappingDaysInRanges(
+ *   new Date(2014, 0, 10), new Date(2014, 0, 20), new Date(2014, 0, 17), new Date(2014, 0, 21)
+ * )
+ * //=> 3
+ *
+ * @example
+ * // For non-overlapping date ranges returns 0:
+ * getOverlappingDaysInRanges(
+ *   new Date(2014, 0, 10), new Date(2014, 0, 20), new Date(2014, 0, 21), new Date(2014, 0, 22)
+ * )
+ * //=> 0
+ */
+function getOverlappingDaysInRanges (dirtyInitialRangeStartDate, dirtyInitialRangeEndDate, dirtyComparedRangeStartDate, dirtyComparedRangeEndDate) {
+  var initialStartTime = parse(dirtyInitialRangeStartDate).getTime()
+  var initialEndTime = parse(dirtyInitialRangeEndDate).getTime()
+  var comparedStartTime = parse(dirtyComparedRangeStartDate).getTime()
+  var comparedEndTime = parse(dirtyComparedRangeEndDate).getTime()
+
+  if (initialStartTime > initialEndTime || comparedStartTime > comparedEndTime) {
+    throw new Error('The start of the range cannot be after the end of the range')
+  }
+
+  var isOverlapping = initialStartTime < comparedEndTime && comparedStartTime < initialEndTime
+
+  if (!isOverlapping) {
+    return 0
+  }
+
+  var overlapStartDate = comparedStartTime < initialStartTime
+    ? initialStartTime
+    : comparedStartTime
+
+  var overlapEndDate = comparedEndTime > initialEndTime
+    ? initialEndTime
+    : comparedEndTime
+
+  var differenceInMs = overlapEndDate - overlapStartDate
+
+  return Math.ceil(differenceInMs / MILLISECONDS_IN_DAY)
+}
+
+module.exports = getOverlappingDaysInRanges
+
+},{"../parse/index.js":274}],216:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Quarter Helpers
+ * @summary Get the year quarter of the given date.
+ *
+ * @description
+ * Get the year quarter of the given date.
+ *
+ * @param {Date|String|Number} date - the given date
+ * @returns {Number} the quarter
+ *
+ * @example
+ * // Which quarter is 2 July 2014?
+ * var result = getQuarter(new Date(2014, 6, 2))
+ * //=> 3
+ */
+function getQuarter (dirtyDate) {
+  var date = parse(dirtyDate)
+  var quarter = Math.floor(date.getMonth() / 3) + 1
+  return quarter
+}
+
+module.exports = getQuarter
+
+},{"../parse/index.js":274}],217:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Second Helpers
+ * @summary Get the seconds of the given date.
+ *
+ * @description
+ * Get the seconds of the given date.
+ *
+ * @param {Date|String|Number} date - the given date
+ * @returns {Number} the seconds
+ *
+ * @example
+ * // Get the seconds of 29 February 2012 11:45:05.123:
+ * var result = getSeconds(new Date(2012, 1, 29, 11, 45, 5, 123))
+ * //=> 5
+ */
+function getSeconds (dirtyDate) {
+  var date = parse(dirtyDate)
+  var seconds = date.getSeconds()
+  return seconds
+}
+
+module.exports = getSeconds
+
+},{"../parse/index.js":274}],218:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Timestamp Helpers
+ * @summary Get the milliseconds timestamp of the given date.
+ *
+ * @description
+ * Get the milliseconds timestamp of the given date.
+ *
+ * @param {Date|String|Number} date - the given date
+ * @returns {Number} the timestamp
+ *
+ * @example
+ * // Get the timestamp of 29 February 2012 11:45:05.123:
+ * var result = getTime(new Date(2012, 1, 29, 11, 45, 5, 123))
+ * //=> 1330515905123
+ */
+function getTime (dirtyDate) {
+  var date = parse(dirtyDate)
+  var timestamp = date.getTime()
+  return timestamp
+}
+
+module.exports = getTime
+
+},{"../parse/index.js":274}],219:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Year Helpers
+ * @summary Get the year of the given date.
+ *
+ * @description
+ * Get the year of the given date.
+ *
+ * @param {Date|String|Number} date - the given date
+ * @returns {Number} the year
+ *
+ * @example
+ * // Which year is 2 July 2014?
+ * var result = getYear(new Date(2014, 6, 2))
+ * //=> 2014
+ */
+function getYear (dirtyDate) {
+  var date = parse(dirtyDate)
+  var year = date.getFullYear()
+  return year
+}
+
+module.exports = getYear
+
+},{"../parse/index.js":274}],220:[function(require,module,exports){
+module.exports = {
+  addDays: require('./add_days/index.js'),
+  addHours: require('./add_hours/index.js'),
+  addISOYears: require('./add_iso_years/index.js'),
+  addMilliseconds: require('./add_milliseconds/index.js'),
+  addMinutes: require('./add_minutes/index.js'),
+  addMonths: require('./add_months/index.js'),
+  addQuarters: require('./add_quarters/index.js'),
+  addSeconds: require('./add_seconds/index.js'),
+  addWeeks: require('./add_weeks/index.js'),
+  addYears: require('./add_years/index.js'),
+  areRangesOverlapping: require('./are_ranges_overlapping/index.js'),
+  closestIndexTo: require('./closest_index_to/index.js'),
+  closestTo: require('./closest_to/index.js'),
+  compareAsc: require('./compare_asc/index.js'),
+  compareDesc: require('./compare_desc/index.js'),
+  differenceInCalendarDays: require('./difference_in_calendar_days/index.js'),
+  differenceInCalendarISOWeeks: require('./difference_in_calendar_iso_weeks/index.js'),
+  differenceInCalendarISOYears: require('./difference_in_calendar_iso_years/index.js'),
+  differenceInCalendarMonths: require('./difference_in_calendar_months/index.js'),
+  differenceInCalendarQuarters: require('./difference_in_calendar_quarters/index.js'),
+  differenceInCalendarWeeks: require('./difference_in_calendar_weeks/index.js'),
+  differenceInCalendarYears: require('./difference_in_calendar_years/index.js'),
+  differenceInDays: require('./difference_in_days/index.js'),
+  differenceInHours: require('./difference_in_hours/index.js'),
+  differenceInISOYears: require('./difference_in_iso_years/index.js'),
+  differenceInMilliseconds: require('./difference_in_milliseconds/index.js'),
+  differenceInMinutes: require('./difference_in_minutes/index.js'),
+  differenceInMonths: require('./difference_in_months/index.js'),
+  differenceInQuarters: require('./difference_in_quarters/index.js'),
+  differenceInSeconds: require('./difference_in_seconds/index.js'),
+  differenceInWeeks: require('./difference_in_weeks/index.js'),
+  differenceInYears: require('./difference_in_years/index.js'),
+  distanceInWords: require('./distance_in_words/index.js'),
+  distanceInWordsStrict: require('./distance_in_words_strict/index.js'),
+  distanceInWordsToNow: require('./distance_in_words_to_now/index.js'),
+  eachDay: require('./each_day/index.js'),
+  endOfDay: require('./end_of_day/index.js'),
+  endOfHour: require('./end_of_hour/index.js'),
+  endOfISOWeek: require('./end_of_iso_week/index.js'),
+  endOfISOYear: require('./end_of_iso_year/index.js'),
+  endOfMinute: require('./end_of_minute/index.js'),
+  endOfMonth: require('./end_of_month/index.js'),
+  endOfQuarter: require('./end_of_quarter/index.js'),
+  endOfSecond: require('./end_of_second/index.js'),
+  endOfToday: require('./end_of_today/index.js'),
+  endOfTomorrow: require('./end_of_tomorrow/index.js'),
+  endOfWeek: require('./end_of_week/index.js'),
+  endOfYear: require('./end_of_year/index.js'),
+  endOfYesterday: require('./end_of_yesterday/index.js'),
+  format: require('./format/index.js'),
+  getDate: require('./get_date/index.js'),
+  getDay: require('./get_day/index.js'),
+  getDayOfYear: require('./get_day_of_year/index.js'),
+  getDaysInMonth: require('./get_days_in_month/index.js'),
+  getDaysInYear: require('./get_days_in_year/index.js'),
+  getHours: require('./get_hours/index.js'),
+  getISODay: require('./get_iso_day/index.js'),
+  getISOWeek: require('./get_iso_week/index.js'),
+  getISOWeeksInYear: require('./get_iso_weeks_in_year/index.js'),
+  getISOYear: require('./get_iso_year/index.js'),
+  getMilliseconds: require('./get_milliseconds/index.js'),
+  getMinutes: require('./get_minutes/index.js'),
+  getMonth: require('./get_month/index.js'),
+  getOverlappingDaysInRanges: require('./get_overlapping_days_in_ranges/index.js'),
+  getQuarter: require('./get_quarter/index.js'),
+  getSeconds: require('./get_seconds/index.js'),
+  getTime: require('./get_time/index.js'),
+  getYear: require('./get_year/index.js'),
+  isAfter: require('./is_after/index.js'),
+  isBefore: require('./is_before/index.js'),
+  isDate: require('./is_date/index.js'),
+  isEqual: require('./is_equal/index.js'),
+  isFirstDayOfMonth: require('./is_first_day_of_month/index.js'),
+  isFriday: require('./is_friday/index.js'),
+  isFuture: require('./is_future/index.js'),
+  isLastDayOfMonth: require('./is_last_day_of_month/index.js'),
+  isLeapYear: require('./is_leap_year/index.js'),
+  isMonday: require('./is_monday/index.js'),
+  isPast: require('./is_past/index.js'),
+  isSameDay: require('./is_same_day/index.js'),
+  isSameHour: require('./is_same_hour/index.js'),
+  isSameISOWeek: require('./is_same_iso_week/index.js'),
+  isSameISOYear: require('./is_same_iso_year/index.js'),
+  isSameMinute: require('./is_same_minute/index.js'),
+  isSameMonth: require('./is_same_month/index.js'),
+  isSameQuarter: require('./is_same_quarter/index.js'),
+  isSameSecond: require('./is_same_second/index.js'),
+  isSameWeek: require('./is_same_week/index.js'),
+  isSameYear: require('./is_same_year/index.js'),
+  isSaturday: require('./is_saturday/index.js'),
+  isSunday: require('./is_sunday/index.js'),
+  isThisHour: require('./is_this_hour/index.js'),
+  isThisISOWeek: require('./is_this_iso_week/index.js'),
+  isThisISOYear: require('./is_this_iso_year/index.js'),
+  isThisMinute: require('./is_this_minute/index.js'),
+  isThisMonth: require('./is_this_month/index.js'),
+  isThisQuarter: require('./is_this_quarter/index.js'),
+  isThisSecond: require('./is_this_second/index.js'),
+  isThisWeek: require('./is_this_week/index.js'),
+  isThisYear: require('./is_this_year/index.js'),
+  isThursday: require('./is_thursday/index.js'),
+  isToday: require('./is_today/index.js'),
+  isTomorrow: require('./is_tomorrow/index.js'),
+  isTuesday: require('./is_tuesday/index.js'),
+  isValid: require('./is_valid/index.js'),
+  isWednesday: require('./is_wednesday/index.js'),
+  isWeekend: require('./is_weekend/index.js'),
+  isWithinRange: require('./is_within_range/index.js'),
+  isYesterday: require('./is_yesterday/index.js'),
+  lastDayOfISOWeek: require('./last_day_of_iso_week/index.js'),
+  lastDayOfISOYear: require('./last_day_of_iso_year/index.js'),
+  lastDayOfMonth: require('./last_day_of_month/index.js'),
+  lastDayOfQuarter: require('./last_day_of_quarter/index.js'),
+  lastDayOfWeek: require('./last_day_of_week/index.js'),
+  lastDayOfYear: require('./last_day_of_year/index.js'),
+  max: require('./max/index.js'),
+  min: require('./min/index.js'),
+  parse: require('./parse/index.js'),
+  setDate: require('./set_date/index.js'),
+  setDay: require('./set_day/index.js'),
+  setDayOfYear: require('./set_day_of_year/index.js'),
+  setHours: require('./set_hours/index.js'),
+  setISODay: require('./set_iso_day/index.js'),
+  setISOWeek: require('./set_iso_week/index.js'),
+  setISOYear: require('./set_iso_year/index.js'),
+  setMilliseconds: require('./set_milliseconds/index.js'),
+  setMinutes: require('./set_minutes/index.js'),
+  setMonth: require('./set_month/index.js'),
+  setQuarter: require('./set_quarter/index.js'),
+  setSeconds: require('./set_seconds/index.js'),
+  setYear: require('./set_year/index.js'),
+  startOfDay: require('./start_of_day/index.js'),
+  startOfHour: require('./start_of_hour/index.js'),
+  startOfISOWeek: require('./start_of_iso_week/index.js'),
+  startOfISOYear: require('./start_of_iso_year/index.js'),
+  startOfMinute: require('./start_of_minute/index.js'),
+  startOfMonth: require('./start_of_month/index.js'),
+  startOfQuarter: require('./start_of_quarter/index.js'),
+  startOfSecond: require('./start_of_second/index.js'),
+  startOfToday: require('./start_of_today/index.js'),
+  startOfTomorrow: require('./start_of_tomorrow/index.js'),
+  startOfWeek: require('./start_of_week/index.js'),
+  startOfYear: require('./start_of_year/index.js'),
+  startOfYesterday: require('./start_of_yesterday/index.js'),
+  subDays: require('./sub_days/index.js'),
+  subHours: require('./sub_hours/index.js'),
+  subISOYears: require('./sub_iso_years/index.js'),
+  subMilliseconds: require('./sub_milliseconds/index.js'),
+  subMinutes: require('./sub_minutes/index.js'),
+  subMonths: require('./sub_months/index.js'),
+  subQuarters: require('./sub_quarters/index.js'),
+  subSeconds: require('./sub_seconds/index.js'),
+  subWeeks: require('./sub_weeks/index.js'),
+  subYears: require('./sub_years/index.js')
+}
+
+},{"./add_days/index.js":152,"./add_hours/index.js":153,"./add_iso_years/index.js":154,"./add_milliseconds/index.js":155,"./add_minutes/index.js":156,"./add_months/index.js":157,"./add_quarters/index.js":158,"./add_seconds/index.js":159,"./add_weeks/index.js":160,"./add_years/index.js":161,"./are_ranges_overlapping/index.js":162,"./closest_index_to/index.js":163,"./closest_to/index.js":164,"./compare_asc/index.js":165,"./compare_desc/index.js":166,"./difference_in_calendar_days/index.js":167,"./difference_in_calendar_iso_weeks/index.js":168,"./difference_in_calendar_iso_years/index.js":169,"./difference_in_calendar_months/index.js":170,"./difference_in_calendar_quarters/index.js":171,"./difference_in_calendar_weeks/index.js":172,"./difference_in_calendar_years/index.js":173,"./difference_in_days/index.js":174,"./difference_in_hours/index.js":175,"./difference_in_iso_years/index.js":176,"./difference_in_milliseconds/index.js":177,"./difference_in_minutes/index.js":178,"./difference_in_months/index.js":179,"./difference_in_quarters/index.js":180,"./difference_in_seconds/index.js":181,"./difference_in_weeks/index.js":182,"./difference_in_years/index.js":183,"./distance_in_words/index.js":184,"./distance_in_words_strict/index.js":185,"./distance_in_words_to_now/index.js":186,"./each_day/index.js":187,"./end_of_day/index.js":188,"./end_of_hour/index.js":189,"./end_of_iso_week/index.js":190,"./end_of_iso_year/index.js":191,"./end_of_minute/index.js":192,"./end_of_month/index.js":193,"./end_of_quarter/index.js":194,"./end_of_second/index.js":195,"./end_of_today/index.js":196,"./end_of_tomorrow/index.js":197,"./end_of_week/index.js":198,"./end_of_year/index.js":199,"./end_of_yesterday/index.js":200,"./format/index.js":201,"./get_date/index.js":202,"./get_day/index.js":203,"./get_day_of_year/index.js":204,"./get_days_in_month/index.js":205,"./get_days_in_year/index.js":206,"./get_hours/index.js":207,"./get_iso_day/index.js":208,"./get_iso_week/index.js":209,"./get_iso_weeks_in_year/index.js":210,"./get_iso_year/index.js":211,"./get_milliseconds/index.js":212,"./get_minutes/index.js":213,"./get_month/index.js":214,"./get_overlapping_days_in_ranges/index.js":215,"./get_quarter/index.js":216,"./get_seconds/index.js":217,"./get_time/index.js":218,"./get_year/index.js":219,"./is_after/index.js":221,"./is_before/index.js":222,"./is_date/index.js":223,"./is_equal/index.js":224,"./is_first_day_of_month/index.js":225,"./is_friday/index.js":226,"./is_future/index.js":227,"./is_last_day_of_month/index.js":228,"./is_leap_year/index.js":229,"./is_monday/index.js":230,"./is_past/index.js":231,"./is_same_day/index.js":232,"./is_same_hour/index.js":233,"./is_same_iso_week/index.js":234,"./is_same_iso_year/index.js":235,"./is_same_minute/index.js":236,"./is_same_month/index.js":237,"./is_same_quarter/index.js":238,"./is_same_second/index.js":239,"./is_same_week/index.js":240,"./is_same_year/index.js":241,"./is_saturday/index.js":242,"./is_sunday/index.js":243,"./is_this_hour/index.js":244,"./is_this_iso_week/index.js":245,"./is_this_iso_year/index.js":246,"./is_this_minute/index.js":247,"./is_this_month/index.js":248,"./is_this_quarter/index.js":249,"./is_this_second/index.js":250,"./is_this_week/index.js":251,"./is_this_year/index.js":252,"./is_thursday/index.js":253,"./is_today/index.js":254,"./is_tomorrow/index.js":255,"./is_tuesday/index.js":256,"./is_valid/index.js":257,"./is_wednesday/index.js":258,"./is_weekend/index.js":259,"./is_within_range/index.js":260,"./is_yesterday/index.js":261,"./last_day_of_iso_week/index.js":262,"./last_day_of_iso_year/index.js":263,"./last_day_of_month/index.js":264,"./last_day_of_quarter/index.js":265,"./last_day_of_week/index.js":266,"./last_day_of_year/index.js":267,"./max/index.js":272,"./min/index.js":273,"./parse/index.js":274,"./set_date/index.js":275,"./set_day/index.js":276,"./set_day_of_year/index.js":277,"./set_hours/index.js":278,"./set_iso_day/index.js":279,"./set_iso_week/index.js":280,"./set_iso_year/index.js":281,"./set_milliseconds/index.js":282,"./set_minutes/index.js":283,"./set_month/index.js":284,"./set_quarter/index.js":285,"./set_seconds/index.js":286,"./set_year/index.js":287,"./start_of_day/index.js":288,"./start_of_hour/index.js":289,"./start_of_iso_week/index.js":290,"./start_of_iso_year/index.js":291,"./start_of_minute/index.js":292,"./start_of_month/index.js":293,"./start_of_quarter/index.js":294,"./start_of_second/index.js":295,"./start_of_today/index.js":296,"./start_of_tomorrow/index.js":297,"./start_of_week/index.js":298,"./start_of_year/index.js":299,"./start_of_yesterday/index.js":300,"./sub_days/index.js":301,"./sub_hours/index.js":302,"./sub_iso_years/index.js":303,"./sub_milliseconds/index.js":304,"./sub_minutes/index.js":305,"./sub_months/index.js":306,"./sub_quarters/index.js":307,"./sub_seconds/index.js":308,"./sub_weeks/index.js":309,"./sub_years/index.js":310}],221:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Common Helpers
+ * @summary Is the first date after the second one?
+ *
+ * @description
+ * Is the first date after the second one?
+ *
+ * @param {Date|String|Number} date - the date that should be after the other one to return true
+ * @param {Date|String|Number} dateToCompare - the date to compare with
+ * @returns {Boolean} the first date is after the second date
+ *
+ * @example
+ * // Is 10 July 1989 after 11 February 1987?
+ * var result = isAfter(new Date(1989, 6, 10), new Date(1987, 1, 11))
+ * //=> true
+ */
+function isAfter (dirtyDate, dirtyDateToCompare) {
+  var date = parse(dirtyDate)
+  var dateToCompare = parse(dirtyDateToCompare)
+  return date.getTime() > dateToCompare.getTime()
+}
+
+module.exports = isAfter
+
+},{"../parse/index.js":274}],222:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Common Helpers
+ * @summary Is the first date before the second one?
+ *
+ * @description
+ * Is the first date before the second one?
+ *
+ * @param {Date|String|Number} date - the date that should be before the other one to return true
+ * @param {Date|String|Number} dateToCompare - the date to compare with
+ * @returns {Boolean} the first date is before the second date
+ *
+ * @example
+ * // Is 10 July 1989 before 11 February 1987?
+ * var result = isBefore(new Date(1989, 6, 10), new Date(1987, 1, 11))
+ * //=> false
+ */
+function isBefore (dirtyDate, dirtyDateToCompare) {
+  var date = parse(dirtyDate)
+  var dateToCompare = parse(dirtyDateToCompare)
+  return date.getTime() < dateToCompare.getTime()
+}
+
+module.exports = isBefore
+
+},{"../parse/index.js":274}],223:[function(require,module,exports){
+/**
+ * @category Common Helpers
+ * @summary Is the given argument an instance of Date?
+ *
+ * @description
+ * Is the given argument an instance of Date?
+ *
+ * @param {*} argument - the argument to check
+ * @returns {Boolean} the given argument is an instance of Date
+ *
+ * @example
+ * // Is 'mayonnaise' a Date?
+ * var result = isDate('mayonnaise')
+ * //=> false
+ */
+function isDate (argument) {
+  return argument instanceof Date
+}
+
+module.exports = isDate
+
+},{}],224:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Common Helpers
+ * @summary Are the given dates equal?
+ *
+ * @description
+ * Are the given dates equal?
+ *
+ * @param {Date|String|Number} dateLeft - the first date to compare
+ * @param {Date|String|Number} dateRight - the second date to compare
+ * @returns {Boolean} the dates are equal
+ *
+ * @example
+ * // Are 2 July 2014 06:30:45.000 and 2 July 2014 06:30:45.500 equal?
+ * var result = isEqual(
+ *   new Date(2014, 6, 2, 6, 30, 45, 0)
+ *   new Date(2014, 6, 2, 6, 30, 45, 500)
+ * )
+ * //=> false
+ */
+function isEqual (dirtyLeftDate, dirtyRightDate) {
+  var dateLeft = parse(dirtyLeftDate)
+  var dateRight = parse(dirtyRightDate)
+  return dateLeft.getTime() === dateRight.getTime()
+}
+
+module.exports = isEqual
+
+},{"../parse/index.js":274}],225:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Month Helpers
+ * @summary Is the given date the first day of a month?
+ *
+ * @description
+ * Is the given date the first day of a month?
+ *
+ * @param {Date|String|Number} date - the date to check
+ * @returns {Boolean} the date is the first day of a month
+ *
+ * @example
+ * // Is 1 September 2014 the first day of a month?
+ * var result = isFirstDayOfMonth(new Date(2014, 8, 1))
+ * //=> true
+ */
+function isFirstDayOfMonth (dirtyDate) {
+  return parse(dirtyDate).getDate() === 1
+}
+
+module.exports = isFirstDayOfMonth
+
+},{"../parse/index.js":274}],226:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Weekday Helpers
+ * @summary Is the given date Friday?
+ *
+ * @description
+ * Is the given date Friday?
+ *
+ * @param {Date|String|Number} date - the date to check
+ * @returns {Boolean} the date is Friday
+ *
+ * @example
+ * // Is 26 September 2014 Friday?
+ * var result = isFriday(new Date(2014, 8, 26))
+ * //=> true
+ */
+function isFriday (dirtyDate) {
+  return parse(dirtyDate).getDay() === 5
+}
+
+module.exports = isFriday
+
+},{"../parse/index.js":274}],227:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Common Helpers
+ * @summary Is the given date in the future?
+ *
+ * @description
+ * Is the given date in the future?
+ *
+ * @param {Date|String|Number} date - the date to check
+ * @returns {Boolean} the date is in the future
+ *
+ * @example
+ * // If today is 6 October 2014, is 31 December 2014 in the future?
+ * var result = isFuture(new Date(2014, 11, 31))
+ * //=> true
+ */
+function isFuture (dirtyDate) {
+  return parse(dirtyDate).getTime() > new Date().getTime()
+}
+
+module.exports = isFuture
+
+},{"../parse/index.js":274}],228:[function(require,module,exports){
+var parse = require('../parse/index.js')
+var endOfDay = require('../end_of_day/index.js')
+var endOfMonth = require('../end_of_month/index.js')
+
+/**
+ * @category Month Helpers
+ * @summary Is the given date the last day of a month?
+ *
+ * @description
+ * Is the given date the last day of a month?
+ *
+ * @param {Date|String|Number} date - the date to check
+ * @returns {Boolean} the date is the last day of a month
+ *
+ * @example
+ * // Is 28 February 2014 the last day of a month?
+ * var result = isLastDayOfMonth(new Date(2014, 1, 28))
+ * //=> true
+ */
+function isLastDayOfMonth (dirtyDate) {
+  var date = parse(dirtyDate)
+  return endOfDay(date).getTime() === endOfMonth(date).getTime()
+}
+
+module.exports = isLastDayOfMonth
+
+},{"../end_of_day/index.js":188,"../end_of_month/index.js":193,"../parse/index.js":274}],229:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Year Helpers
+ * @summary Is the given date in the leap year?
+ *
+ * @description
+ * Is the given date in the leap year?
+ *
+ * @param {Date|String|Number} date - the date to check
+ * @returns {Boolean} the date is in the leap year
+ *
+ * @example
+ * // Is 1 September 2012 in the leap year?
+ * var result = isLeapYear(new Date(2012, 8, 1))
+ * //=> true
+ */
+function isLeapYear (dirtyDate) {
+  var date = parse(dirtyDate)
+  var year = date.getFullYear()
+  return year % 400 === 0 || year % 4 === 0 && year % 100 !== 0
+}
+
+module.exports = isLeapYear
+
+},{"../parse/index.js":274}],230:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Weekday Helpers
+ * @summary Is the given date Monday?
+ *
+ * @description
+ * Is the given date Monday?
+ *
+ * @param {Date|String|Number} date - the date to check
+ * @returns {Boolean} the date is Monday
+ *
+ * @example
+ * // Is 22 September 2014 Monday?
+ * var result = isMonday(new Date(2014, 8, 22))
+ * //=> true
+ */
+function isMonday (dirtyDate) {
+  return parse(dirtyDate).getDay() === 1
+}
+
+module.exports = isMonday
+
+},{"../parse/index.js":274}],231:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Common Helpers
+ * @summary Is the given date in the past?
+ *
+ * @description
+ * Is the given date in the past?
+ *
+ * @param {Date|String|Number} date - the date to check
+ * @returns {Boolean} the date is in the past
+ *
+ * @example
+ * // If today is 6 October 2014, is 2 July 2014 in the past?
+ * var result = isPast(new Date(2014, 6, 2))
+ * //=> true
+ */
+function isPast (dirtyDate) {
+  return parse(dirtyDate).getTime() < new Date().getTime()
+}
+
+module.exports = isPast
+
+},{"../parse/index.js":274}],232:[function(require,module,exports){
+var startOfDay = require('../start_of_day/index.js')
+
+/**
+ * @category Day Helpers
+ * @summary Are the given dates in the same day?
+ *
+ * @description
+ * Are the given dates in the same day?
+ *
+ * @param {Date|String|Number} dateLeft - the first date to check
+ * @param {Date|String|Number} dateRight - the second date to check
+ * @returns {Boolean} the dates are in the same day
+ *
+ * @example
+ * // Are 4 September 06:00:00 and 4 September 18:00:00 in the same day?
+ * var result = isSameDay(
+ *   new Date(2014, 8, 4, 6, 0),
+ *   new Date(2014, 8, 4, 18, 0)
+ * )
+ * //=> true
+ */
+function isSameDay (dirtyDateLeft, dirtyDateRight) {
+  var dateLeftStartOfDay = startOfDay(dirtyDateLeft)
+  var dateRightStartOfDay = startOfDay(dirtyDateRight)
+
+  return dateLeftStartOfDay.getTime() === dateRightStartOfDay.getTime()
+}
+
+module.exports = isSameDay
+
+},{"../start_of_day/index.js":288}],233:[function(require,module,exports){
+var startOfHour = require('../start_of_hour/index.js')
+
+/**
+ * @category Hour Helpers
+ * @summary Are the given dates in the same hour?
+ *
+ * @description
+ * Are the given dates in the same hour?
+ *
+ * @param {Date|String|Number} dateLeft - the first date to check
+ * @param {Date|String|Number} dateRight - the second date to check
+ * @returns {Boolean} the dates are in the same hour
+ *
+ * @example
+ * // Are 4 September 2014 06:00:00 and 4 September 06:30:00 in the same hour?
+ * var result = isSameHour(
+ *   new Date(2014, 8, 4, 6, 0),
+ *   new Date(2014, 8, 4, 6, 30)
+ * )
+ * //=> true
+ */
+function isSameHour (dirtyDateLeft, dirtyDateRight) {
+  var dateLeftStartOfHour = startOfHour(dirtyDateLeft)
+  var dateRightStartOfHour = startOfHour(dirtyDateRight)
+
+  return dateLeftStartOfHour.getTime() === dateRightStartOfHour.getTime()
+}
+
+module.exports = isSameHour
+
+},{"../start_of_hour/index.js":289}],234:[function(require,module,exports){
+var isSameWeek = require('../is_same_week/index.js')
+
+/**
+ * @category ISO Week Helpers
+ * @summary Are the given dates in the same ISO week?
+ *
+ * @description
+ * Are the given dates in the same ISO week?
+ *
+ * ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
+ *
+ * @param {Date|String|Number} dateLeft - the first date to check
+ * @param {Date|String|Number} dateRight - the second date to check
+ * @returns {Boolean} the dates are in the same ISO week
+ *
+ * @example
+ * // Are 1 September 2014 and 7 September 2014 in the same ISO week?
+ * var result = isSameISOWeek(
+ *   new Date(2014, 8, 1),
+ *   new Date(2014, 8, 7)
+ * )
+ * //=> true
+ */
+function isSameISOWeek (dirtyDateLeft, dirtyDateRight) {
+  return isSameWeek(dirtyDateLeft, dirtyDateRight, {weekStartsOn: 1})
+}
+
+module.exports = isSameISOWeek
+
+},{"../is_same_week/index.js":240}],235:[function(require,module,exports){
+var startOfISOYear = require('../start_of_iso_year/index.js')
+
+/**
+ * @category ISO Week-Numbering Year Helpers
+ * @summary Are the given dates in the same ISO week-numbering year?
+ *
+ * @description
+ * Are the given dates in the same ISO week-numbering year?
+ *
+ * ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
+ *
+ * @param {Date|String|Number} dateLeft - the first date to check
+ * @param {Date|String|Number} dateRight - the second date to check
+ * @returns {Boolean} the dates are in the same ISO week-numbering year
+ *
+ * @example
+ * // Are 29 December 2003 and 2 January 2005 in the same ISO week-numbering year?
+ * var result = isSameISOYear(
+ *   new Date(2003, 11, 29),
+ *   new Date(2005, 0, 2)
+ * )
+ * //=> true
+ */
+function isSameISOYear (dirtyDateLeft, dirtyDateRight) {
+  var dateLeftStartOfYear = startOfISOYear(dirtyDateLeft)
+  var dateRightStartOfYear = startOfISOYear(dirtyDateRight)
+
+  return dateLeftStartOfYear.getTime() === dateRightStartOfYear.getTime()
+}
+
+module.exports = isSameISOYear
+
+},{"../start_of_iso_year/index.js":291}],236:[function(require,module,exports){
+var startOfMinute = require('../start_of_minute/index.js')
+
+/**
+ * @category Minute Helpers
+ * @summary Are the given dates in the same minute?
+ *
+ * @description
+ * Are the given dates in the same minute?
+ *
+ * @param {Date|String|Number} dateLeft - the first date to check
+ * @param {Date|String|Number} dateRight - the second date to check
+ * @returns {Boolean} the dates are in the same minute
+ *
+ * @example
+ * // Are 4 September 2014 06:30:00 and 4 September 2014 06:30:15
+ * // in the same minute?
+ * var result = isSameMinute(
+ *   new Date(2014, 8, 4, 6, 30),
+ *   new Date(2014, 8, 4, 6, 30, 15)
+ * )
+ * //=> true
+ */
+function isSameMinute (dirtyDateLeft, dirtyDateRight) {
+  var dateLeftStartOfMinute = startOfMinute(dirtyDateLeft)
+  var dateRightStartOfMinute = startOfMinute(dirtyDateRight)
+
+  return dateLeftStartOfMinute.getTime() === dateRightStartOfMinute.getTime()
+}
+
+module.exports = isSameMinute
+
+},{"../start_of_minute/index.js":292}],237:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Month Helpers
+ * @summary Are the given dates in the same month?
+ *
+ * @description
+ * Are the given dates in the same month?
+ *
+ * @param {Date|String|Number} dateLeft - the first date to check
+ * @param {Date|String|Number} dateRight - the second date to check
+ * @returns {Boolean} the dates are in the same month
+ *
+ * @example
+ * // Are 2 September 2014 and 25 September 2014 in the same month?
+ * var result = isSameMonth(
+ *   new Date(2014, 8, 2),
+ *   new Date(2014, 8, 25)
+ * )
+ * //=> true
+ */
+function isSameMonth (dirtyDateLeft, dirtyDateRight) {
+  var dateLeft = parse(dirtyDateLeft)
+  var dateRight = parse(dirtyDateRight)
+  return dateLeft.getFullYear() === dateRight.getFullYear() &&
+    dateLeft.getMonth() === dateRight.getMonth()
+}
+
+module.exports = isSameMonth
+
+},{"../parse/index.js":274}],238:[function(require,module,exports){
+var startOfQuarter = require('../start_of_quarter/index.js')
+
+/**
+ * @category Quarter Helpers
+ * @summary Are the given dates in the same year quarter?
+ *
+ * @description
+ * Are the given dates in the same year quarter?
+ *
+ * @param {Date|String|Number} dateLeft - the first date to check
+ * @param {Date|String|Number} dateRight - the second date to check
+ * @returns {Boolean} the dates are in the same quarter
+ *
+ * @example
+ * // Are 1 January 2014 and 8 March 2014 in the same quarter?
+ * var result = isSameQuarter(
+ *   new Date(2014, 0, 1),
+ *   new Date(2014, 2, 8)
+ * )
+ * //=> true
+ */
+function isSameQuarter (dirtyDateLeft, dirtyDateRight) {
+  var dateLeftStartOfQuarter = startOfQuarter(dirtyDateLeft)
+  var dateRightStartOfQuarter = startOfQuarter(dirtyDateRight)
+
+  return dateLeftStartOfQuarter.getTime() === dateRightStartOfQuarter.getTime()
+}
+
+module.exports = isSameQuarter
+
+},{"../start_of_quarter/index.js":294}],239:[function(require,module,exports){
+var startOfSecond = require('../start_of_second/index.js')
+
+/**
+ * @category Second Helpers
+ * @summary Are the given dates in the same second?
+ *
+ * @description
+ * Are the given dates in the same second?
+ *
+ * @param {Date|String|Number} dateLeft - the first date to check
+ * @param {Date|String|Number} dateRight - the second date to check
+ * @returns {Boolean} the dates are in the same second
+ *
+ * @example
+ * // Are 4 September 2014 06:30:15.000 and 4 September 2014 06:30.15.500
+ * // in the same second?
+ * var result = isSameSecond(
+ *   new Date(2014, 8, 4, 6, 30, 15),
+ *   new Date(2014, 8, 4, 6, 30, 15, 500)
+ * )
+ * //=> true
+ */
+function isSameSecond (dirtyDateLeft, dirtyDateRight) {
+  var dateLeftStartOfSecond = startOfSecond(dirtyDateLeft)
+  var dateRightStartOfSecond = startOfSecond(dirtyDateRight)
+
+  return dateLeftStartOfSecond.getTime() === dateRightStartOfSecond.getTime()
+}
+
+module.exports = isSameSecond
+
+},{"../start_of_second/index.js":295}],240:[function(require,module,exports){
+var startOfWeek = require('../start_of_week/index.js')
+
+/**
+ * @category Week Helpers
+ * @summary Are the given dates in the same week?
+ *
+ * @description
+ * Are the given dates in the same week?
+ *
+ * @param {Date|String|Number} dateLeft - the first date to check
+ * @param {Date|String|Number} dateRight - the second date to check
+ * @param {Object} [options] - the object with options
+ * @param {Number} [options.weekStartsOn=0] - the index of the first day of the week (0 - Sunday)
+ * @returns {Boolean} the dates are in the same week
+ *
+ * @example
+ * // Are 31 August 2014 and 4 September 2014 in the same week?
+ * var result = isSameWeek(
+ *   new Date(2014, 7, 31),
+ *   new Date(2014, 8, 4)
+ * )
+ * //=> true
+ *
+ * @example
+ * // If week starts with Monday,
+ * // are 31 August 2014 and 4 September 2014 in the same week?
+ * var result = isSameWeek(
+ *   new Date(2014, 7, 31),
+ *   new Date(2014, 8, 4),
+ *   {weekStartsOn: 1}
+ * )
+ * //=> false
+ */
+function isSameWeek (dirtyDateLeft, dirtyDateRight, dirtyOptions) {
+  var dateLeftStartOfWeek = startOfWeek(dirtyDateLeft, dirtyOptions)
+  var dateRightStartOfWeek = startOfWeek(dirtyDateRight, dirtyOptions)
+
+  return dateLeftStartOfWeek.getTime() === dateRightStartOfWeek.getTime()
+}
+
+module.exports = isSameWeek
+
+},{"../start_of_week/index.js":298}],241:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Year Helpers
+ * @summary Are the given dates in the same year?
+ *
+ * @description
+ * Are the given dates in the same year?
+ *
+ * @param {Date|String|Number} dateLeft - the first date to check
+ * @param {Date|String|Number} dateRight - the second date to check
+ * @returns {Boolean} the dates are in the same year
+ *
+ * @example
+ * // Are 2 September 2014 and 25 September 2014 in the same year?
+ * var result = isSameYear(
+ *   new Date(2014, 8, 2),
+ *   new Date(2014, 8, 25)
+ * )
+ * //=> true
+ */
+function isSameYear (dirtyDateLeft, dirtyDateRight) {
+  var dateLeft = parse(dirtyDateLeft)
+  var dateRight = parse(dirtyDateRight)
+  return dateLeft.getFullYear() === dateRight.getFullYear()
+}
+
+module.exports = isSameYear
+
+},{"../parse/index.js":274}],242:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Weekday Helpers
+ * @summary Is the given date Saturday?
+ *
+ * @description
+ * Is the given date Saturday?
+ *
+ * @param {Date|String|Number} date - the date to check
+ * @returns {Boolean} the date is Saturday
+ *
+ * @example
+ * // Is 27 September 2014 Saturday?
+ * var result = isSaturday(new Date(2014, 8, 27))
+ * //=> true
+ */
+function isSaturday (dirtyDate) {
+  return parse(dirtyDate).getDay() === 6
+}
+
+module.exports = isSaturday
+
+},{"../parse/index.js":274}],243:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Weekday Helpers
+ * @summary Is the given date Sunday?
+ *
+ * @description
+ * Is the given date Sunday?
+ *
+ * @param {Date|String|Number} date - the date to check
+ * @returns {Boolean} the date is Sunday
+ *
+ * @example
+ * // Is 21 September 2014 Sunday?
+ * var result = isSunday(new Date(2014, 8, 21))
+ * //=> true
+ */
+function isSunday (dirtyDate) {
+  return parse(dirtyDate).getDay() === 0
+}
+
+module.exports = isSunday
+
+},{"../parse/index.js":274}],244:[function(require,module,exports){
+var isSameHour = require('../is_same_hour/index.js')
+
+/**
+ * @category Hour Helpers
+ * @summary Is the given date in the same hour as the current date?
+ *
+ * @description
+ * Is the given date in the same hour as the current date?
+ *
+ * @param {Date|String|Number} date - the date to check
+ * @returns {Boolean} the date is in this hour
+ *
+ * @example
+ * // If now is 25 September 2014 18:30:15.500,
+ * // is 25 September 2014 18:00:00 in this hour?
+ * var result = isThisHour(new Date(2014, 8, 25, 18))
+ * //=> true
+ */
+function isThisHour (dirtyDate) {
+  return isSameHour(new Date(), dirtyDate)
+}
+
+module.exports = isThisHour
+
+},{"../is_same_hour/index.js":233}],245:[function(require,module,exports){
+var isSameISOWeek = require('../is_same_iso_week/index.js')
+
+/**
+ * @category ISO Week Helpers
+ * @summary Is the given date in the same ISO week as the current date?
+ *
+ * @description
+ * Is the given date in the same ISO week as the current date?
+ *
+ * ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
+ *
+ * @param {Date|String|Number} date - the date to check
+ * @returns {Boolean} the date is in this ISO week
+ *
+ * @example
+ * // If today is 25 September 2014, is 22 September 2014 in this ISO week?
+ * var result = isThisISOWeek(new Date(2014, 8, 22))
+ * //=> true
+ */
+function isThisISOWeek (dirtyDate) {
+  return isSameISOWeek(new Date(), dirtyDate)
+}
+
+module.exports = isThisISOWeek
+
+},{"../is_same_iso_week/index.js":234}],246:[function(require,module,exports){
+var isSameISOYear = require('../is_same_iso_year/index.js')
+
+/**
+ * @category ISO Week-Numbering Year Helpers
+ * @summary Is the given date in the same ISO week-numbering year as the current date?
+ *
+ * @description
+ * Is the given date in the same ISO week-numbering year as the current date?
+ *
+ * ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
+ *
+ * @param {Date|String|Number} date - the date to check
+ * @returns {Boolean} the date is in this ISO week-numbering year
+ *
+ * @example
+ * // If today is 25 September 2014,
+ * // is 30 December 2013 in this ISO week-numbering year?
+ * var result = isThisISOYear(new Date(2013, 11, 30))
+ * //=> true
+ */
+function isThisISOYear (dirtyDate) {
+  return isSameISOYear(new Date(), dirtyDate)
+}
+
+module.exports = isThisISOYear
+
+},{"../is_same_iso_year/index.js":235}],247:[function(require,module,exports){
+var isSameMinute = require('../is_same_minute/index.js')
+
+/**
+ * @category Minute Helpers
+ * @summary Is the given date in the same minute as the current date?
+ *
+ * @description
+ * Is the given date in the same minute as the current date?
+ *
+ * @param {Date|String|Number} date - the date to check
+ * @returns {Boolean} the date is in this minute
+ *
+ * @example
+ * // If now is 25 September 2014 18:30:15.500,
+ * // is 25 September 2014 18:30:00 in this minute?
+ * var result = isThisMinute(new Date(2014, 8, 25, 18, 30))
+ * //=> true
+ */
+function isThisMinute (dirtyDate) {
+  return isSameMinute(new Date(), dirtyDate)
+}
+
+module.exports = isThisMinute
+
+},{"../is_same_minute/index.js":236}],248:[function(require,module,exports){
+var isSameMonth = require('../is_same_month/index.js')
+
+/**
+ * @category Month Helpers
+ * @summary Is the given date in the same month as the current date?
+ *
+ * @description
+ * Is the given date in the same month as the current date?
+ *
+ * @param {Date|String|Number} date - the date to check
+ * @returns {Boolean} the date is in this month
+ *
+ * @example
+ * // If today is 25 September 2014, is 15 September 2014 in this month?
+ * var result = isThisMonth(new Date(2014, 8, 15))
+ * //=> true
+ */
+function isThisMonth (dirtyDate) {
+  return isSameMonth(new Date(), dirtyDate)
+}
+
+module.exports = isThisMonth
+
+},{"../is_same_month/index.js":237}],249:[function(require,module,exports){
+var isSameQuarter = require('../is_same_quarter/index.js')
+
+/**
+ * @category Quarter Helpers
+ * @summary Is the given date in the same quarter as the current date?
+ *
+ * @description
+ * Is the given date in the same quarter as the current date?
+ *
+ * @param {Date|String|Number} date - the date to check
+ * @returns {Boolean} the date is in this quarter
+ *
+ * @example
+ * // If today is 25 September 2014, is 2 July 2014 in this quarter?
+ * var result = isThisQuarter(new Date(2014, 6, 2))
+ * //=> true
+ */
+function isThisQuarter (dirtyDate) {
+  return isSameQuarter(new Date(), dirtyDate)
+}
+
+module.exports = isThisQuarter
+
+},{"../is_same_quarter/index.js":238}],250:[function(require,module,exports){
+var isSameSecond = require('../is_same_second/index.js')
+
+/**
+ * @category Second Helpers
+ * @summary Is the given date in the same second as the current date?
+ *
+ * @description
+ * Is the given date in the same second as the current date?
+ *
+ * @param {Date|String|Number} date - the date to check
+ * @returns {Boolean} the date is in this second
+ *
+ * @example
+ * // If now is 25 September 2014 18:30:15.500,
+ * // is 25 September 2014 18:30:15.000 in this second?
+ * var result = isThisSecond(new Date(2014, 8, 25, 18, 30, 15))
+ * //=> true
+ */
+function isThisSecond (dirtyDate) {
+  return isSameSecond(new Date(), dirtyDate)
+}
+
+module.exports = isThisSecond
+
+},{"../is_same_second/index.js":239}],251:[function(require,module,exports){
+var isSameWeek = require('../is_same_week/index.js')
+
+/**
+ * @category Week Helpers
+ * @summary Is the given date in the same week as the current date?
+ *
+ * @description
+ * Is the given date in the same week as the current date?
+ *
+ * @param {Date|String|Number} date - the date to check
+ * @param {Object} [options] - the object with options
+ * @param {Number} [options.weekStartsOn=0] - the index of the first day of the week (0 - Sunday)
+ * @returns {Boolean} the date is in this week
+ *
+ * @example
+ * // If today is 25 September 2014, is 21 September 2014 in this week?
+ * var result = isThisWeek(new Date(2014, 8, 21))
+ * //=> true
+ *
+ * @example
+ * // If today is 25 September 2014 and week starts with Monday
+ * // is 21 September 2014 in this week?
+ * var result = isThisWeek(new Date(2014, 8, 21), {weekStartsOn: 1})
+ * //=> false
+ */
+function isThisWeek (dirtyDate, dirtyOptions) {
+  return isSameWeek(new Date(), dirtyDate, dirtyOptions)
+}
+
+module.exports = isThisWeek
+
+},{"../is_same_week/index.js":240}],252:[function(require,module,exports){
+var isSameYear = require('../is_same_year/index.js')
+
+/**
+ * @category Year Helpers
+ * @summary Is the given date in the same year as the current date?
+ *
+ * @description
+ * Is the given date in the same year as the current date?
+ *
+ * @param {Date|String|Number} date - the date to check
+ * @returns {Boolean} the date is in this year
+ *
+ * @example
+ * // If today is 25 September 2014, is 2 July 2014 in this year?
+ * var result = isThisYear(new Date(2014, 6, 2))
+ * //=> true
+ */
+function isThisYear (dirtyDate) {
+  return isSameYear(new Date(), dirtyDate)
+}
+
+module.exports = isThisYear
+
+},{"../is_same_year/index.js":241}],253:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Weekday Helpers
+ * @summary Is the given date Thursday?
+ *
+ * @description
+ * Is the given date Thursday?
+ *
+ * @param {Date|String|Number} date - the date to check
+ * @returns {Boolean} the date is Thursday
+ *
+ * @example
+ * // Is 25 September 2014 Thursday?
+ * var result = isThursday(new Date(2014, 8, 25))
+ * //=> true
+ */
+function isThursday (dirtyDate) {
+  return parse(dirtyDate).getDay() === 4
+}
+
+module.exports = isThursday
+
+},{"../parse/index.js":274}],254:[function(require,module,exports){
+var startOfDay = require('../start_of_day/index.js')
+
+/**
+ * @category Day Helpers
+ * @summary Is the given date today?
+ *
+ * @description
+ * Is the given date today?
+ *
+ * @param {Date|String|Number} date - the date to check
+ * @returns {Boolean} the date is today
+ *
+ * @example
+ * // If today is 6 October 2014, is 6 October 14:00:00 today?
+ * var result = isToday(new Date(2014, 9, 6, 14, 0))
+ * //=> true
+ */
+function isToday (dirtyDate) {
+  return startOfDay(dirtyDate).getTime() === startOfDay(new Date()).getTime()
+}
+
+module.exports = isToday
+
+},{"../start_of_day/index.js":288}],255:[function(require,module,exports){
+var startOfDay = require('../start_of_day/index.js')
+
+/**
+ * @category Day Helpers
+ * @summary Is the given date tomorrow?
+ *
+ * @description
+ * Is the given date tomorrow?
+ *
+ * @param {Date|String|Number} date - the date to check
+ * @returns {Boolean} the date is tomorrow
+ *
+ * @example
+ * // If today is 6 October 2014, is 7 October 14:00:00 tomorrow?
+ * var result = isTomorrow(new Date(2014, 9, 7, 14, 0))
+ * //=> true
+ */
+function isTomorrow (dirtyDate) {
+  var tomorrow = new Date()
+  tomorrow.setDate(tomorrow.getDate() + 1)
+  return startOfDay(dirtyDate).getTime() === startOfDay(tomorrow).getTime()
+}
+
+module.exports = isTomorrow
+
+},{"../start_of_day/index.js":288}],256:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Weekday Helpers
+ * @summary Is the given date Tuesday?
+ *
+ * @description
+ * Is the given date Tuesday?
+ *
+ * @param {Date|String|Number} date - the date to check
+ * @returns {Boolean} the date is Tuesday
+ *
+ * @example
+ * // Is 23 September 2014 Tuesday?
+ * var result = isTuesday(new Date(2014, 8, 23))
+ * //=> true
+ */
+function isTuesday (dirtyDate) {
+  return parse(dirtyDate).getDay() === 2
+}
+
+module.exports = isTuesday
+
+},{"../parse/index.js":274}],257:[function(require,module,exports){
+var isDate = require('../is_date/index.js')
+
+/**
+ * @category Common Helpers
+ * @summary Is the given date valid?
+ *
+ * @description
+ * Returns false if argument is Invalid Date and true otherwise.
+ * Invalid Date is a Date, whose time value is NaN.
+ *
+ * Time value of Date: http://es5.github.io/#x15.9.1.1
+ *
+ * @param {Date} date - the date to check
+ * @returns {Boolean} the date is valid
+ * @throws {TypeError} argument must be an instance of Date
+ *
+ * @example
+ * // For the valid date:
+ * var result = isValid(new Date(2014, 1, 31))
+ * //=> true
+ *
+ * @example
+ * // For the invalid date:
+ * var result = isValid(new Date(''))
+ * //=> false
+ */
+function isValid (dirtyDate) {
+  if (isDate(dirtyDate)) {
+    return !isNaN(dirtyDate)
+  } else {
+    throw new TypeError(toString.call(dirtyDate) + ' is not an instance of Date')
+  }
+}
+
+module.exports = isValid
+
+},{"../is_date/index.js":223}],258:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Weekday Helpers
+ * @summary Is the given date Wednesday?
+ *
+ * @description
+ * Is the given date Wednesday?
+ *
+ * @param {Date|String|Number} date - the date to check
+ * @returns {Boolean} the date is Wednesday
+ *
+ * @example
+ * // Is 24 September 2014 Wednesday?
+ * var result = isWednesday(new Date(2014, 8, 24))
+ * //=> true
+ */
+function isWednesday (dirtyDate) {
+  return parse(dirtyDate).getDay() === 3
+}
+
+module.exports = isWednesday
+
+},{"../parse/index.js":274}],259:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Weekday Helpers
+ * @summary Does the given date fall on a weekend?
+ *
+ * @description
+ * Does the given date fall on a weekend?
+ *
+ * @param {Date|String|Number} date - the date to check
+ * @returns {Boolean} the date falls on a weekend
+ *
+ * @example
+ * // Does 5 October 2014 fall on a weekend?
+ * var result = isWeekend(new Date(2014, 9, 5))
+ * //=> true
+ */
+function isWeekend (dirtyDate) {
+  var date = parse(dirtyDate)
+  var day = date.getDay()
+  return day === 0 || day === 6
+}
+
+module.exports = isWeekend
+
+},{"../parse/index.js":274}],260:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Range Helpers
+ * @summary Is the given date within the range?
+ *
+ * @description
+ * Is the given date within the range?
+ *
+ * @param {Date|String|Number} date - the date to check
+ * @param {Date|String|Number} startDate - the start of range
+ * @param {Date|String|Number} endDate - the end of range
+ * @returns {Boolean} the date is within the range
+ * @throws {Error} startDate cannot be after endDate
+ *
+ * @example
+ * // For the date within the range:
+ * isWithinRange(
+ *   new Date(2014, 0, 3), new Date(2014, 0, 1), new Date(2014, 0, 7)
+ * )
+ * //=> true
+ *
+ * @example
+ * // For the date outside of the range:
+ * isWithinRange(
+ *   new Date(2014, 0, 10), new Date(2014, 0, 1), new Date(2014, 0, 7)
+ * )
+ * //=> false
+ */
+function isWithinRange (dirtyDate, dirtyStartDate, dirtyEndDate) {
+  var time = parse(dirtyDate).getTime()
+  var startTime = parse(dirtyStartDate).getTime()
+  var endTime = parse(dirtyEndDate).getTime()
+
+  if (startTime > endTime) {
+    throw new Error('The start of the range cannot be after the end of the range')
+  }
+
+  return time >= startTime && time <= endTime
+}
+
+module.exports = isWithinRange
+
+},{"../parse/index.js":274}],261:[function(require,module,exports){
+var startOfDay = require('../start_of_day/index.js')
+
+/**
+ * @category Day Helpers
+ * @summary Is the given date yesterday?
+ *
+ * @description
+ * Is the given date yesterday?
+ *
+ * @param {Date|String|Number} date - the date to check
+ * @returns {Boolean} the date is yesterday
+ *
+ * @example
+ * // If today is 6 October 2014, is 5 October 14:00:00 yesterday?
+ * var result = isYesterday(new Date(2014, 9, 5, 14, 0))
+ * //=> true
+ */
+function isYesterday (dirtyDate) {
+  var yesterday = new Date()
+  yesterday.setDate(yesterday.getDate() - 1)
+  return startOfDay(dirtyDate).getTime() === startOfDay(yesterday).getTime()
+}
+
+module.exports = isYesterday
+
+},{"../start_of_day/index.js":288}],262:[function(require,module,exports){
+var lastDayOfWeek = require('../last_day_of_week/index.js')
+
+/**
+ * @category ISO Week Helpers
+ * @summary Return the last day of an ISO week for the given date.
+ *
+ * @description
+ * Return the last day of an ISO week for the given date.
+ * The result will be in the local timezone.
+ *
+ * ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
+ *
+ * @param {Date|String|Number} date - the original date
+ * @returns {Date} the last day of an ISO week
+ *
+ * @example
+ * // The last day of an ISO week for 2 September 2014 11:55:00:
+ * var result = lastDayOfISOWeek(new Date(2014, 8, 2, 11, 55, 0))
+ * //=> Sun Sep 07 2014 00:00:00
+ */
+function lastDayOfISOWeek (dirtyDate) {
+  return lastDayOfWeek(dirtyDate, {weekStartsOn: 1})
+}
+
+module.exports = lastDayOfISOWeek
+
+},{"../last_day_of_week/index.js":266}],263:[function(require,module,exports){
+var getISOYear = require('../get_iso_year/index.js')
+var startOfISOWeek = require('../start_of_iso_week/index.js')
+
+/**
+ * @category ISO Week-Numbering Year Helpers
+ * @summary Return the last day of an ISO week-numbering year for the given date.
+ *
+ * @description
+ * Return the last day of an ISO week-numbering year,
+ * which always starts 3 days before the year's first Thursday.
+ * The result will be in the local timezone.
+ *
+ * ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
+ *
+ * @param {Date|String|Number} date - the original date
+ * @returns {Date} the end of an ISO week-numbering year
+ *
+ * @example
+ * // The last day of an ISO week-numbering year for 2 July 2005:
+ * var result = lastDayOfISOYear(new Date(2005, 6, 2))
+ * //=> Sun Jan 01 2006 00:00:00
+ */
+function lastDayOfISOYear (dirtyDate) {
+  var year = getISOYear(dirtyDate)
+  var fourthOfJanuary = new Date(0)
+  fourthOfJanuary.setFullYear(year + 1, 0, 4)
+  fourthOfJanuary.setHours(0, 0, 0, 0)
+  var date = startOfISOWeek(fourthOfJanuary)
+  date.setDate(date.getDate() - 1)
+  return date
+}
+
+module.exports = lastDayOfISOYear
+
+},{"../get_iso_year/index.js":211,"../start_of_iso_week/index.js":290}],264:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Month Helpers
+ * @summary Return the last day of a month for the given date.
+ *
+ * @description
+ * Return the last day of a month for the given date.
+ * The result will be in the local timezone.
+ *
+ * @param {Date|String|Number} date - the original date
+ * @returns {Date} the last day of a month
+ *
+ * @example
+ * // The last day of a month for 2 September 2014 11:55:00:
+ * var result = lastDayOfMonth(new Date(2014, 8, 2, 11, 55, 0))
+ * //=> Tue Sep 30 2014 00:00:00
+ */
+function lastDayOfMonth (dirtyDate) {
+  var date = parse(dirtyDate)
+  var month = date.getMonth()
+  date.setFullYear(date.getFullYear(), month + 1, 0)
+  date.setHours(0, 0, 0, 0)
+  return date
+}
+
+module.exports = lastDayOfMonth
+
+},{"../parse/index.js":274}],265:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Quarter Helpers
+ * @summary Return the last day of a year quarter for the given date.
+ *
+ * @description
+ * Return the last day of a year quarter for the given date.
+ * The result will be in the local timezone.
+ *
+ * @param {Date|String|Number} date - the original date
+ * @returns {Date} the last day of a quarter
+ *
+ * @example
+ * // The last day of a quarter for 2 September 2014 11:55:00:
+ * var result = lastDayOfQuarter(new Date(2014, 8, 2, 11, 55, 0))
+ * //=> Tue Sep 30 2014 00:00:00
+ */
+function lastDayOfQuarter (dirtyDate) {
+  var date = parse(dirtyDate)
+  var currentMonth = date.getMonth()
+  var month = currentMonth - currentMonth % 3 + 3
+  date.setMonth(month, 0)
+  date.setHours(0, 0, 0, 0)
+  return date
+}
+
+module.exports = lastDayOfQuarter
+
+},{"../parse/index.js":274}],266:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Week Helpers
+ * @summary Return the last day of a week for the given date.
+ *
+ * @description
+ * Return the last day of a week for the given date.
+ * The result will be in the local timezone.
+ *
+ * @param {Date|String|Number} date - the original date
+ * @param {Object} [options] - the object with options
+ * @param {Number} [options.weekStartsOn=0] - the index of the first day of the week (0 - Sunday)
+ * @returns {Date} the last day of a week
+ *
+ * @example
+ * // The last day of a week for 2 September 2014 11:55:00:
+ * var result = lastDayOfWeek(new Date(2014, 8, 2, 11, 55, 0))
+ * //=> Sat Sep 06 2014 00:00:00
+ *
+ * @example
+ * // If the week starts on Monday, the last day of the week for 2 September 2014 11:55:00:
+ * var result = lastDayOfWeek(new Date(2014, 8, 2, 11, 55, 0), {weekStartsOn: 1})
+ * //=> Sun Sep 07 2014 00:00:00
+ */
+function lastDayOfWeek (dirtyDate, dirtyOptions) {
+  var weekStartsOn = dirtyOptions ? (Number(dirtyOptions.weekStartsOn) || 0) : 0
+
+  var date = parse(dirtyDate)
+  var day = date.getDay()
+  var diff = (day < weekStartsOn ? -7 : 0) + 6 - (day - weekStartsOn)
+
+  date.setHours(0, 0, 0, 0)
+  date.setDate(date.getDate() + diff)
+  return date
+}
+
+module.exports = lastDayOfWeek
+
+},{"../parse/index.js":274}],267:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Year Helpers
+ * @summary Return the last day of a year for the given date.
+ *
+ * @description
+ * Return the last day of a year for the given date.
+ * The result will be in the local timezone.
+ *
+ * @param {Date|String|Number} date - the original date
+ * @returns {Date} the last day of a year
+ *
+ * @example
+ * // The last day of a year for 2 September 2014 11:55:00:
+ * var result = lastDayOfYear(new Date(2014, 8, 2, 11, 55, 00))
+ * //=> Wed Dec 31 2014 00:00:00
+ */
+function lastDayOfYear (dirtyDate) {
+  var date = parse(dirtyDate)
+  var year = date.getFullYear()
+  date.setFullYear(year + 1, 0, 0)
+  date.setHours(0, 0, 0, 0)
+  return date
+}
+
+module.exports = lastDayOfYear
+
+},{"../parse/index.js":274}],268:[function(require,module,exports){
+var commonFormatterKeys = [
+  'M', 'MM', 'Q', 'D', 'DD', 'DDD', 'DDDD', 'd',
+  'E', 'W', 'WW', 'YY', 'YYYY', 'GG', 'GGGG',
+  'H', 'HH', 'h', 'hh', 'm', 'mm',
+  's', 'ss', 'S', 'SS', 'SSS',
+  'Z', 'ZZ', 'X', 'x'
+]
+
+function buildFormattingTokensRegExp (formatters) {
+  var formatterKeys = []
+  for (var key in formatters) {
+    if (formatters.hasOwnProperty(key)) {
+      formatterKeys.push(key)
+    }
+  }
+
+  var formattingTokens = commonFormatterKeys
+    .concat(formatterKeys)
+    .sort()
+    .reverse()
+  var formattingTokensRegExp = new RegExp(
+    '(\\[[^\\[]*\\])|(\\\\)?' + '(' + formattingTokens.join('|') + '|.)', 'g'
+  )
+
+  return formattingTokensRegExp
+}
+
+module.exports = buildFormattingTokensRegExp
+
+},{}],269:[function(require,module,exports){
+function buildDistanceInWordsLocale () {
+  var distanceInWordsLocale = {
+    lessThanXSeconds: {
+      one: 'less than a second',
+      other: 'less than {{count}} seconds'
+    },
+
+    xSeconds: {
+      one: '1 second',
+      other: '{{count}} seconds'
+    },
+
+    halfAMinute: 'half a minute',
+
+    lessThanXMinutes: {
+      one: 'less than a minute',
+      other: 'less than {{count}} minutes'
+    },
+
+    xMinutes: {
+      one: '1 minute',
+      other: '{{count}} minutes'
+    },
+
+    aboutXHours: {
+      one: 'about 1 hour',
+      other: 'about {{count}} hours'
+    },
+
+    xHours: {
+      one: '1 hour',
+      other: '{{count}} hours'
+    },
+
+    xDays: {
+      one: '1 day',
+      other: '{{count}} days'
+    },
+
+    aboutXMonths: {
+      one: 'about 1 month',
+      other: 'about {{count}} months'
+    },
+
+    xMonths: {
+      one: '1 month',
+      other: '{{count}} months'
+    },
+
+    aboutXYears: {
+      one: 'about 1 year',
+      other: 'about {{count}} years'
+    },
+
+    xYears: {
+      one: '1 year',
+      other: '{{count}} years'
+    },
+
+    overXYears: {
+      one: 'over 1 year',
+      other: 'over {{count}} years'
+    },
+
+    almostXYears: {
+      one: 'almost 1 year',
+      other: 'almost {{count}} years'
+    }
+  }
+
+  function localize (token, count, options) {
+    options = options || {}
+
+    var result
+    if (typeof distanceInWordsLocale[token] === 'string') {
+      result = distanceInWordsLocale[token]
+    } else if (count === 1) {
+      result = distanceInWordsLocale[token].one
+    } else {
+      result = distanceInWordsLocale[token].other.replace('{{count}}', count)
+    }
+
+    if (options.addSuffix) {
+      if (options.comparison > 0) {
+        return 'in ' + result
+      } else {
+        return result + ' ago'
+      }
+    }
+
+    return result
+  }
+
+  return {
+    localize: localize
+  }
+}
+
+module.exports = buildDistanceInWordsLocale
+
+},{}],270:[function(require,module,exports){
+var buildFormattingTokensRegExp = require('../../_lib/build_formatting_tokens_reg_exp/index.js')
+
+function buildFormatLocale () {
+  // Note: in English, the names of days of the week and months are capitalized.
+  // If you are making a new locale based on this one, check if the same is true for the language you're working on.
+  // Generally, formatted dates should look like they are in the middle of a sentence,
+  // e.g. in Spanish language the weekdays and months should be in the lowercase.
+  var months3char = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  var monthsFull = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+  var weekdays2char = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
+  var weekdays3char = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+  var weekdaysFull = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+  var meridiemUppercase = ['AM', 'PM']
+  var meridiemLowercase = ['am', 'pm']
+  var meridiemFull = ['a.m.', 'p.m.']
+
+  var formatters = {
+    // Month: Jan, Feb, ..., Dec
+    'MMM': function (date) {
+      return months3char[date.getMonth()]
+    },
+
+    // Month: January, February, ..., December
+    'MMMM': function (date) {
+      return monthsFull[date.getMonth()]
+    },
+
+    // Day of week: Su, Mo, ..., Sa
+    'dd': function (date) {
+      return weekdays2char[date.getDay()]
+    },
+
+    // Day of week: Sun, Mon, ..., Sat
+    'ddd': function (date) {
+      return weekdays3char[date.getDay()]
+    },
+
+    // Day of week: Sunday, Monday, ..., Saturday
+    'dddd': function (date) {
+      return weekdaysFull[date.getDay()]
+    },
+
+    // AM, PM
+    'A': function (date) {
+      return (date.getHours() / 12) >= 1 ? meridiemUppercase[1] : meridiemUppercase[0]
+    },
+
+    // am, pm
+    'a': function (date) {
+      return (date.getHours() / 12) >= 1 ? meridiemLowercase[1] : meridiemLowercase[0]
+    },
+
+    // a.m., p.m.
+    'aa': function (date) {
+      return (date.getHours() / 12) >= 1 ? meridiemFull[1] : meridiemFull[0]
+    }
+  }
+
+  // Generate ordinal version of formatters: M -> Mo, D -> Do, etc.
+  var ordinalFormatters = ['M', 'D', 'DDD', 'd', 'Q', 'W']
+  ordinalFormatters.forEach(function (formatterToken) {
+    formatters[formatterToken + 'o'] = function (date, formatters) {
+      return ordinal(formatters[formatterToken](date))
+    }
+  })
+
+  return {
+    formatters: formatters,
+    formattingTokensRegExp: buildFormattingTokensRegExp(formatters)
+  }
+}
+
+function ordinal (number) {
+  var rem100 = number % 100
+  if (rem100 > 20 || rem100 < 10) {
+    switch (rem100 % 10) {
+      case 1:
+        return number + 'st'
+      case 2:
+        return number + 'nd'
+      case 3:
+        return number + 'rd'
+    }
+  }
+  return number + 'th'
+}
+
+module.exports = buildFormatLocale
+
+},{"../../_lib/build_formatting_tokens_reg_exp/index.js":268}],271:[function(require,module,exports){
+var buildDistanceInWordsLocale = require('./build_distance_in_words_locale/index.js')
+var buildFormatLocale = require('./build_format_locale/index.js')
+
+/**
+ * @category Locales
+ * @summary English locale.
+ */
+module.exports = {
+  distanceInWords: buildDistanceInWordsLocale(),
+  format: buildFormatLocale()
+}
+
+},{"./build_distance_in_words_locale/index.js":269,"./build_format_locale/index.js":270}],272:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Common Helpers
+ * @summary Return the latest of the given dates.
+ *
+ * @description
+ * Return the latest of the given dates.
+ *
+ * @param {...(Date|String|Number)} dates - the dates to compare
+ * @returns {Date} the latest of the dates
+ *
+ * @example
+ * // Which of these dates is the latest?
+ * var result = max(
+ *   new Date(1989, 6, 10),
+ *   new Date(1987, 1, 11),
+ *   new Date(1995, 6, 2),
+ *   new Date(1990, 0, 1)
+ * )
+ * //=> Sun Jul 02 1995 00:00:00
+ */
+function max () {
+  var dirtyDates = Array.prototype.slice.call(arguments)
+  var dates = dirtyDates.map(function (dirtyDate) {
+    return parse(dirtyDate)
+  })
+  var latestTimestamp = Math.max.apply(null, dates)
+  return new Date(latestTimestamp)
+}
+
+module.exports = max
+
+},{"../parse/index.js":274}],273:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Common Helpers
+ * @summary Return the earliest of the given dates.
+ *
+ * @description
+ * Return the earliest of the given dates.
+ *
+ * @param {...(Date|String|Number)} dates - the dates to compare
+ * @returns {Date} the earliest of the dates
+ *
+ * @example
+ * // Which of these dates is the earliest?
+ * var result = min(
+ *   new Date(1989, 6, 10),
+ *   new Date(1987, 1, 11),
+ *   new Date(1995, 6, 2),
+ *   new Date(1990, 0, 1)
+ * )
+ * //=> Wed Feb 11 1987 00:00:00
+ */
+function min () {
+  var dirtyDates = Array.prototype.slice.call(arguments)
+  var dates = dirtyDates.map(function (dirtyDate) {
+    return parse(dirtyDate)
+  })
+  var earliestTimestamp = Math.min.apply(null, dates)
+  return new Date(earliestTimestamp)
+}
+
+module.exports = min
+
+},{"../parse/index.js":274}],274:[function(require,module,exports){
+var isDate = require('../is_date/index.js')
+
+var MILLISECONDS_IN_HOUR = 3600000
+var MILLISECONDS_IN_MINUTE = 60000
+var DEFAULT_ADDITIONAL_DIGITS = 2
+
+var parseTokenDateTimeDelimeter = /[T ]/
+var parseTokenPlainTime = /:/
+
+// year tokens
+var parseTokenYY = /^(\d{2})$/
+var parseTokensYYY = [
+  /^([+-]\d{2})$/, // 0 additional digits
+  /^([+-]\d{3})$/, // 1 additional digit
+  /^([+-]\d{4})$/ // 2 additional digits
+]
+
+var parseTokenYYYY = /^(\d{4})/
+var parseTokensYYYYY = [
+  /^([+-]\d{4})/, // 0 additional digits
+  /^([+-]\d{5})/, // 1 additional digit
+  /^([+-]\d{6})/ // 2 additional digits
+]
+
+// date tokens
+var parseTokenMM = /^-(\d{2})$/
+var parseTokenDDD = /^-?(\d{3})$/
+var parseTokenMMDD = /^-?(\d{2})-?(\d{2})$/
+var parseTokenWww = /^-?W(\d{2})$/
+var parseTokenWwwD = /^-?W(\d{2})-?(\d{1})$/
+
+// time tokens
+var parseTokenHH = /^(\d{2}([.,]\d*)?)$/
+var parseTokenHHMM = /^(\d{2}):?(\d{2}([.,]\d*)?)$/
+var parseTokenHHMMSS = /^(\d{2}):?(\d{2}):?(\d{2}([.,]\d*)?)$/
+
+// timezone tokens
+var parseTokenTimezone = /([Z+-].*)$/
+var parseTokenTimezoneZ = /^(Z)$/
+var parseTokenTimezoneHH = /^([+-])(\d{2})$/
+var parseTokenTimezoneHHMM = /^([+-])(\d{2}):?(\d{2})$/
+
+/**
+ * @category Common Helpers
+ * @summary Convert the given argument to an instance of Date.
+ *
+ * @description
+ * Convert the given argument to an instance of Date.
+ *
+ * If the argument is an instance of Date, the function returns its clone.
+ *
+ * If the argument is a number, it is treated as a timestamp.
+ *
+ * If an argument is a string, the function tries to parse it.
+ * Function accepts complete ISO 8601 formats as well as partial implementations.
+ * ISO 8601: http://en.wikipedia.org/wiki/ISO_8601
+ *
+ * If all above fails, the function passes the given argument to Date constructor.
+ *
+ * @param {Date|String|Number} argument - the value to convert
+ * @param {Object} [options] - the object with options
+ * @param {0 | 1 | 2} [options.additionalDigits=2] - the additional number of digits in the extended year format
+ * @returns {Date} the parsed date in the local time zone
+ *
+ * @example
+ * // Convert string '2014-02-11T11:30:30' to date:
+ * var result = parse('2014-02-11T11:30:30')
+ * //=> Tue Feb 11 2014 11:30:30
+ *
+ * @example
+ * // Parse string '+02014101',
+ * // if the additional number of digits in the extended year format is 1:
+ * var result = parse('+02014101', {additionalDigits: 1})
+ * //=> Fri Apr 11 2014 00:00:00
+ */
+function parse (argument, dirtyOptions) {
+  if (isDate(argument)) {
+    // Prevent the date to lose the milliseconds when passed to new Date() in IE10
+    return new Date(argument.getTime())
+  } else if (typeof argument !== 'string') {
+    return new Date(argument)
+  }
+
+  var options = dirtyOptions || {}
+  var additionalDigits = options.additionalDigits
+  if (additionalDigits == null) {
+    additionalDigits = DEFAULT_ADDITIONAL_DIGITS
+  } else {
+    additionalDigits = Number(additionalDigits)
+  }
+
+  var dateStrings = splitDateString(argument)
+
+  var parseYearResult = parseYear(dateStrings.date, additionalDigits)
+  var year = parseYearResult.year
+  var restDateString = parseYearResult.restDateString
+
+  var date = parseDate(restDateString, year)
+
+  if (date) {
+    var timestamp = date.getTime()
+    var time = 0
+    var offset
+
+    if (dateStrings.time) {
+      time = parseTime(dateStrings.time)
+    }
+
+    if (dateStrings.timezone) {
+      offset = parseTimezone(dateStrings.timezone)
+    } else {
+      // get offset accurate to hour in timezones that change offset
+      offset = new Date(timestamp + time).getTimezoneOffset()
+      offset = new Date(timestamp + time + offset * MILLISECONDS_IN_MINUTE).getTimezoneOffset()
+    }
+
+    return new Date(timestamp + time + offset * MILLISECONDS_IN_MINUTE)
+  } else {
+    return new Date(argument)
+  }
+}
+
+function splitDateString (dateString) {
+  var dateStrings = {}
+  var array = dateString.split(parseTokenDateTimeDelimeter)
+  var timeString
+
+  if (parseTokenPlainTime.test(array[0])) {
+    dateStrings.date = null
+    timeString = array[0]
+  } else {
+    dateStrings.date = array[0]
+    timeString = array[1]
+  }
+
+  if (timeString) {
+    var token = parseTokenTimezone.exec(timeString)
+    if (token) {
+      dateStrings.time = timeString.replace(token[1], '')
+      dateStrings.timezone = token[1]
+    } else {
+      dateStrings.time = timeString
+    }
+  }
+
+  return dateStrings
+}
+
+function parseYear (dateString, additionalDigits) {
+  var parseTokenYYY = parseTokensYYY[additionalDigits]
+  var parseTokenYYYYY = parseTokensYYYYY[additionalDigits]
+
+  var token
+
+  // YYYY or ±YYYYY
+  token = parseTokenYYYY.exec(dateString) || parseTokenYYYYY.exec(dateString)
+  if (token) {
+    var yearString = token[1]
+    return {
+      year: parseInt(yearString, 10),
+      restDateString: dateString.slice(yearString.length)
+    }
+  }
+
+  // YY or ±YYY
+  token = parseTokenYY.exec(dateString) || parseTokenYYY.exec(dateString)
+  if (token) {
+    var centuryString = token[1]
+    return {
+      year: parseInt(centuryString, 10) * 100,
+      restDateString: dateString.slice(centuryString.length)
+    }
+  }
+
+  // Invalid ISO-formatted year
+  return {
+    year: null
+  }
+}
+
+function parseDate (dateString, year) {
+  // Invalid ISO-formatted year
+  if (year === null) {
+    return null
+  }
+
+  var token
+  var date
+  var month
+  var week
+
+  // YYYY
+  if (dateString.length === 0) {
+    date = new Date(0)
+    date.setUTCFullYear(year)
+    return date
+  }
+
+  // YYYY-MM
+  token = parseTokenMM.exec(dateString)
+  if (token) {
+    date = new Date(0)
+    month = parseInt(token[1], 10) - 1
+    date.setUTCFullYear(year, month)
+    return date
+  }
+
+  // YYYY-DDD or YYYYDDD
+  token = parseTokenDDD.exec(dateString)
+  if (token) {
+    date = new Date(0)
+    var dayOfYear = parseInt(token[1], 10)
+    date.setUTCFullYear(year, 0, dayOfYear)
+    return date
+  }
+
+  // YYYY-MM-DD or YYYYMMDD
+  token = parseTokenMMDD.exec(dateString)
+  if (token) {
+    date = new Date(0)
+    month = parseInt(token[1], 10) - 1
+    var day = parseInt(token[2], 10)
+    date.setUTCFullYear(year, month, day)
+    return date
+  }
+
+  // YYYY-Www or YYYYWww
+  token = parseTokenWww.exec(dateString)
+  if (token) {
+    week = parseInt(token[1], 10) - 1
+    return dayOfISOYear(year, week)
+  }
+
+  // YYYY-Www-D or YYYYWwwD
+  token = parseTokenWwwD.exec(dateString)
+  if (token) {
+    week = parseInt(token[1], 10) - 1
+    var dayOfWeek = parseInt(token[2], 10) - 1
+    return dayOfISOYear(year, week, dayOfWeek)
+  }
+
+  // Invalid ISO-formatted date
+  return null
+}
+
+function parseTime (timeString) {
+  var token
+  var hours
+  var minutes
+
+  // hh
+  token = parseTokenHH.exec(timeString)
+  if (token) {
+    hours = parseFloat(token[1].replace(',', '.'))
+    return (hours % 24) * MILLISECONDS_IN_HOUR
+  }
+
+  // hh:mm or hhmm
+  token = parseTokenHHMM.exec(timeString)
+  if (token) {
+    hours = parseInt(token[1], 10)
+    minutes = parseFloat(token[2].replace(',', '.'))
+    return (hours % 24) * MILLISECONDS_IN_HOUR +
+      minutes * MILLISECONDS_IN_MINUTE
+  }
+
+  // hh:mm:ss or hhmmss
+  token = parseTokenHHMMSS.exec(timeString)
+  if (token) {
+    hours = parseInt(token[1], 10)
+    minutes = parseInt(token[2], 10)
+    var seconds = parseFloat(token[3].replace(',', '.'))
+    return (hours % 24) * MILLISECONDS_IN_HOUR +
+      minutes * MILLISECONDS_IN_MINUTE +
+      seconds * 1000
+  }
+
+  // Invalid ISO-formatted time
+  return null
+}
+
+function parseTimezone (timezoneString) {
+  var token
+  var absoluteOffset
+
+  // Z
+  token = parseTokenTimezoneZ.exec(timezoneString)
+  if (token) {
+    return 0
+  }
+
+  // ±hh
+  token = parseTokenTimezoneHH.exec(timezoneString)
+  if (token) {
+    absoluteOffset = parseInt(token[2], 10) * 60
+    return (token[1] === '+') ? -absoluteOffset : absoluteOffset
+  }
+
+  // ±hh:mm or ±hhmm
+  token = parseTokenTimezoneHHMM.exec(timezoneString)
+  if (token) {
+    absoluteOffset = parseInt(token[2], 10) * 60 + parseInt(token[3], 10)
+    return (token[1] === '+') ? -absoluteOffset : absoluteOffset
+  }
+
+  return 0
+}
+
+function dayOfISOYear (isoYear, week, day) {
+  week = week || 0
+  day = day || 0
+  var date = new Date(0)
+  date.setUTCFullYear(isoYear, 0, 4)
+  var fourthOfJanuaryDay = date.getUTCDay() || 7
+  var diff = week * 7 + day + 1 - fourthOfJanuaryDay
+  date.setUTCDate(date.getUTCDate() + diff)
+  return date
+}
+
+module.exports = parse
+
+},{"../is_date/index.js":223}],275:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Day Helpers
+ * @summary Set the day of the month to the given date.
+ *
+ * @description
+ * Set the day of the month to the given date.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} dayOfMonth - the day of the month of the new date
+ * @returns {Date} the new date with the day of the month setted
+ *
+ * @example
+ * // Set the 30th day of the month to 1 September 2014:
+ * var result = setDate(new Date(2014, 8, 1), 30)
+ * //=> Tue Sep 30 2014 00:00:00
+ */
+function setDate (dirtyDate, dirtyDayOfMonth) {
+  var date = parse(dirtyDate)
+  var dayOfMonth = Number(dirtyDayOfMonth)
+  date.setDate(dayOfMonth)
+  return date
+}
+
+module.exports = setDate
+
+},{"../parse/index.js":274}],276:[function(require,module,exports){
+var parse = require('../parse/index.js')
+var addDays = require('../add_days/index.js')
+
+/**
+ * @category Weekday Helpers
+ * @summary Set the day of the week to the given date.
+ *
+ * @description
+ * Set the day of the week to the given date.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} day - the day of the week of the new date
+ * @param {Object} [options] - the object with options
+ * @param {Number} [options.weekStartsOn=0] - the index of the first day of the week (0 - Sunday)
+ * @returns {Date} the new date with the day of the week setted
+ *
+ * @example
+ * // Set Sunday to 1 September 2014:
+ * var result = setDay(new Date(2014, 8, 1), 0)
+ * //=> Sun Aug 31 2014 00:00:00
+ *
+ * @example
+ * // If week starts with Monday, set Sunday to 1 September 2014:
+ * var result = setDay(new Date(2014, 8, 1), 0, {weekStartsOn: 1})
+ * //=> Sun Sep 07 2014 00:00:00
+ */
+function setDay (dirtyDate, dirtyDay, dirtyOptions) {
+  var weekStartsOn = dirtyOptions ? (Number(dirtyOptions.weekStartsOn) || 0) : 0
+  var date = parse(dirtyDate)
+  var day = Number(dirtyDay)
+  var currentDay = date.getDay()
+
+  var remainder = day % 7
+  var dayIndex = (remainder + 7) % 7
+
+  var diff = (dayIndex < weekStartsOn ? 7 : 0) + day - currentDay
+  return addDays(date, diff)
+}
+
+module.exports = setDay
+
+},{"../add_days/index.js":152,"../parse/index.js":274}],277:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Day Helpers
+ * @summary Set the day of the year to the given date.
+ *
+ * @description
+ * Set the day of the year to the given date.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} dayOfYear - the day of the year of the new date
+ * @returns {Date} the new date with the day of the year setted
+ *
+ * @example
+ * // Set the 2nd day of the year to 2 July 2014:
+ * var result = setDayOfYear(new Date(2014, 6, 2), 2)
+ * //=> Thu Jan 02 2014 00:00:00
+ */
+function setDayOfYear (dirtyDate, dirtyDayOfYear) {
+  var date = parse(dirtyDate)
+  var dayOfYear = Number(dirtyDayOfYear)
+  date.setMonth(0)
+  date.setDate(dayOfYear)
+  return date
+}
+
+module.exports = setDayOfYear
+
+},{"../parse/index.js":274}],278:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Hour Helpers
+ * @summary Set the hours to the given date.
+ *
+ * @description
+ * Set the hours to the given date.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} hours - the hours of the new date
+ * @returns {Date} the new date with the hours setted
+ *
+ * @example
+ * // Set 4 hours to 1 September 2014 11:30:00:
+ * var result = setHours(new Date(2014, 8, 1, 11, 30), 4)
+ * //=> Mon Sep 01 2014 04:30:00
+ */
+function setHours (dirtyDate, dirtyHours) {
+  var date = parse(dirtyDate)
+  var hours = Number(dirtyHours)
+  date.setHours(hours)
+  return date
+}
+
+module.exports = setHours
+
+},{"../parse/index.js":274}],279:[function(require,module,exports){
+var parse = require('../parse/index.js')
+var addDays = require('../add_days/index.js')
+var getISODay = require('../get_iso_day/index.js')
+
+/**
+ * @category Weekday Helpers
+ * @summary Set the day of the ISO week to the given date.
+ *
+ * @description
+ * Set the day of the ISO week to the given date.
+ * ISO week starts with Monday.
+ * 7 is the index of Sunday, 1 is the index of Monday etc.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} day - the day of the ISO week of the new date
+ * @returns {Date} the new date with the day of the ISO week setted
+ *
+ * @example
+ * // Set Sunday to 1 September 2014:
+ * var result = setISODay(new Date(2014, 8, 1), 7)
+ * //=> Sun Sep 07 2014 00:00:00
+ */
+function setISODay (dirtyDate, dirtyDay) {
+  var date = parse(dirtyDate)
+  var day = Number(dirtyDay)
+  var currentDay = getISODay(date)
+  var diff = day - currentDay
+  return addDays(date, diff)
+}
+
+module.exports = setISODay
+
+},{"../add_days/index.js":152,"../get_iso_day/index.js":208,"../parse/index.js":274}],280:[function(require,module,exports){
+var parse = require('../parse/index.js')
+var getISOWeek = require('../get_iso_week/index.js')
+
+/**
+ * @category ISO Week Helpers
+ * @summary Set the ISO week to the given date.
+ *
+ * @description
+ * Set the ISO week to the given date, saving the weekday number.
+ *
+ * ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} isoWeek - the ISO week of the new date
+ * @returns {Date} the new date with the ISO week setted
+ *
+ * @example
+ * // Set the 53rd ISO week to 7 August 2004:
+ * var result = setISOWeek(new Date(2004, 7, 7), 53)
+ * //=> Sat Jan 01 2005 00:00:00
+ */
+function setISOWeek (dirtyDate, dirtyISOWeek) {
+  var date = parse(dirtyDate)
+  var isoWeek = Number(dirtyISOWeek)
+  var diff = getISOWeek(date) - isoWeek
+  date.setDate(date.getDate() - diff * 7)
+  return date
+}
+
+module.exports = setISOWeek
+
+},{"../get_iso_week/index.js":209,"../parse/index.js":274}],281:[function(require,module,exports){
+var parse = require('../parse/index.js')
+var startOfISOYear = require('../start_of_iso_year/index.js')
+var differenceInCalendarDays = require('../difference_in_calendar_days/index.js')
+
+/**
+ * @category ISO Week-Numbering Year Helpers
+ * @summary Set the ISO week-numbering year to the given date.
+ *
+ * @description
+ * Set the ISO week-numbering year to the given date,
+ * saving the week number and the weekday number.
+ *
+ * ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} isoYear - the ISO week-numbering year of the new date
+ * @returns {Date} the new date with the ISO week-numbering year setted
+ *
+ * @example
+ * // Set ISO week-numbering year 2007 to 29 December 2008:
+ * var result = setISOYear(new Date(2008, 11, 29), 2007)
+ * //=> Mon Jan 01 2007 00:00:00
+ */
+function setISOYear (dirtyDate, dirtyISOYear) {
+  var date = parse(dirtyDate)
+  var isoYear = Number(dirtyISOYear)
+  var diff = differenceInCalendarDays(date, startOfISOYear(date))
+  var fourthOfJanuary = new Date(0)
+  fourthOfJanuary.setFullYear(isoYear, 0, 4)
+  fourthOfJanuary.setHours(0, 0, 0, 0)
+  date = startOfISOYear(fourthOfJanuary)
+  date.setDate(date.getDate() + diff)
+  return date
+}
+
+module.exports = setISOYear
+
+},{"../difference_in_calendar_days/index.js":167,"../parse/index.js":274,"../start_of_iso_year/index.js":291}],282:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Millisecond Helpers
+ * @summary Set the milliseconds to the given date.
+ *
+ * @description
+ * Set the milliseconds to the given date.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} milliseconds - the milliseconds of the new date
+ * @returns {Date} the new date with the milliseconds setted
+ *
+ * @example
+ * // Set 300 milliseconds to 1 September 2014 11:30:40.500:
+ * var result = setMilliseconds(new Date(2014, 8, 1, 11, 30, 40, 500), 300)
+ * //=> Mon Sep 01 2014 11:30:40.300
+ */
+function setMilliseconds (dirtyDate, dirtyMilliseconds) {
+  var date = parse(dirtyDate)
+  var milliseconds = Number(dirtyMilliseconds)
+  date.setMilliseconds(milliseconds)
+  return date
+}
+
+module.exports = setMilliseconds
+
+},{"../parse/index.js":274}],283:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Minute Helpers
+ * @summary Set the minutes to the given date.
+ *
+ * @description
+ * Set the minutes to the given date.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} minutes - the minutes of the new date
+ * @returns {Date} the new date with the minutes setted
+ *
+ * @example
+ * // Set 45 minutes to 1 September 2014 11:30:40:
+ * var result = setMinutes(new Date(2014, 8, 1, 11, 30, 40), 45)
+ * //=> Mon Sep 01 2014 11:45:40
+ */
+function setMinutes (dirtyDate, dirtyMinutes) {
+  var date = parse(dirtyDate)
+  var minutes = Number(dirtyMinutes)
+  date.setMinutes(minutes)
+  return date
+}
+
+module.exports = setMinutes
+
+},{"../parse/index.js":274}],284:[function(require,module,exports){
+var parse = require('../parse/index.js')
+var getDaysInMonth = require('../get_days_in_month/index.js')
+
+/**
+ * @category Month Helpers
+ * @summary Set the month to the given date.
+ *
+ * @description
+ * Set the month to the given date.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} month - the month of the new date
+ * @returns {Date} the new date with the month setted
+ *
+ * @example
+ * // Set February to 1 September 2014:
+ * var result = setMonth(new Date(2014, 8, 1), 1)
+ * //=> Sat Feb 01 2014 00:00:00
+ */
+function setMonth (dirtyDate, dirtyMonth) {
+  var date = parse(dirtyDate)
+  var month = Number(dirtyMonth)
+  var year = date.getFullYear()
+  var day = date.getDate()
+
+  var dateWithDesiredMonth = new Date(0)
+  dateWithDesiredMonth.setFullYear(year, month, 15)
+  dateWithDesiredMonth.setHours(0, 0, 0, 0)
+  var daysInMonth = getDaysInMonth(dateWithDesiredMonth)
+  // Set the last day of the new month
+  // if the original date was the last day of the longer month
+  date.setMonth(month, Math.min(day, daysInMonth))
+  return date
+}
+
+module.exports = setMonth
+
+},{"../get_days_in_month/index.js":205,"../parse/index.js":274}],285:[function(require,module,exports){
+var parse = require('../parse/index.js')
+var setMonth = require('../set_month/index.js')
+
+/**
+ * @category Quarter Helpers
+ * @summary Set the year quarter to the given date.
+ *
+ * @description
+ * Set the year quarter to the given date.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} quarter - the quarter of the new date
+ * @returns {Date} the new date with the quarter setted
+ *
+ * @example
+ * // Set the 2nd quarter to 2 July 2014:
+ * var result = setQuarter(new Date(2014, 6, 2), 2)
+ * //=> Wed Apr 02 2014 00:00:00
+ */
+function setQuarter (dirtyDate, dirtyQuarter) {
+  var date = parse(dirtyDate)
+  var quarter = Number(dirtyQuarter)
+  var oldQuarter = Math.floor(date.getMonth() / 3) + 1
+  var diff = quarter - oldQuarter
+  return setMonth(date, date.getMonth() + diff * 3)
+}
+
+module.exports = setQuarter
+
+},{"../parse/index.js":274,"../set_month/index.js":284}],286:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Second Helpers
+ * @summary Set the seconds to the given date.
+ *
+ * @description
+ * Set the seconds to the given date.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} seconds - the seconds of the new date
+ * @returns {Date} the new date with the seconds setted
+ *
+ * @example
+ * // Set 45 seconds to 1 September 2014 11:30:40:
+ * var result = setSeconds(new Date(2014, 8, 1, 11, 30, 40), 45)
+ * //=> Mon Sep 01 2014 11:30:45
+ */
+function setSeconds (dirtyDate, dirtySeconds) {
+  var date = parse(dirtyDate)
+  var seconds = Number(dirtySeconds)
+  date.setSeconds(seconds)
+  return date
+}
+
+module.exports = setSeconds
+
+},{"../parse/index.js":274}],287:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Year Helpers
+ * @summary Set the year to the given date.
+ *
+ * @description
+ * Set the year to the given date.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} year - the year of the new date
+ * @returns {Date} the new date with the year setted
+ *
+ * @example
+ * // Set year 2013 to 1 September 2014:
+ * var result = setYear(new Date(2014, 8, 1), 2013)
+ * //=> Sun Sep 01 2013 00:00:00
+ */
+function setYear (dirtyDate, dirtyYear) {
+  var date = parse(dirtyDate)
+  var year = Number(dirtyYear)
+  date.setFullYear(year)
+  return date
+}
+
+module.exports = setYear
+
+},{"../parse/index.js":274}],288:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Day Helpers
+ * @summary Return the start of a day for the given date.
+ *
+ * @description
+ * Return the start of a day for the given date.
+ * The result will be in the local timezone.
+ *
+ * @param {Date|String|Number} date - the original date
+ * @returns {Date} the start of a day
+ *
+ * @example
+ * // The start of a day for 2 September 2014 11:55:00:
+ * var result = startOfDay(new Date(2014, 8, 2, 11, 55, 0))
+ * //=> Tue Sep 02 2014 00:00:00
+ */
+function startOfDay (dirtyDate) {
+  var date = parse(dirtyDate)
+  date.setHours(0, 0, 0, 0)
+  return date
+}
+
+module.exports = startOfDay
+
+},{"../parse/index.js":274}],289:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Hour Helpers
+ * @summary Return the start of an hour for the given date.
+ *
+ * @description
+ * Return the start of an hour for the given date.
+ * The result will be in the local timezone.
+ *
+ * @param {Date|String|Number} date - the original date
+ * @returns {Date} the start of an hour
+ *
+ * @example
+ * // The start of an hour for 2 September 2014 11:55:00:
+ * var result = startOfHour(new Date(2014, 8, 2, 11, 55))
+ * //=> Tue Sep 02 2014 11:00:00
+ */
+function startOfHour (dirtyDate) {
+  var date = parse(dirtyDate)
+  date.setMinutes(0, 0, 0)
+  return date
+}
+
+module.exports = startOfHour
+
+},{"../parse/index.js":274}],290:[function(require,module,exports){
+var startOfWeek = require('../start_of_week/index.js')
+
+/**
+ * @category ISO Week Helpers
+ * @summary Return the start of an ISO week for the given date.
+ *
+ * @description
+ * Return the start of an ISO week for the given date.
+ * The result will be in the local timezone.
+ *
+ * ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
+ *
+ * @param {Date|String|Number} date - the original date
+ * @returns {Date} the start of an ISO week
+ *
+ * @example
+ * // The start of an ISO week for 2 September 2014 11:55:00:
+ * var result = startOfISOWeek(new Date(2014, 8, 2, 11, 55, 0))
+ * //=> Mon Sep 01 2014 00:00:00
+ */
+function startOfISOWeek (dirtyDate) {
+  return startOfWeek(dirtyDate, {weekStartsOn: 1})
+}
+
+module.exports = startOfISOWeek
+
+},{"../start_of_week/index.js":298}],291:[function(require,module,exports){
+var getISOYear = require('../get_iso_year/index.js')
+var startOfISOWeek = require('../start_of_iso_week/index.js')
+
+/**
+ * @category ISO Week-Numbering Year Helpers
+ * @summary Return the start of an ISO week-numbering year for the given date.
+ *
+ * @description
+ * Return the start of an ISO week-numbering year,
+ * which always starts 3 days before the year's first Thursday.
+ * The result will be in the local timezone.
+ *
+ * ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
+ *
+ * @param {Date|String|Number} date - the original date
+ * @returns {Date} the start of an ISO year
+ *
+ * @example
+ * // The start of an ISO week-numbering year for 2 July 2005:
+ * var result = startOfISOYear(new Date(2005, 6, 2))
+ * //=> Mon Jan 03 2005 00:00:00
+ */
+function startOfISOYear (dirtyDate) {
+  var year = getISOYear(dirtyDate)
+  var fourthOfJanuary = new Date(0)
+  fourthOfJanuary.setFullYear(year, 0, 4)
+  fourthOfJanuary.setHours(0, 0, 0, 0)
+  var date = startOfISOWeek(fourthOfJanuary)
+  return date
+}
+
+module.exports = startOfISOYear
+
+},{"../get_iso_year/index.js":211,"../start_of_iso_week/index.js":290}],292:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Minute Helpers
+ * @summary Return the start of a minute for the given date.
+ *
+ * @description
+ * Return the start of a minute for the given date.
+ * The result will be in the local timezone.
+ *
+ * @param {Date|String|Number} date - the original date
+ * @returns {Date} the start of a minute
+ *
+ * @example
+ * // The start of a minute for 1 December 2014 22:15:45.400:
+ * var result = startOfMinute(new Date(2014, 11, 1, 22, 15, 45, 400))
+ * //=> Mon Dec 01 2014 22:15:00
+ */
+function startOfMinute (dirtyDate) {
+  var date = parse(dirtyDate)
+  date.setSeconds(0, 0)
+  return date
+}
+
+module.exports = startOfMinute
+
+},{"../parse/index.js":274}],293:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Month Helpers
+ * @summary Return the start of a month for the given date.
+ *
+ * @description
+ * Return the start of a month for the given date.
+ * The result will be in the local timezone.
+ *
+ * @param {Date|String|Number} date - the original date
+ * @returns {Date} the start of a month
+ *
+ * @example
+ * // The start of a month for 2 September 2014 11:55:00:
+ * var result = startOfMonth(new Date(2014, 8, 2, 11, 55, 0))
+ * //=> Mon Sep 01 2014 00:00:00
+ */
+function startOfMonth (dirtyDate) {
+  var date = parse(dirtyDate)
+  date.setDate(1)
+  date.setHours(0, 0, 0, 0)
+  return date
+}
+
+module.exports = startOfMonth
+
+},{"../parse/index.js":274}],294:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Quarter Helpers
+ * @summary Return the start of a year quarter for the given date.
+ *
+ * @description
+ * Return the start of a year quarter for the given date.
+ * The result will be in the local timezone.
+ *
+ * @param {Date|String|Number} date - the original date
+ * @returns {Date} the start of a quarter
+ *
+ * @example
+ * // The start of a quarter for 2 September 2014 11:55:00:
+ * var result = startOfQuarter(new Date(2014, 8, 2, 11, 55, 0))
+ * //=> Tue Jul 01 2014 00:00:00
+ */
+function startOfQuarter (dirtyDate) {
+  var date = parse(dirtyDate)
+  var currentMonth = date.getMonth()
+  var month = currentMonth - currentMonth % 3
+  date.setMonth(month, 1)
+  date.setHours(0, 0, 0, 0)
+  return date
+}
+
+module.exports = startOfQuarter
+
+},{"../parse/index.js":274}],295:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Second Helpers
+ * @summary Return the start of a second for the given date.
+ *
+ * @description
+ * Return the start of a second for the given date.
+ * The result will be in the local timezone.
+ *
+ * @param {Date|String|Number} date - the original date
+ * @returns {Date} the start of a second
+ *
+ * @example
+ * // The start of a second for 1 December 2014 22:15:45.400:
+ * var result = startOfSecond(new Date(2014, 11, 1, 22, 15, 45, 400))
+ * //=> Mon Dec 01 2014 22:15:45.000
+ */
+function startOfSecond (dirtyDate) {
+  var date = parse(dirtyDate)
+  date.setMilliseconds(0)
+  return date
+}
+
+module.exports = startOfSecond
+
+},{"../parse/index.js":274}],296:[function(require,module,exports){
+var startOfDay = require('../start_of_day/index.js')
+
+/**
+ * @category Day Helpers
+ * @summary Return the start of today.
+ *
+ * @description
+ * Return the start of today.
+ *
+ * @returns {Date} the start of today
+ *
+ * @example
+ * // If today is 6 October 2014:
+ * var result = startOfToday()
+ * //=> Mon Oct 6 2014 00:00:00
+ */
+function startOfToday () {
+  return startOfDay(new Date())
+}
+
+module.exports = startOfToday
+
+},{"../start_of_day/index.js":288}],297:[function(require,module,exports){
+/**
+ * @category Day Helpers
+ * @summary Return the start of tomorrow.
+ *
+ * @description
+ * Return the start of tomorrow.
+ *
+ * @returns {Date} the start of tomorrow
+ *
+ * @example
+ * // If today is 6 October 2014:
+ * var result = startOfTomorrow()
+ * //=> Tue Oct 7 2014 00:00:00
+ */
+function startOfTomorrow () {
+  var now = new Date()
+  var year = now.getFullYear()
+  var month = now.getMonth()
+  var day = now.getDate()
+
+  var date = new Date(0)
+  date.setFullYear(year, month, day + 1)
+  date.setHours(0, 0, 0, 0)
+  return date
+}
+
+module.exports = startOfTomorrow
+
+},{}],298:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Week Helpers
+ * @summary Return the start of a week for the given date.
+ *
+ * @description
+ * Return the start of a week for the given date.
+ * The result will be in the local timezone.
+ *
+ * @param {Date|String|Number} date - the original date
+ * @param {Object} [options] - the object with options
+ * @param {Number} [options.weekStartsOn=0] - the index of the first day of the week (0 - Sunday)
+ * @returns {Date} the start of a week
+ *
+ * @example
+ * // The start of a week for 2 September 2014 11:55:00:
+ * var result = startOfWeek(new Date(2014, 8, 2, 11, 55, 0))
+ * //=> Sun Aug 31 2014 00:00:00
+ *
+ * @example
+ * // If the week starts on Monday, the start of the week for 2 September 2014 11:55:00:
+ * var result = startOfWeek(new Date(2014, 8, 2, 11, 55, 0), {weekStartsOn: 1})
+ * //=> Mon Sep 01 2014 00:00:00
+ */
+function startOfWeek (dirtyDate, dirtyOptions) {
+  var weekStartsOn = dirtyOptions ? (Number(dirtyOptions.weekStartsOn) || 0) : 0
+
+  var date = parse(dirtyDate)
+  var day = date.getDay()
+  var diff = (day < weekStartsOn ? 7 : 0) + day - weekStartsOn
+
+  date.setDate(date.getDate() - diff)
+  date.setHours(0, 0, 0, 0)
+  return date
+}
+
+module.exports = startOfWeek
+
+},{"../parse/index.js":274}],299:[function(require,module,exports){
+var parse = require('../parse/index.js')
+
+/**
+ * @category Year Helpers
+ * @summary Return the start of a year for the given date.
+ *
+ * @description
+ * Return the start of a year for the given date.
+ * The result will be in the local timezone.
+ *
+ * @param {Date|String|Number} date - the original date
+ * @returns {Date} the start of a year
+ *
+ * @example
+ * // The start of a year for 2 September 2014 11:55:00:
+ * var result = startOfYear(new Date(2014, 8, 2, 11, 55, 00))
+ * //=> Wed Jan 01 2014 00:00:00
+ */
+function startOfYear (dirtyDate) {
+  var cleanDate = parse(dirtyDate)
+  var date = new Date(0)
+  date.setFullYear(cleanDate.getFullYear(), 0, 1)
+  date.setHours(0, 0, 0, 0)
+  return date
+}
+
+module.exports = startOfYear
+
+},{"../parse/index.js":274}],300:[function(require,module,exports){
+/**
+ * @category Day Helpers
+ * @summary Return the start of yesterday.
+ *
+ * @description
+ * Return the start of yesterday.
+ *
+ * @returns {Date} the start of yesterday
+ *
+ * @example
+ * // If today is 6 October 2014:
+ * var result = startOfYesterday()
+ * //=> Sun Oct 5 2014 00:00:00
+ */
+function startOfYesterday () {
+  var now = new Date()
+  var year = now.getFullYear()
+  var month = now.getMonth()
+  var day = now.getDate()
+
+  var date = new Date(0)
+  date.setFullYear(year, month, day - 1)
+  date.setHours(0, 0, 0, 0)
+  return date
+}
+
+module.exports = startOfYesterday
+
+},{}],301:[function(require,module,exports){
+var addDays = require('../add_days/index.js')
+
+/**
+ * @category Day Helpers
+ * @summary Subtract the specified number of days from the given date.
+ *
+ * @description
+ * Subtract the specified number of days from the given date.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} amount - the amount of days to be subtracted
+ * @returns {Date} the new date with the days subtracted
+ *
+ * @example
+ * // Subtract 10 days from 1 September 2014:
+ * var result = subDays(new Date(2014, 8, 1), 10)
+ * //=> Fri Aug 22 2014 00:00:00
+ */
+function subDays (dirtyDate, dirtyAmount) {
+  var amount = Number(dirtyAmount)
+  return addDays(dirtyDate, -amount)
+}
+
+module.exports = subDays
+
+},{"../add_days/index.js":152}],302:[function(require,module,exports){
+var addHours = require('../add_hours/index.js')
+
+/**
+ * @category Hour Helpers
+ * @summary Subtract the specified number of hours from the given date.
+ *
+ * @description
+ * Subtract the specified number of hours from the given date.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} amount - the amount of hours to be subtracted
+ * @returns {Date} the new date with the hours subtracted
+ *
+ * @example
+ * // Subtract 2 hours from 11 July 2014 01:00:00:
+ * var result = subHours(new Date(2014, 6, 11, 1, 0), 2)
+ * //=> Thu Jul 10 2014 23:00:00
+ */
+function subHours (dirtyDate, dirtyAmount) {
+  var amount = Number(dirtyAmount)
+  return addHours(dirtyDate, -amount)
+}
+
+module.exports = subHours
+
+},{"../add_hours/index.js":153}],303:[function(require,module,exports){
+var addISOYears = require('../add_iso_years/index.js')
+
+/**
+ * @category ISO Week-Numbering Year Helpers
+ * @summary Subtract the specified number of ISO week-numbering years from the given date.
+ *
+ * @description
+ * Subtract the specified number of ISO week-numbering years from the given date.
+ *
+ * ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} amount - the amount of ISO week-numbering years to be subtracted
+ * @returns {Date} the new date with the ISO week-numbering years subtracted
+ *
+ * @example
+ * // Subtract 5 ISO week-numbering years from 1 September 2014:
+ * var result = subISOYears(new Date(2014, 8, 1), 5)
+ * //=> Mon Aug 31 2009 00:00:00
+ */
+function subISOYears (dirtyDate, dirtyAmount) {
+  var amount = Number(dirtyAmount)
+  return addISOYears(dirtyDate, -amount)
+}
+
+module.exports = subISOYears
+
+},{"../add_iso_years/index.js":154}],304:[function(require,module,exports){
+var addMilliseconds = require('../add_milliseconds/index.js')
+
+/**
+ * @category Millisecond Helpers
+ * @summary Subtract the specified number of milliseconds from the given date.
+ *
+ * @description
+ * Subtract the specified number of milliseconds from the given date.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} amount - the amount of milliseconds to be subtracted
+ * @returns {Date} the new date with the milliseconds subtracted
+ *
+ * @example
+ * // Subtract 750 milliseconds from 10 July 2014 12:45:30.000:
+ * var result = subMilliseconds(new Date(2014, 6, 10, 12, 45, 30, 0), 750)
+ * //=> Thu Jul 10 2014 12:45:29.250
+ */
+function subMilliseconds (dirtyDate, dirtyAmount) {
+  var amount = Number(dirtyAmount)
+  return addMilliseconds(dirtyDate, -amount)
+}
+
+module.exports = subMilliseconds
+
+},{"../add_milliseconds/index.js":155}],305:[function(require,module,exports){
+var addMinutes = require('../add_minutes/index.js')
+
+/**
+ * @category Minute Helpers
+ * @summary Subtract the specified number of minutes from the given date.
+ *
+ * @description
+ * Subtract the specified number of minutes from the given date.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} amount - the amount of minutes to be subtracted
+ * @returns {Date} the new date with the mintues subtracted
+ *
+ * @example
+ * // Subtract 30 minutes from 10 July 2014 12:00:00:
+ * var result = subMinutes(new Date(2014, 6, 10, 12, 0), 30)
+ * //=> Thu Jul 10 2014 11:30:00
+ */
+function subMinutes (dirtyDate, dirtyAmount) {
+  var amount = Number(dirtyAmount)
+  return addMinutes(dirtyDate, -amount)
+}
+
+module.exports = subMinutes
+
+},{"../add_minutes/index.js":156}],306:[function(require,module,exports){
+var addMonths = require('../add_months/index.js')
+
+/**
+ * @category Month Helpers
+ * @summary Subtract the specified number of months from the given date.
+ *
+ * @description
+ * Subtract the specified number of months from the given date.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} amount - the amount of months to be subtracted
+ * @returns {Date} the new date with the months subtracted
+ *
+ * @example
+ * // Subtract 5 months from 1 February 2015:
+ * var result = subMonths(new Date(2015, 1, 1), 5)
+ * //=> Mon Sep 01 2014 00:00:00
+ */
+function subMonths (dirtyDate, dirtyAmount) {
+  var amount = Number(dirtyAmount)
+  return addMonths(dirtyDate, -amount)
+}
+
+module.exports = subMonths
+
+},{"../add_months/index.js":157}],307:[function(require,module,exports){
+var addQuarters = require('../add_quarters/index.js')
+
+/**
+ * @category Quarter Helpers
+ * @summary Subtract the specified number of year quarters from the given date.
+ *
+ * @description
+ * Subtract the specified number of year quarters from the given date.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} amount - the amount of quarters to be subtracted
+ * @returns {Date} the new date with the quarters subtracted
+ *
+ * @example
+ * // Subtract 3 quarters from 1 September 2014:
+ * var result = subQuarters(new Date(2014, 8, 1), 3)
+ * //=> Sun Dec 01 2013 00:00:00
+ */
+function subQuarters (dirtyDate, dirtyAmount) {
+  var amount = Number(dirtyAmount)
+  return addQuarters(dirtyDate, -amount)
+}
+
+module.exports = subQuarters
+
+},{"../add_quarters/index.js":158}],308:[function(require,module,exports){
+var addSeconds = require('../add_seconds/index.js')
+
+/**
+ * @category Second Helpers
+ * @summary Subtract the specified number of seconds from the given date.
+ *
+ * @description
+ * Subtract the specified number of seconds from the given date.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} amount - the amount of seconds to be subtracted
+ * @returns {Date} the new date with the seconds subtracted
+ *
+ * @example
+ * // Subtract 30 seconds from 10 July 2014 12:45:00:
+ * var result = subSeconds(new Date(2014, 6, 10, 12, 45, 0), 30)
+ * //=> Thu Jul 10 2014 12:44:30
+ */
+function subSeconds (dirtyDate, dirtyAmount) {
+  var amount = Number(dirtyAmount)
+  return addSeconds(dirtyDate, -amount)
+}
+
+module.exports = subSeconds
+
+},{"../add_seconds/index.js":159}],309:[function(require,module,exports){
+var addWeeks = require('../add_weeks/index.js')
+
+/**
+ * @category Week Helpers
+ * @summary Subtract the specified number of weeks from the given date.
+ *
+ * @description
+ * Subtract the specified number of weeks from the given date.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} amount - the amount of weeks to be subtracted
+ * @returns {Date} the new date with the weeks subtracted
+ *
+ * @example
+ * // Subtract 4 weeks from 1 September 2014:
+ * var result = subWeeks(new Date(2014, 8, 1), 4)
+ * //=> Mon Aug 04 2014 00:00:00
+ */
+function subWeeks (dirtyDate, dirtyAmount) {
+  var amount = Number(dirtyAmount)
+  return addWeeks(dirtyDate, -amount)
+}
+
+module.exports = subWeeks
+
+},{"../add_weeks/index.js":160}],310:[function(require,module,exports){
+var addYears = require('../add_years/index.js')
+
+/**
+ * @category Year Helpers
+ * @summary Subtract the specified number of years from the given date.
+ *
+ * @description
+ * Subtract the specified number of years from the given date.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} amount - the amount of years to be subtracted
+ * @returns {Date} the new date with the years subtracted
+ *
+ * @example
+ * // Subtract 5 years from 1 September 2014:
+ * var result = subYears(new Date(2014, 8, 1), 5)
+ * //=> Tue Sep 01 2009 00:00:00
+ */
+function subYears (dirtyDate, dirtyAmount) {
+  var amount = Number(dirtyAmount)
+  return addYears(dirtyDate, -amount)
+}
+
+module.exports = subYears
+
+},{"../add_years/index.js":161}],311:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -4179,7 +11725,7 @@ var EventListener = {
 module.exports = EventListener;
 }).call(this,require('_process'))
 
-},{"./emptyFunction":128,"_process":166}],122:[function(require,module,exports){
+},{"./emptyFunction":318,"_process":357}],312:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -4213,7 +11759,7 @@ var ExecutionEnvironment = {
 };
 
 module.exports = ExecutionEnvironment;
-},{}],123:[function(require,module,exports){
+},{}],313:[function(require,module,exports){
 "use strict";
 
 /**
@@ -4243,7 +11789,7 @@ function camelize(string) {
 }
 
 module.exports = camelize;
-},{}],124:[function(require,module,exports){
+},{}],314:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -4281,7 +11827,7 @@ function camelizeStyleName(string) {
 }
 
 module.exports = camelizeStyleName;
-},{"./camelize":123}],125:[function(require,module,exports){
+},{"./camelize":313}],315:[function(require,module,exports){
 'use strict';
 
 /**
@@ -4319,7 +11865,7 @@ function containsNode(outerNode, innerNode) {
 }
 
 module.exports = containsNode;
-},{"./isTextNode":138}],126:[function(require,module,exports){
+},{"./isTextNode":328}],316:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -4447,7 +11993,7 @@ function createArrayFromMixed(obj) {
 module.exports = createArrayFromMixed;
 }).call(this,require('_process'))
 
-},{"./invariant":136,"_process":166}],127:[function(require,module,exports){
+},{"./invariant":326,"_process":357}],317:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -4532,7 +12078,7 @@ function createNodesFromMarkup(markup, handleScript) {
 module.exports = createNodesFromMarkup;
 }).call(this,require('_process'))
 
-},{"./ExecutionEnvironment":122,"./createArrayFromMixed":126,"./getMarkupWrap":132,"./invariant":136,"_process":166}],128:[function(require,module,exports){
+},{"./ExecutionEnvironment":312,"./createArrayFromMixed":316,"./getMarkupWrap":322,"./invariant":326,"_process":357}],318:[function(require,module,exports){
 "use strict";
 
 /**
@@ -4569,7 +12115,7 @@ emptyFunction.thatReturnsArgument = function (arg) {
 };
 
 module.exports = emptyFunction;
-},{}],129:[function(require,module,exports){
+},{}],319:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -4590,7 +12136,7 @@ if (process.env.NODE_ENV !== 'production') {
 module.exports = emptyObject;
 }).call(this,require('_process'))
 
-},{"_process":166}],130:[function(require,module,exports){
+},{"_process":357}],320:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -4615,7 +12161,7 @@ function focusNode(node) {
 }
 
 module.exports = focusNode;
-},{}],131:[function(require,module,exports){
+},{}],321:[function(require,module,exports){
 'use strict';
 
 /**
@@ -4652,7 +12198,7 @@ function getActiveElement(doc) /*?DOMElement*/{
 }
 
 module.exports = getActiveElement;
-},{}],132:[function(require,module,exports){
+},{}],322:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -4748,7 +12294,7 @@ function getMarkupWrap(nodeName) {
 module.exports = getMarkupWrap;
 }).call(this,require('_process'))
 
-},{"./ExecutionEnvironment":122,"./invariant":136,"_process":166}],133:[function(require,module,exports){
+},{"./ExecutionEnvironment":312,"./invariant":326,"_process":357}],323:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -4785,7 +12331,7 @@ function getUnboundedScrollPosition(scrollable) {
 }
 
 module.exports = getUnboundedScrollPosition;
-},{}],134:[function(require,module,exports){
+},{}],324:[function(require,module,exports){
 'use strict';
 
 /**
@@ -4816,7 +12362,7 @@ function hyphenate(string) {
 }
 
 module.exports = hyphenate;
-},{}],135:[function(require,module,exports){
+},{}],325:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -4853,7 +12399,7 @@ function hyphenateStyleName(string) {
 }
 
 module.exports = hyphenateStyleName;
-},{"./hyphenate":134}],136:[function(require,module,exports){
+},{"./hyphenate":324}],326:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -4910,7 +12456,7 @@ function invariant(condition, format, a, b, c, d, e, f) {
 module.exports = invariant;
 }).call(this,require('_process'))
 
-},{"_process":166}],137:[function(require,module,exports){
+},{"_process":357}],327:[function(require,module,exports){
 'use strict';
 
 /**
@@ -4933,7 +12479,7 @@ function isNode(object) {
 }
 
 module.exports = isNode;
-},{}],138:[function(require,module,exports){
+},{}],328:[function(require,module,exports){
 'use strict';
 
 /**
@@ -4956,7 +12502,7 @@ function isTextNode(object) {
 }
 
 module.exports = isTextNode;
-},{"./isNode":137}],139:[function(require,module,exports){
+},{"./isNode":327}],329:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -4984,7 +12530,7 @@ function memoizeStringOnly(callback) {
 }
 
 module.exports = memoizeStringOnly;
-},{}],140:[function(require,module,exports){
+},{}],330:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -5005,7 +12551,7 @@ if (ExecutionEnvironment.canUseDOM) {
 }
 
 module.exports = performance || {};
-},{"./ExecutionEnvironment":122}],141:[function(require,module,exports){
+},{"./ExecutionEnvironment":312}],331:[function(require,module,exports){
 'use strict';
 
 /**
@@ -5037,7 +12583,7 @@ if (performance.now) {
 }
 
 module.exports = performanceNow;
-},{"./performance":140}],142:[function(require,module,exports){
+},{"./performance":330}],332:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -5103,7 +12649,7 @@ function shallowEqual(objA, objB) {
 }
 
 module.exports = shallowEqual;
-},{}],143:[function(require,module,exports){
+},{}],333:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
@@ -5169,7 +12715,7 @@ if (process.env.NODE_ENV !== 'production') {
 module.exports = warning;
 }).call(this,require('_process'))
 
-},{"./emptyFunction":128,"_process":166}],144:[function(require,module,exports){
+},{"./emptyFunction":318,"_process":357}],334:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -5225,7 +12771,7 @@ var supportsGoWithoutReloadUsingHash = exports.supportsGoWithoutReloadUsingHash 
 var isExtraneousPopstateEvent = exports.isExtraneousPopstateEvent = function isExtraneousPopstateEvent(event) {
   return event.state === undefined && navigator.userAgent.indexOf('CriOS') === -1;
 };
-},{}],145:[function(require,module,exports){
+},{}],335:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -5304,7 +12850,7 @@ var createLocation = exports.createLocation = function createLocation(path, stat
 var locationsAreEqual = exports.locationsAreEqual = function locationsAreEqual(a, b) {
   return a.pathname === b.pathname && a.search === b.search && a.hash === b.hash && a.key === b.key && (0, _valueEqual2.default)(a.state, b.state);
 };
-},{"./PathUtils":146,"resolve-pathname":375,"value-equal":378}],146:[function(require,module,exports){
+},{"./PathUtils":336,"resolve-pathname":566,"value-equal":569}],336:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -5366,7 +12912,7 @@ var createPath = exports.createPath = function createPath(location) {
 
   return path;
 };
-},{}],147:[function(require,module,exports){
+},{}],337:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -5674,7 +13220,7 @@ var createBrowserHistory = function createBrowserHistory() {
 };
 
 exports.default = createBrowserHistory;
-},{"./DOMUtils":144,"./LocationUtils":145,"./PathUtils":146,"./createTransitionManager":150,"invariant":153,"warning":379}],148:[function(require,module,exports){
+},{"./DOMUtils":334,"./LocationUtils":335,"./PathUtils":336,"./createTransitionManager":340,"invariant":344,"warning":570}],338:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -5999,7 +13545,7 @@ var createHashHistory = function createHashHistory() {
 };
 
 exports.default = createHashHistory;
-},{"./DOMUtils":144,"./LocationUtils":145,"./PathUtils":146,"./createTransitionManager":150,"invariant":153,"warning":379}],149:[function(require,module,exports){
+},{"./DOMUtils":334,"./LocationUtils":335,"./PathUtils":336,"./createTransitionManager":340,"invariant":344,"warning":570}],339:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -6170,7 +13716,7 @@ var createMemoryHistory = function createMemoryHistory() {
 };
 
 exports.default = createMemoryHistory;
-},{"./LocationUtils":145,"./PathUtils":146,"./createTransitionManager":150,"warning":379}],150:[function(require,module,exports){
+},{"./LocationUtils":335,"./PathUtils":336,"./createTransitionManager":340,"warning":570}],340:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -6256,7 +13802,7 @@ var createTransitionManager = function createTransitionManager() {
 };
 
 exports.default = createTransitionManager;
-},{"warning":379}],151:[function(require,module,exports){
+},{"warning":570}],341:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -6309,7 +13855,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 exports.createBrowserHistory = _createBrowserHistory3.default;
 exports.createHashHistory = _createHashHistory3.default;
 exports.createMemoryHistory = _createMemoryHistory3.default;
-},{"./LocationUtils":145,"./PathUtils":146,"./createBrowserHistory":147,"./createHashHistory":148,"./createMemoryHistory":149}],152:[function(require,module,exports){
+},{"./LocationUtils":335,"./PathUtils":336,"./createBrowserHistory":337,"./createHashHistory":338,"./createMemoryHistory":339}],342:[function(require,module,exports){
 /**
  * Copyright 2015, Yahoo! Inc.
  * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
@@ -6383,7 +13929,278 @@ exports.createMemoryHistory = _createMemoryHistory3.default;
     };
 })));
 
-},{}],153:[function(require,module,exports){
+},{}],343:[function(require,module,exports){
+var invariant = require('invariant');
+
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+var splice = Array.prototype.splice;
+
+var toString = Object.prototype.toString
+var type = function(obj) {
+  return toString.call(obj).slice(8, -1);
+}
+
+var assign = Object.assign || /* istanbul ignore next */ function assign(target, source) {
+  getAllKeys(source).forEach(function(key) {
+    if (hasOwnProperty.call(source, key)) {
+      target[key] = source[key];
+    }
+  });
+  return target;
+};
+
+var getAllKeys = typeof Object.getOwnPropertySymbols === 'function' ?
+  function(obj) { return Object.keys(obj).concat(Object.getOwnPropertySymbols(obj)) } :
+  /* istanbul ignore next */ function(obj) { return Object.keys(obj) };
+
+/* istanbul ignore next */
+function copy(object) {
+  if (Array.isArray(object)) {
+    return assign(object.constructor(object.length), object)
+  } else if (type(object) === 'Map') {
+    return new Map(object)
+  } else if (type(object) === 'Set') {
+    return new Set(object)
+  } else if (object && typeof object === 'object') {
+    var prototype = object.constructor && object.constructor.prototype
+    return assign(Object.create(prototype || null), object);
+  } else {
+    return object;
+  }
+}
+
+function newContext() {
+  var commands = assign({}, defaultCommands);
+  update.extend = function(directive, fn) {
+    commands[directive] = fn;
+  };
+  update.isEquals = function(a, b) { return a === b; };
+
+  return update;
+
+  function update(object, spec) {
+    if (typeof spec === 'function') {
+      return spec(object);
+    }
+
+    if (!(Array.isArray(object) && Array.isArray(spec))) {
+      invariant(
+        !Array.isArray(spec),
+        'update(): You provided an invalid spec to update(). The spec may ' +
+        'not contain an array except as the value of $set, $push, $unshift, ' +
+        '$splice or any custom command allowing an array value.'
+      );
+    }
+
+    invariant(
+      typeof spec === 'object' && spec !== null,
+      'update(): You provided an invalid spec to update(). The spec and ' +
+      'every included key path must be plain objects containing one of the ' +
+      'following commands: %s.',
+      Object.keys(commands).join(', ')
+    );
+
+    var nextObject = object;
+    var index, key;
+    getAllKeys(spec).forEach(function(key) {
+      if (hasOwnProperty.call(commands, key)) {
+        var objectWasNextObject = object === nextObject;
+        nextObject = commands[key](spec[key], nextObject, spec, object);
+        if (objectWasNextObject && update.isEquals(nextObject, object)) {
+          nextObject = object;
+        }
+      } else {
+        var nextValueForKey =
+          type(object) === 'Map'
+            ? update(object.get(key), spec[key])
+            : update(object[key], spec[key]);
+        if (!update.isEquals(nextValueForKey, nextObject[key]) || typeof nextValueForKey === 'undefined' && !hasOwnProperty.call(object, key)) {
+          if (nextObject === object) {
+            nextObject = copy(object);
+          }
+          if (type(nextObject) === 'Map') {
+            nextObject.set(key, nextValueForKey);
+          } else {
+            nextObject[key] = nextValueForKey;
+          }
+        }
+      }
+    })
+    return nextObject;
+  }
+
+}
+
+var defaultCommands = {
+  $push: function(value, nextObject, spec) {
+    invariantPushAndUnshift(nextObject, spec, '$push');
+    return value.length ? nextObject.concat(value) : nextObject;
+  },
+  $unshift: function(value, nextObject, spec) {
+    invariantPushAndUnshift(nextObject, spec, '$unshift');
+    return value.length ? value.concat(nextObject) : nextObject;
+  },
+  $splice: function(value, nextObject, spec, originalObject) {
+    invariantSplices(nextObject, spec);
+    value.forEach(function(args) {
+      invariantSplice(args);
+      if (nextObject === originalObject && args.length) nextObject = copy(originalObject);
+      splice.apply(nextObject, args);
+    });
+    return nextObject;
+  },
+  $set: function(value, nextObject, spec) {
+    invariantSet(spec);
+    return value;
+  },
+  $toggle: function(targets, nextObject) {
+    invariantSpecArray(targets, '$toggle');
+    var nextObjectCopy = targets.length ? copy(nextObject) : nextObject;
+
+    targets.forEach(function(target) {
+      nextObjectCopy[target] = !nextObject[target];
+    });
+
+    return nextObjectCopy;
+  },
+  $unset: function(value, nextObject, spec, originalObject) {
+    invariantSpecArray(value, '$unset');
+    value.forEach(function(key) {
+      if (Object.hasOwnProperty.call(nextObject, key)) {
+        if (nextObject === originalObject) nextObject = copy(originalObject);
+        delete nextObject[key];
+      }
+    });
+    return nextObject;
+  },
+  $add: function(value, nextObject, spec, originalObject) {
+    invariantMapOrSet(nextObject, '$add');
+    invariantSpecArray(value, '$add');
+    if (type(nextObject) === 'Map') {
+      value.forEach(function(pair) {
+        var key = pair[0];
+        var value = pair[1];
+        if (nextObject === originalObject && nextObject.get(key) !== value) nextObject = copy(originalObject);
+        nextObject.set(key, value);
+      });
+    } else {
+      value.forEach(function(value) {
+        if (nextObject === originalObject && !nextObject.has(value)) nextObject = copy(originalObject);
+        nextObject.add(value);
+      });
+    }
+    return nextObject;
+  },
+  $remove: function(value, nextObject, spec, originalObject) {
+    invariantMapOrSet(nextObject, '$remove');
+    invariantSpecArray(value, '$remove');
+    value.forEach(function(key) {
+      if (nextObject === originalObject && nextObject.has(key)) nextObject = copy(originalObject);
+      nextObject.delete(key);
+    });
+    return nextObject;
+  },
+  $merge: function(value, nextObject, spec, originalObject) {
+    invariantMerge(nextObject, value);
+    getAllKeys(value).forEach(function(key) {
+      if (value[key] !== nextObject[key]) {
+        if (nextObject === originalObject) nextObject = copy(originalObject);
+        nextObject[key] = value[key];
+      }
+    });
+    return nextObject;
+  },
+  $apply: function(value, original) {
+    invariantApply(value);
+    return value(original);
+  }
+};
+
+var contextForExport = newContext();
+
+module.exports = contextForExport;
+module.exports.default = contextForExport;
+module.exports.newContext = newContext;
+
+// invariants
+
+function invariantPushAndUnshift(value, spec, command) {
+  invariant(
+    Array.isArray(value),
+    'update(): expected target of %s to be an array; got %s.',
+    command,
+    value
+  );
+  invariantSpecArray(spec[command], command)
+}
+
+function invariantSpecArray(spec, command) {
+  invariant(
+    Array.isArray(spec),
+    'update(): expected spec of %s to be an array; got %s. ' +
+    'Did you forget to wrap your parameter in an array?',
+    command,
+    spec
+  );
+}
+
+function invariantSplices(value, spec) {
+  invariant(
+    Array.isArray(value),
+    'Expected $splice target to be an array; got %s',
+    value
+  );
+  invariantSplice(spec['$splice']);
+}
+
+function invariantSplice(value) {
+  invariant(
+    Array.isArray(value),
+    'update(): expected spec of $splice to be an array of arrays; got %s. ' +
+    'Did you forget to wrap your parameters in an array?',
+    value
+  );
+}
+
+function invariantApply(fn) {
+  invariant(
+    typeof fn === 'function',
+    'update(): expected spec of $apply to be a function; got %s.',
+    fn
+  );
+}
+
+function invariantSet(spec) {
+  invariant(
+    Object.keys(spec).length === 1,
+    'Cannot have more than one key in an object with $set'
+  );
+}
+
+function invariantMerge(target, specValue) {
+  invariant(
+    specValue && typeof specValue === 'object',
+    'update(): $merge expects a spec of type \'object\'; got %s',
+    specValue
+  );
+  invariant(
+    target && typeof target === 'object',
+    'update(): $merge expects a target of type \'object\'; got %s',
+    target
+  );
+}
+
+function invariantMapOrSet(target, command) {
+  var typeOfTarget = type(target);
+  invariant(
+    typeOfTarget === 'Map' || typeOfTarget === 'Set',
+    'update(): %s expects a target of type Set or Map; got %s',
+    command,
+    typeOfTarget
+  );
+}
+
+},{"invariant":344}],344:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -6437,7 +14254,7 @@ module.exports = invariant;
 
 }).call(this,require('_process'))
 
-},{"_process":166}],154:[function(require,module,exports){
+},{"_process":357}],345:[function(require,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
@@ -6460,7 +14277,7 @@ function isSlowBuffer (obj) {
   return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
 }
 
-},{}],155:[function(require,module,exports){
+},{}],346:[function(require,module,exports){
 var root = require('./_root');
 
 /** Built-in value references. */
@@ -6468,7 +14285,7 @@ var Symbol = root.Symbol;
 
 module.exports = Symbol;
 
-},{"./_root":162}],156:[function(require,module,exports){
+},{"./_root":353}],347:[function(require,module,exports){
 var Symbol = require('./_Symbol'),
     getRawTag = require('./_getRawTag'),
     objectToString = require('./_objectToString');
@@ -6498,7 +14315,7 @@ function baseGetTag(value) {
 
 module.exports = baseGetTag;
 
-},{"./_Symbol":155,"./_getRawTag":159,"./_objectToString":160}],157:[function(require,module,exports){
+},{"./_Symbol":346,"./_getRawTag":350,"./_objectToString":351}],348:[function(require,module,exports){
 (function (global){
 /** Detect free variable `global` from Node.js. */
 var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
@@ -6507,7 +14324,7 @@ module.exports = freeGlobal;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],158:[function(require,module,exports){
+},{}],349:[function(require,module,exports){
 var overArg = require('./_overArg');
 
 /** Built-in value references. */
@@ -6515,7 +14332,7 @@ var getPrototype = overArg(Object.getPrototypeOf, Object);
 
 module.exports = getPrototype;
 
-},{"./_overArg":161}],159:[function(require,module,exports){
+},{"./_overArg":352}],350:[function(require,module,exports){
 var Symbol = require('./_Symbol');
 
 /** Used for built-in method references. */
@@ -6563,7 +14380,7 @@ function getRawTag(value) {
 
 module.exports = getRawTag;
 
-},{"./_Symbol":155}],160:[function(require,module,exports){
+},{"./_Symbol":346}],351:[function(require,module,exports){
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
 
@@ -6587,7 +14404,7 @@ function objectToString(value) {
 
 module.exports = objectToString;
 
-},{}],161:[function(require,module,exports){
+},{}],352:[function(require,module,exports){
 /**
  * Creates a unary function that invokes `func` with its argument transformed.
  *
@@ -6604,7 +14421,7 @@ function overArg(func, transform) {
 
 module.exports = overArg;
 
-},{}],162:[function(require,module,exports){
+},{}],353:[function(require,module,exports){
 var freeGlobal = require('./_freeGlobal');
 
 /** Detect free variable `self`. */
@@ -6615,7 +14432,7 @@ var root = freeGlobal || freeSelf || Function('return this')();
 
 module.exports = root;
 
-},{"./_freeGlobal":157}],163:[function(require,module,exports){
+},{"./_freeGlobal":348}],354:[function(require,module,exports){
 /**
  * Checks if `value` is object-like. A value is object-like if it's not `null`
  * and has a `typeof` result of "object".
@@ -6646,7 +14463,7 @@ function isObjectLike(value) {
 
 module.exports = isObjectLike;
 
-},{}],164:[function(require,module,exports){
+},{}],355:[function(require,module,exports){
 var baseGetTag = require('./_baseGetTag'),
     getPrototype = require('./_getPrototype'),
     isObjectLike = require('./isObjectLike');
@@ -6710,7 +14527,7 @@ function isPlainObject(value) {
 
 module.exports = isPlainObject;
 
-},{"./_baseGetTag":156,"./_getPrototype":158,"./isObjectLike":163}],165:[function(require,module,exports){
+},{"./_baseGetTag":347,"./_getPrototype":349,"./isObjectLike":354}],356:[function(require,module,exports){
 /*
 object-assign
 (c) Sindre Sorhus
@@ -6802,7 +14619,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 	return to;
 };
 
-},{}],166:[function(require,module,exports){
+},{}],357:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -6988,7 +14805,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],167:[function(require,module,exports){
+},{}],358:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -7052,7 +14869,7 @@ module.exports = checkPropTypes;
 
 }).call(this,require('_process'))
 
-},{"./lib/ReactPropTypesSecret":172,"_process":166,"fbjs/lib/invariant":136,"fbjs/lib/warning":143}],168:[function(require,module,exports){
+},{"./lib/ReactPropTypesSecret":363,"_process":357,"fbjs/lib/invariant":326,"fbjs/lib/warning":333}],359:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -7073,7 +14890,7 @@ module.exports = function(isValidElement) {
   return factory(isValidElement, throwOnDirectAccess);
 };
 
-},{"./factoryWithTypeCheckers":170}],169:[function(require,module,exports){
+},{"./factoryWithTypeCheckers":361}],360:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -7133,7 +14950,7 @@ module.exports = function() {
   return ReactPropTypes;
 };
 
-},{"./lib/ReactPropTypesSecret":172,"fbjs/lib/emptyFunction":128,"fbjs/lib/invariant":136}],170:[function(require,module,exports){
+},{"./lib/ReactPropTypesSecret":363,"fbjs/lib/emptyFunction":318,"fbjs/lib/invariant":326}],361:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -7680,7 +15497,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 
 }).call(this,require('_process'))
 
-},{"./checkPropTypes":167,"./lib/ReactPropTypesSecret":172,"_process":166,"fbjs/lib/emptyFunction":128,"fbjs/lib/invariant":136,"fbjs/lib/warning":143,"object-assign":165}],171:[function(require,module,exports){
+},{"./checkPropTypes":358,"./lib/ReactPropTypesSecret":363,"_process":357,"fbjs/lib/emptyFunction":318,"fbjs/lib/invariant":326,"fbjs/lib/warning":333,"object-assign":356}],362:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -7713,7 +15530,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 }).call(this,require('_process'))
 
-},{"./factoryWithThrowingShims":169,"./factoryWithTypeCheckers":170,"_process":166}],172:[function(require,module,exports){
+},{"./factoryWithThrowingShims":360,"./factoryWithTypeCheckers":361,"_process":357}],363:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -7727,12 +15544,12 @@ var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
 
 module.exports = ReactPropTypesSecret;
 
-},{}],173:[function(require,module,exports){
+},{}],364:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./lib/ReactDOM');
 
-},{"./lib/ReactDOM":203}],174:[function(require,module,exports){
+},{"./lib/ReactDOM":394}],365:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -7804,7 +15621,7 @@ var ARIADOMPropertyConfig = {
 };
 
 module.exports = ARIADOMPropertyConfig;
-},{}],175:[function(require,module,exports){
+},{}],366:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -7826,7 +15643,7 @@ var AutoFocusUtils = {
 };
 
 module.exports = AutoFocusUtils;
-},{"./ReactDOMComponentTree":206,"fbjs/lib/focusNode":130}],176:[function(require,module,exports){
+},{"./ReactDOMComponentTree":397,"fbjs/lib/focusNode":320}],367:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -8208,7 +16025,7 @@ var BeforeInputEventPlugin = {
 };
 
 module.exports = BeforeInputEventPlugin;
-},{"./EventPropagators":192,"./FallbackCompositionState":193,"./SyntheticCompositionEvent":257,"./SyntheticInputEvent":261,"fbjs/lib/ExecutionEnvironment":122}],177:[function(require,module,exports){
+},{"./EventPropagators":383,"./FallbackCompositionState":384,"./SyntheticCompositionEvent":448,"./SyntheticInputEvent":452,"fbjs/lib/ExecutionEnvironment":312}],368:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -8361,7 +16178,7 @@ var CSSProperty = {
 };
 
 module.exports = CSSProperty;
-},{}],178:[function(require,module,exports){
+},{}],369:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -8577,7 +16394,7 @@ var CSSPropertyOperations = {
 module.exports = CSSPropertyOperations;
 }).call(this,require('_process'))
 
-},{"./CSSProperty":177,"./ReactInstrumentation":235,"./dangerousStyleValue":274,"_process":166,"fbjs/lib/ExecutionEnvironment":122,"fbjs/lib/camelizeStyleName":124,"fbjs/lib/hyphenateStyleName":135,"fbjs/lib/memoizeStringOnly":139,"fbjs/lib/warning":143}],179:[function(require,module,exports){
+},{"./CSSProperty":368,"./ReactInstrumentation":426,"./dangerousStyleValue":465,"_process":357,"fbjs/lib/ExecutionEnvironment":312,"fbjs/lib/camelizeStyleName":314,"fbjs/lib/hyphenateStyleName":325,"fbjs/lib/memoizeStringOnly":329,"fbjs/lib/warning":333}],370:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -8697,7 +16514,7 @@ var CallbackQueue = function () {
 module.exports = PooledClass.addPoolingTo(CallbackQueue);
 }).call(this,require('_process'))
 
-},{"./PooledClass":197,"./reactProdInvariant":293,"_process":166,"fbjs/lib/invariant":136}],180:[function(require,module,exports){
+},{"./PooledClass":388,"./reactProdInvariant":484,"_process":357,"fbjs/lib/invariant":326}],371:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -9007,7 +16824,7 @@ var ChangeEventPlugin = {
 };
 
 module.exports = ChangeEventPlugin;
-},{"./EventPluginHub":189,"./EventPropagators":192,"./ReactDOMComponentTree":206,"./ReactUpdates":250,"./SyntheticEvent":259,"./getEventTarget":282,"./inputValueTracking":288,"./isEventSupported":290,"./isTextInputElement":291,"fbjs/lib/ExecutionEnvironment":122}],181:[function(require,module,exports){
+},{"./EventPluginHub":380,"./EventPropagators":383,"./ReactDOMComponentTree":397,"./ReactUpdates":441,"./SyntheticEvent":450,"./getEventTarget":473,"./inputValueTracking":479,"./isEventSupported":481,"./isTextInputElement":482,"fbjs/lib/ExecutionEnvironment":312}],372:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -9234,7 +17051,7 @@ var DOMChildrenOperations = {
 module.exports = DOMChildrenOperations;
 }).call(this,require('_process'))
 
-},{"./DOMLazyTree":182,"./Danger":186,"./ReactDOMComponentTree":206,"./ReactInstrumentation":235,"./createMicrosoftUnsafeLocalFunction":273,"./setInnerHTML":295,"./setTextContent":296,"_process":166}],182:[function(require,module,exports){
+},{"./DOMLazyTree":373,"./Danger":377,"./ReactDOMComponentTree":397,"./ReactInstrumentation":426,"./createMicrosoftUnsafeLocalFunction":464,"./setInnerHTML":486,"./setTextContent":487,"_process":357}],373:[function(require,module,exports){
 /**
  * Copyright (c) 2015-present, Facebook, Inc.
  *
@@ -9350,7 +17167,7 @@ DOMLazyTree.queueHTML = queueHTML;
 DOMLazyTree.queueText = queueText;
 
 module.exports = DOMLazyTree;
-},{"./DOMNamespaces":183,"./createMicrosoftUnsafeLocalFunction":273,"./setInnerHTML":295,"./setTextContent":296}],183:[function(require,module,exports){
+},{"./DOMNamespaces":374,"./createMicrosoftUnsafeLocalFunction":464,"./setInnerHTML":486,"./setTextContent":487}],374:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -9368,7 +17185,7 @@ var DOMNamespaces = {
 };
 
 module.exports = DOMNamespaces;
-},{}],184:[function(require,module,exports){
+},{}],375:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -9578,7 +17395,7 @@ var DOMProperty = {
 module.exports = DOMProperty;
 }).call(this,require('_process'))
 
-},{"./reactProdInvariant":293,"_process":166,"fbjs/lib/invariant":136}],185:[function(require,module,exports){
+},{"./reactProdInvariant":484,"_process":357,"fbjs/lib/invariant":326}],376:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -9814,7 +17631,7 @@ var DOMPropertyOperations = {
 module.exports = DOMPropertyOperations;
 }).call(this,require('_process'))
 
-},{"./DOMProperty":184,"./ReactDOMComponentTree":206,"./ReactInstrumentation":235,"./quoteAttributeValueForBrowser":292,"_process":166,"fbjs/lib/warning":143}],186:[function(require,module,exports){
+},{"./DOMProperty":375,"./ReactDOMComponentTree":397,"./ReactInstrumentation":426,"./quoteAttributeValueForBrowser":483,"_process":357,"fbjs/lib/warning":333}],377:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -9861,7 +17678,7 @@ var Danger = {
 module.exports = Danger;
 }).call(this,require('_process'))
 
-},{"./DOMLazyTree":182,"./reactProdInvariant":293,"_process":166,"fbjs/lib/ExecutionEnvironment":122,"fbjs/lib/createNodesFromMarkup":127,"fbjs/lib/emptyFunction":128,"fbjs/lib/invariant":136}],187:[function(require,module,exports){
+},{"./DOMLazyTree":373,"./reactProdInvariant":484,"_process":357,"fbjs/lib/ExecutionEnvironment":312,"fbjs/lib/createNodesFromMarkup":317,"fbjs/lib/emptyFunction":318,"fbjs/lib/invariant":326}],378:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -9885,7 +17702,7 @@ module.exports = Danger;
 var DefaultEventPluginOrder = ['ResponderEventPlugin', 'SimpleEventPlugin', 'TapEventPlugin', 'EnterLeaveEventPlugin', 'ChangeEventPlugin', 'SelectEventPlugin', 'BeforeInputEventPlugin'];
 
 module.exports = DefaultEventPluginOrder;
-},{}],188:[function(require,module,exports){
+},{}],379:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -9981,7 +17798,7 @@ var EnterLeaveEventPlugin = {
 };
 
 module.exports = EnterLeaveEventPlugin;
-},{"./EventPropagators":192,"./ReactDOMComponentTree":206,"./SyntheticMouseEvent":263}],189:[function(require,module,exports){
+},{"./EventPropagators":383,"./ReactDOMComponentTree":397,"./SyntheticMouseEvent":454}],380:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -10256,7 +18073,7 @@ var EventPluginHub = {
 module.exports = EventPluginHub;
 }).call(this,require('_process'))
 
-},{"./EventPluginRegistry":190,"./EventPluginUtils":191,"./ReactErrorUtils":226,"./accumulateInto":270,"./forEachAccumulated":278,"./reactProdInvariant":293,"_process":166,"fbjs/lib/invariant":136}],190:[function(require,module,exports){
+},{"./EventPluginRegistry":381,"./EventPluginUtils":382,"./ReactErrorUtils":417,"./accumulateInto":461,"./forEachAccumulated":469,"./reactProdInvariant":484,"_process":357,"fbjs/lib/invariant":326}],381:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -10510,7 +18327,7 @@ var EventPluginRegistry = {
 module.exports = EventPluginRegistry;
 }).call(this,require('_process'))
 
-},{"./reactProdInvariant":293,"_process":166,"fbjs/lib/invariant":136}],191:[function(require,module,exports){
+},{"./reactProdInvariant":484,"_process":357,"fbjs/lib/invariant":326}],382:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -10737,7 +18554,7 @@ var EventPluginUtils = {
 module.exports = EventPluginUtils;
 }).call(this,require('_process'))
 
-},{"./ReactErrorUtils":226,"./reactProdInvariant":293,"_process":166,"fbjs/lib/invariant":136,"fbjs/lib/warning":143}],192:[function(require,module,exports){
+},{"./ReactErrorUtils":417,"./reactProdInvariant":484,"_process":357,"fbjs/lib/invariant":326,"fbjs/lib/warning":333}],383:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -10872,7 +18689,7 @@ var EventPropagators = {
 module.exports = EventPropagators;
 }).call(this,require('_process'))
 
-},{"./EventPluginHub":189,"./EventPluginUtils":191,"./accumulateInto":270,"./forEachAccumulated":278,"_process":166,"fbjs/lib/warning":143}],193:[function(require,module,exports){
+},{"./EventPluginHub":380,"./EventPluginUtils":382,"./accumulateInto":461,"./forEachAccumulated":469,"_process":357,"fbjs/lib/warning":333}],384:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -10965,7 +18782,7 @@ _assign(FallbackCompositionState.prototype, {
 PooledClass.addPoolingTo(FallbackCompositionState);
 
 module.exports = FallbackCompositionState;
-},{"./PooledClass":197,"./getTextContentAccessor":286,"object-assign":165}],194:[function(require,module,exports){
+},{"./PooledClass":388,"./getTextContentAccessor":477,"object-assign":356}],385:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -11200,7 +19017,7 @@ var HTMLDOMPropertyConfig = {
 };
 
 module.exports = HTMLDOMPropertyConfig;
-},{"./DOMProperty":184}],195:[function(require,module,exports){
+},{"./DOMProperty":375}],386:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -11257,7 +19074,7 @@ var KeyEscapeUtils = {
 };
 
 module.exports = KeyEscapeUtils;
-},{}],196:[function(require,module,exports){
+},{}],387:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -11396,7 +19213,7 @@ var LinkedValueUtils = {
 module.exports = LinkedValueUtils;
 }).call(this,require('_process'))
 
-},{"./ReactPropTypesSecret":243,"./reactProdInvariant":293,"_process":166,"fbjs/lib/invariant":136,"fbjs/lib/warning":143,"prop-types/factory":168,"react/lib/React":348}],197:[function(require,module,exports){
+},{"./ReactPropTypesSecret":434,"./reactProdInvariant":484,"_process":357,"fbjs/lib/invariant":326,"fbjs/lib/warning":333,"prop-types/factory":359,"react/lib/React":539}],388:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -11509,7 +19326,7 @@ var PooledClass = {
 module.exports = PooledClass;
 }).call(this,require('_process'))
 
-},{"./reactProdInvariant":293,"_process":166,"fbjs/lib/invariant":136}],198:[function(require,module,exports){
+},{"./reactProdInvariant":484,"_process":357,"fbjs/lib/invariant":326}],389:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -11831,7 +19648,7 @@ var ReactBrowserEventEmitter = _assign({}, ReactEventEmitterMixin, {
 });
 
 module.exports = ReactBrowserEventEmitter;
-},{"./EventPluginRegistry":190,"./ReactEventEmitterMixin":227,"./ViewportMetrics":269,"./getVendorPrefixedEventName":287,"./isEventSupported":290,"object-assign":165}],199:[function(require,module,exports){
+},{"./EventPluginRegistry":381,"./ReactEventEmitterMixin":418,"./ViewportMetrics":460,"./getVendorPrefixedEventName":478,"./isEventSupported":481,"object-assign":356}],390:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
@@ -11985,7 +19802,7 @@ var ReactChildReconciler = {
 module.exports = ReactChildReconciler;
 }).call(this,require('_process'))
 
-},{"./KeyEscapeUtils":195,"./ReactReconciler":245,"./instantiateReactComponent":289,"./shouldUpdateReactComponent":297,"./traverseAllChildren":298,"_process":166,"fbjs/lib/warning":143,"react/lib/ReactComponentTreeHook":351}],200:[function(require,module,exports){
+},{"./KeyEscapeUtils":386,"./ReactReconciler":436,"./instantiateReactComponent":480,"./shouldUpdateReactComponent":488,"./traverseAllChildren":489,"_process":357,"fbjs/lib/warning":333,"react/lib/ReactComponentTreeHook":542}],391:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -12011,7 +19828,7 @@ var ReactComponentBrowserEnvironment = {
 };
 
 module.exports = ReactComponentBrowserEnvironment;
-},{"./DOMChildrenOperations":181,"./ReactDOMIDOperations":210}],201:[function(require,module,exports){
+},{"./DOMChildrenOperations":372,"./ReactDOMIDOperations":401}],392:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
@@ -12056,7 +19873,7 @@ var ReactComponentEnvironment = {
 module.exports = ReactComponentEnvironment;
 }).call(this,require('_process'))
 
-},{"./reactProdInvariant":293,"_process":166,"fbjs/lib/invariant":136}],202:[function(require,module,exports){
+},{"./reactProdInvariant":484,"_process":357,"fbjs/lib/invariant":326}],393:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -12957,7 +20774,7 @@ var ReactCompositeComponent = {
 module.exports = ReactCompositeComponent;
 }).call(this,require('_process'))
 
-},{"./ReactComponentEnvironment":201,"./ReactErrorUtils":226,"./ReactInstanceMap":234,"./ReactInstrumentation":235,"./ReactNodeTypes":240,"./ReactReconciler":245,"./checkReactTypeSpec":272,"./reactProdInvariant":293,"./shouldUpdateReactComponent":297,"_process":166,"fbjs/lib/emptyObject":129,"fbjs/lib/invariant":136,"fbjs/lib/shallowEqual":142,"fbjs/lib/warning":143,"object-assign":165,"react/lib/React":348,"react/lib/ReactCurrentOwner":352}],203:[function(require,module,exports){
+},{"./ReactComponentEnvironment":392,"./ReactErrorUtils":417,"./ReactInstanceMap":425,"./ReactInstrumentation":426,"./ReactNodeTypes":431,"./ReactReconciler":436,"./checkReactTypeSpec":463,"./reactProdInvariant":484,"./shouldUpdateReactComponent":488,"_process":357,"fbjs/lib/emptyObject":319,"fbjs/lib/invariant":326,"fbjs/lib/shallowEqual":332,"fbjs/lib/warning":333,"object-assign":356,"react/lib/React":539,"react/lib/ReactCurrentOwner":543}],394:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -13069,7 +20886,7 @@ if (process.env.NODE_ENV !== 'production') {
 module.exports = ReactDOM;
 }).call(this,require('_process'))
 
-},{"./ReactDOMComponentTree":206,"./ReactDOMInvalidARIAHook":212,"./ReactDOMNullInputValuePropHook":213,"./ReactDOMUnknownPropertyHook":220,"./ReactDefaultInjection":223,"./ReactInstrumentation":235,"./ReactMount":238,"./ReactReconciler":245,"./ReactUpdates":250,"./ReactVersion":251,"./findDOMNode":276,"./getHostComponentFromComposite":283,"./renderSubtreeIntoContainer":294,"_process":166,"fbjs/lib/ExecutionEnvironment":122,"fbjs/lib/warning":143}],204:[function(require,module,exports){
+},{"./ReactDOMComponentTree":397,"./ReactDOMInvalidARIAHook":403,"./ReactDOMNullInputValuePropHook":404,"./ReactDOMUnknownPropertyHook":411,"./ReactDefaultInjection":414,"./ReactInstrumentation":426,"./ReactMount":429,"./ReactReconciler":436,"./ReactUpdates":441,"./ReactVersion":442,"./findDOMNode":467,"./getHostComponentFromComposite":474,"./renderSubtreeIntoContainer":485,"_process":357,"fbjs/lib/ExecutionEnvironment":312,"fbjs/lib/warning":333}],395:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -14084,7 +21901,7 @@ _assign(ReactDOMComponent.prototype, ReactDOMComponent.Mixin, ReactMultiChild.Mi
 module.exports = ReactDOMComponent;
 }).call(this,require('_process'))
 
-},{"./AutoFocusUtils":175,"./CSSPropertyOperations":178,"./DOMLazyTree":182,"./DOMNamespaces":183,"./DOMProperty":184,"./DOMPropertyOperations":185,"./EventPluginHub":189,"./EventPluginRegistry":190,"./ReactBrowserEventEmitter":198,"./ReactDOMComponentFlags":205,"./ReactDOMComponentTree":206,"./ReactDOMInput":211,"./ReactDOMOption":214,"./ReactDOMSelect":215,"./ReactDOMTextarea":218,"./ReactInstrumentation":235,"./ReactMultiChild":239,"./ReactServerRenderingTransaction":247,"./escapeTextContentForBrowser":275,"./inputValueTracking":288,"./isEventSupported":290,"./reactProdInvariant":293,"./validateDOMNesting":299,"_process":166,"fbjs/lib/emptyFunction":128,"fbjs/lib/invariant":136,"fbjs/lib/shallowEqual":142,"fbjs/lib/warning":143,"object-assign":165}],205:[function(require,module,exports){
+},{"./AutoFocusUtils":366,"./CSSPropertyOperations":369,"./DOMLazyTree":373,"./DOMNamespaces":374,"./DOMProperty":375,"./DOMPropertyOperations":376,"./EventPluginHub":380,"./EventPluginRegistry":381,"./ReactBrowserEventEmitter":389,"./ReactDOMComponentFlags":396,"./ReactDOMComponentTree":397,"./ReactDOMInput":402,"./ReactDOMOption":405,"./ReactDOMSelect":406,"./ReactDOMTextarea":409,"./ReactInstrumentation":426,"./ReactMultiChild":430,"./ReactServerRenderingTransaction":438,"./escapeTextContentForBrowser":466,"./inputValueTracking":479,"./isEventSupported":481,"./reactProdInvariant":484,"./validateDOMNesting":490,"_process":357,"fbjs/lib/emptyFunction":318,"fbjs/lib/invariant":326,"fbjs/lib/shallowEqual":332,"fbjs/lib/warning":333,"object-assign":356}],396:[function(require,module,exports){
 /**
  * Copyright (c) 2015-present, Facebook, Inc.
  *
@@ -14100,7 +21917,7 @@ var ReactDOMComponentFlags = {
 };
 
 module.exports = ReactDOMComponentFlags;
-},{}],206:[function(require,module,exports){
+},{}],397:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -14296,7 +22113,7 @@ var ReactDOMComponentTree = {
 module.exports = ReactDOMComponentTree;
 }).call(this,require('_process'))
 
-},{"./DOMProperty":184,"./ReactDOMComponentFlags":205,"./reactProdInvariant":293,"_process":166,"fbjs/lib/invariant":136}],207:[function(require,module,exports){
+},{"./DOMProperty":375,"./ReactDOMComponentFlags":396,"./reactProdInvariant":484,"_process":357,"fbjs/lib/invariant":326}],398:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -14330,7 +22147,7 @@ function ReactDOMContainerInfo(topLevelWrapper, node) {
 module.exports = ReactDOMContainerInfo;
 }).call(this,require('_process'))
 
-},{"./validateDOMNesting":299,"_process":166}],208:[function(require,module,exports){
+},{"./validateDOMNesting":490,"_process":357}],399:[function(require,module,exports){
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
  *
@@ -14388,7 +22205,7 @@ _assign(ReactDOMEmptyComponent.prototype, {
 });
 
 module.exports = ReactDOMEmptyComponent;
-},{"./DOMLazyTree":182,"./ReactDOMComponentTree":206,"object-assign":165}],209:[function(require,module,exports){
+},{"./DOMLazyTree":373,"./ReactDOMComponentTree":397,"object-assign":356}],400:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -14405,7 +22222,7 @@ var ReactDOMFeatureFlags = {
 };
 
 module.exports = ReactDOMFeatureFlags;
-},{}],210:[function(require,module,exports){
+},{}],401:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -14436,7 +22253,7 @@ var ReactDOMIDOperations = {
 };
 
 module.exports = ReactDOMIDOperations;
-},{"./DOMChildrenOperations":181,"./ReactDOMComponentTree":206}],211:[function(require,module,exports){
+},{"./DOMChildrenOperations":372,"./ReactDOMComponentTree":397}],402:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -14724,7 +22541,7 @@ function _handleChange(event) {
 module.exports = ReactDOMInput;
 }).call(this,require('_process'))
 
-},{"./DOMPropertyOperations":185,"./LinkedValueUtils":196,"./ReactDOMComponentTree":206,"./ReactUpdates":250,"./reactProdInvariant":293,"_process":166,"fbjs/lib/invariant":136,"fbjs/lib/warning":143,"object-assign":165}],212:[function(require,module,exports){
+},{"./DOMPropertyOperations":376,"./LinkedValueUtils":387,"./ReactDOMComponentTree":397,"./ReactUpdates":441,"./reactProdInvariant":484,"_process":357,"fbjs/lib/invariant":326,"fbjs/lib/warning":333,"object-assign":356}],403:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -14818,7 +22635,7 @@ var ReactDOMInvalidARIAHook = {
 module.exports = ReactDOMInvalidARIAHook;
 }).call(this,require('_process'))
 
-},{"./DOMProperty":184,"_process":166,"fbjs/lib/warning":143,"react/lib/ReactComponentTreeHook":351}],213:[function(require,module,exports){
+},{"./DOMProperty":375,"_process":357,"fbjs/lib/warning":333,"react/lib/ReactComponentTreeHook":542}],404:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -14862,7 +22679,7 @@ var ReactDOMNullInputValuePropHook = {
 module.exports = ReactDOMNullInputValuePropHook;
 }).call(this,require('_process'))
 
-},{"_process":166,"fbjs/lib/warning":143,"react/lib/ReactComponentTreeHook":351}],214:[function(require,module,exports){
+},{"_process":357,"fbjs/lib/warning":333,"react/lib/ReactComponentTreeHook":542}],405:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -14985,7 +22802,7 @@ var ReactDOMOption = {
 module.exports = ReactDOMOption;
 }).call(this,require('_process'))
 
-},{"./ReactDOMComponentTree":206,"./ReactDOMSelect":215,"_process":166,"fbjs/lib/warning":143,"object-assign":165,"react/lib/React":348}],215:[function(require,module,exports){
+},{"./ReactDOMComponentTree":397,"./ReactDOMSelect":406,"_process":357,"fbjs/lib/warning":333,"object-assign":356,"react/lib/React":539}],406:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -15186,7 +23003,7 @@ function _handleChange(event) {
 module.exports = ReactDOMSelect;
 }).call(this,require('_process'))
 
-},{"./LinkedValueUtils":196,"./ReactDOMComponentTree":206,"./ReactUpdates":250,"_process":166,"fbjs/lib/warning":143,"object-assign":165}],216:[function(require,module,exports){
+},{"./LinkedValueUtils":387,"./ReactDOMComponentTree":397,"./ReactUpdates":441,"_process":357,"fbjs/lib/warning":333,"object-assign":356}],407:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -15396,7 +23213,7 @@ var ReactDOMSelection = {
 };
 
 module.exports = ReactDOMSelection;
-},{"./getNodeForCharacterOffset":285,"./getTextContentAccessor":286,"fbjs/lib/ExecutionEnvironment":122}],217:[function(require,module,exports){
+},{"./getNodeForCharacterOffset":476,"./getTextContentAccessor":477,"fbjs/lib/ExecutionEnvironment":312}],408:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -15559,7 +23376,7 @@ _assign(ReactDOMTextComponent.prototype, {
 module.exports = ReactDOMTextComponent;
 }).call(this,require('_process'))
 
-},{"./DOMChildrenOperations":181,"./DOMLazyTree":182,"./ReactDOMComponentTree":206,"./escapeTextContentForBrowser":275,"./reactProdInvariant":293,"./validateDOMNesting":299,"_process":166,"fbjs/lib/invariant":136,"object-assign":165}],218:[function(require,module,exports){
+},{"./DOMChildrenOperations":372,"./DOMLazyTree":373,"./ReactDOMComponentTree":397,"./escapeTextContentForBrowser":466,"./reactProdInvariant":484,"./validateDOMNesting":490,"_process":357,"fbjs/lib/invariant":326,"object-assign":356}],409:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -15720,7 +23537,7 @@ function _handleChange(event) {
 module.exports = ReactDOMTextarea;
 }).call(this,require('_process'))
 
-},{"./LinkedValueUtils":196,"./ReactDOMComponentTree":206,"./ReactUpdates":250,"./reactProdInvariant":293,"_process":166,"fbjs/lib/invariant":136,"fbjs/lib/warning":143,"object-assign":165}],219:[function(require,module,exports){
+},{"./LinkedValueUtils":387,"./ReactDOMComponentTree":397,"./ReactUpdates":441,"./reactProdInvariant":484,"_process":357,"fbjs/lib/invariant":326,"fbjs/lib/warning":333,"object-assign":356}],410:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2015-present, Facebook, Inc.
@@ -15857,7 +23674,7 @@ module.exports = {
 };
 }).call(this,require('_process'))
 
-},{"./reactProdInvariant":293,"_process":166,"fbjs/lib/invariant":136}],220:[function(require,module,exports){
+},{"./reactProdInvariant":484,"_process":357,"fbjs/lib/invariant":326}],411:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -15970,7 +23787,7 @@ var ReactDOMUnknownPropertyHook = {
 module.exports = ReactDOMUnknownPropertyHook;
 }).call(this,require('_process'))
 
-},{"./DOMProperty":184,"./EventPluginRegistry":190,"_process":166,"fbjs/lib/warning":143,"react/lib/ReactComponentTreeHook":351}],221:[function(require,module,exports){
+},{"./DOMProperty":375,"./EventPluginRegistry":381,"_process":357,"fbjs/lib/warning":333,"react/lib/ReactComponentTreeHook":542}],412:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2016-present, Facebook, Inc.
@@ -16332,7 +24149,7 @@ if (/[?&]react_perf\b/.test(url)) {
 module.exports = ReactDebugTool;
 }).call(this,require('_process'))
 
-},{"./ReactHostOperationHistoryHook":231,"./ReactInvalidSetStateWarningHook":236,"_process":166,"fbjs/lib/ExecutionEnvironment":122,"fbjs/lib/performanceNow":141,"fbjs/lib/warning":143,"react/lib/ReactComponentTreeHook":351}],222:[function(require,module,exports){
+},{"./ReactHostOperationHistoryHook":422,"./ReactInvalidSetStateWarningHook":427,"_process":357,"fbjs/lib/ExecutionEnvironment":312,"fbjs/lib/performanceNow":331,"fbjs/lib/warning":333,"react/lib/ReactComponentTreeHook":542}],413:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -16398,7 +24215,7 @@ var ReactDefaultBatchingStrategy = {
 };
 
 module.exports = ReactDefaultBatchingStrategy;
-},{"./ReactUpdates":250,"./Transaction":268,"fbjs/lib/emptyFunction":128,"object-assign":165}],223:[function(require,module,exports){
+},{"./ReactUpdates":441,"./Transaction":459,"fbjs/lib/emptyFunction":318,"object-assign":356}],414:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -16482,7 +24299,7 @@ function inject() {
 module.exports = {
   inject: inject
 };
-},{"./ARIADOMPropertyConfig":174,"./BeforeInputEventPlugin":176,"./ChangeEventPlugin":180,"./DefaultEventPluginOrder":187,"./EnterLeaveEventPlugin":188,"./HTMLDOMPropertyConfig":194,"./ReactComponentBrowserEnvironment":200,"./ReactDOMComponent":204,"./ReactDOMComponentTree":206,"./ReactDOMEmptyComponent":208,"./ReactDOMTextComponent":217,"./ReactDOMTreeTraversal":219,"./ReactDefaultBatchingStrategy":222,"./ReactEventListener":228,"./ReactInjection":232,"./ReactReconcileTransaction":244,"./SVGDOMPropertyConfig":252,"./SelectEventPlugin":253,"./SimpleEventPlugin":254}],224:[function(require,module,exports){
+},{"./ARIADOMPropertyConfig":365,"./BeforeInputEventPlugin":367,"./ChangeEventPlugin":371,"./DefaultEventPluginOrder":378,"./EnterLeaveEventPlugin":379,"./HTMLDOMPropertyConfig":385,"./ReactComponentBrowserEnvironment":391,"./ReactDOMComponent":395,"./ReactDOMComponentTree":397,"./ReactDOMEmptyComponent":399,"./ReactDOMTextComponent":408,"./ReactDOMTreeTraversal":410,"./ReactDefaultBatchingStrategy":413,"./ReactEventListener":419,"./ReactInjection":423,"./ReactReconcileTransaction":435,"./SVGDOMPropertyConfig":443,"./SelectEventPlugin":444,"./SimpleEventPlugin":445}],415:[function(require,module,exports){
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
  *
@@ -16500,7 +24317,7 @@ module.exports = {
 var REACT_ELEMENT_TYPE = typeof Symbol === 'function' && Symbol['for'] && Symbol['for']('react.element') || 0xeac7;
 
 module.exports = REACT_ELEMENT_TYPE;
-},{}],225:[function(require,module,exports){
+},{}],416:[function(require,module,exports){
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
  *
@@ -16528,7 +24345,7 @@ var ReactEmptyComponent = {
 ReactEmptyComponent.injection = ReactEmptyComponentInjection;
 
 module.exports = ReactEmptyComponent;
-},{}],226:[function(require,module,exports){
+},{}],417:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -16607,7 +24424,7 @@ if (process.env.NODE_ENV !== 'production') {
 module.exports = ReactErrorUtils;
 }).call(this,require('_process'))
 
-},{"_process":166}],227:[function(require,module,exports){
+},{"_process":357}],418:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -16637,7 +24454,7 @@ var ReactEventEmitterMixin = {
 };
 
 module.exports = ReactEventEmitterMixin;
-},{"./EventPluginHub":189}],228:[function(require,module,exports){
+},{"./EventPluginHub":380}],419:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -16790,7 +24607,7 @@ var ReactEventListener = {
 };
 
 module.exports = ReactEventListener;
-},{"./PooledClass":197,"./ReactDOMComponentTree":206,"./ReactUpdates":250,"./getEventTarget":282,"fbjs/lib/EventListener":121,"fbjs/lib/ExecutionEnvironment":122,"fbjs/lib/getUnboundedScrollPosition":133,"object-assign":165}],229:[function(require,module,exports){
+},{"./PooledClass":388,"./ReactDOMComponentTree":397,"./ReactUpdates":441,"./getEventTarget":473,"fbjs/lib/EventListener":311,"fbjs/lib/ExecutionEnvironment":312,"fbjs/lib/getUnboundedScrollPosition":323,"object-assign":356}],420:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -16810,7 +24627,7 @@ var ReactFeatureFlags = {
 };
 
 module.exports = ReactFeatureFlags;
-},{}],230:[function(require,module,exports){
+},{}],421:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
@@ -16879,7 +24696,7 @@ var ReactHostComponent = {
 module.exports = ReactHostComponent;
 }).call(this,require('_process'))
 
-},{"./reactProdInvariant":293,"_process":166,"fbjs/lib/invariant":136}],231:[function(require,module,exports){
+},{"./reactProdInvariant":484,"_process":357,"fbjs/lib/invariant":326}],422:[function(require,module,exports){
 /**
  * Copyright (c) 2016-present, Facebook, Inc.
  *
@@ -16911,7 +24728,7 @@ var ReactHostOperationHistoryHook = {
 };
 
 module.exports = ReactHostOperationHistoryHook;
-},{}],232:[function(require,module,exports){
+},{}],423:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -16943,7 +24760,7 @@ var ReactInjection = {
 };
 
 module.exports = ReactInjection;
-},{"./DOMProperty":184,"./EventPluginHub":189,"./EventPluginUtils":191,"./ReactBrowserEventEmitter":198,"./ReactComponentEnvironment":201,"./ReactEmptyComponent":225,"./ReactHostComponent":230,"./ReactUpdates":250}],233:[function(require,module,exports){
+},{"./DOMProperty":375,"./EventPluginHub":380,"./EventPluginUtils":382,"./ReactBrowserEventEmitter":389,"./ReactComponentEnvironment":392,"./ReactEmptyComponent":416,"./ReactHostComponent":421,"./ReactUpdates":441}],424:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -17064,7 +24881,7 @@ var ReactInputSelection = {
 };
 
 module.exports = ReactInputSelection;
-},{"./ReactDOMSelection":216,"fbjs/lib/containsNode":125,"fbjs/lib/focusNode":130,"fbjs/lib/getActiveElement":131}],234:[function(require,module,exports){
+},{"./ReactDOMSelection":407,"fbjs/lib/containsNode":315,"fbjs/lib/focusNode":320,"fbjs/lib/getActiveElement":321}],425:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -17108,7 +24925,7 @@ var ReactInstanceMap = {
 };
 
 module.exports = ReactInstanceMap;
-},{}],235:[function(require,module,exports){
+},{}],426:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2016-present, Facebook, Inc.
@@ -17133,7 +24950,7 @@ if (process.env.NODE_ENV !== 'production') {
 module.exports = { debugTool: debugTool };
 }).call(this,require('_process'))
 
-},{"./ReactDebugTool":221,"_process":166}],236:[function(require,module,exports){
+},{"./ReactDebugTool":412,"_process":357}],427:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2016-present, Facebook, Inc.
@@ -17171,7 +24988,7 @@ var ReactInvalidSetStateWarningHook = {
 module.exports = ReactInvalidSetStateWarningHook;
 }).call(this,require('_process'))
 
-},{"_process":166,"fbjs/lib/warning":143}],237:[function(require,module,exports){
+},{"_process":357,"fbjs/lib/warning":333}],428:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -17219,7 +25036,7 @@ var ReactMarkupChecksum = {
 };
 
 module.exports = ReactMarkupChecksum;
-},{"./adler32":271}],238:[function(require,module,exports){
+},{"./adler32":462}],429:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -17758,7 +25575,7 @@ var ReactMount = {
 module.exports = ReactMount;
 }).call(this,require('_process'))
 
-},{"./DOMLazyTree":182,"./DOMProperty":184,"./ReactBrowserEventEmitter":198,"./ReactDOMComponentTree":206,"./ReactDOMContainerInfo":207,"./ReactDOMFeatureFlags":209,"./ReactFeatureFlags":229,"./ReactInstanceMap":234,"./ReactInstrumentation":235,"./ReactMarkupChecksum":237,"./ReactReconciler":245,"./ReactUpdateQueue":249,"./ReactUpdates":250,"./instantiateReactComponent":289,"./reactProdInvariant":293,"./setInnerHTML":295,"./shouldUpdateReactComponent":297,"_process":166,"fbjs/lib/emptyObject":129,"fbjs/lib/invariant":136,"fbjs/lib/warning":143,"react/lib/React":348,"react/lib/ReactCurrentOwner":352}],239:[function(require,module,exports){
+},{"./DOMLazyTree":373,"./DOMProperty":375,"./ReactBrowserEventEmitter":389,"./ReactDOMComponentTree":397,"./ReactDOMContainerInfo":398,"./ReactDOMFeatureFlags":400,"./ReactFeatureFlags":420,"./ReactInstanceMap":425,"./ReactInstrumentation":426,"./ReactMarkupChecksum":428,"./ReactReconciler":436,"./ReactUpdateQueue":440,"./ReactUpdates":441,"./instantiateReactComponent":480,"./reactProdInvariant":484,"./setInnerHTML":486,"./shouldUpdateReactComponent":488,"_process":357,"fbjs/lib/emptyObject":319,"fbjs/lib/invariant":326,"fbjs/lib/warning":333,"react/lib/React":539,"react/lib/ReactCurrentOwner":543}],430:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -18205,7 +26022,7 @@ var ReactMultiChild = {
 module.exports = ReactMultiChild;
 }).call(this,require('_process'))
 
-},{"./ReactChildReconciler":199,"./ReactComponentEnvironment":201,"./ReactInstanceMap":234,"./ReactInstrumentation":235,"./ReactReconciler":245,"./flattenChildren":277,"./reactProdInvariant":293,"_process":166,"fbjs/lib/emptyFunction":128,"fbjs/lib/invariant":136,"react/lib/ReactCurrentOwner":352}],240:[function(require,module,exports){
+},{"./ReactChildReconciler":390,"./ReactComponentEnvironment":392,"./ReactInstanceMap":425,"./ReactInstrumentation":426,"./ReactReconciler":436,"./flattenChildren":468,"./reactProdInvariant":484,"_process":357,"fbjs/lib/emptyFunction":318,"fbjs/lib/invariant":326,"react/lib/ReactCurrentOwner":543}],431:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -18246,7 +26063,7 @@ var ReactNodeTypes = {
 module.exports = ReactNodeTypes;
 }).call(this,require('_process'))
 
-},{"./reactProdInvariant":293,"_process":166,"fbjs/lib/invariant":136,"react/lib/React":348}],241:[function(require,module,exports){
+},{"./reactProdInvariant":484,"_process":357,"fbjs/lib/invariant":326,"react/lib/React":539}],432:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -18340,7 +26157,7 @@ var ReactOwner = {
 module.exports = ReactOwner;
 }).call(this,require('_process'))
 
-},{"./reactProdInvariant":293,"_process":166,"fbjs/lib/invariant":136}],242:[function(require,module,exports){
+},{"./reactProdInvariant":484,"_process":357,"fbjs/lib/invariant":326}],433:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -18366,7 +26183,7 @@ if (process.env.NODE_ENV !== 'production') {
 module.exports = ReactPropTypeLocationNames;
 }).call(this,require('_process'))
 
-},{"_process":166}],243:[function(require,module,exports){
+},{"_process":357}],434:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -18381,7 +26198,7 @@ module.exports = ReactPropTypeLocationNames;
 var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
 
 module.exports = ReactPropTypesSecret;
-},{}],244:[function(require,module,exports){
+},{}],435:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -18560,7 +26377,7 @@ PooledClass.addPoolingTo(ReactReconcileTransaction);
 module.exports = ReactReconcileTransaction;
 }).call(this,require('_process'))
 
-},{"./CallbackQueue":179,"./PooledClass":197,"./ReactBrowserEventEmitter":198,"./ReactInputSelection":233,"./ReactInstrumentation":235,"./ReactUpdateQueue":249,"./Transaction":268,"_process":166,"object-assign":165}],245:[function(require,module,exports){
+},{"./CallbackQueue":370,"./PooledClass":388,"./ReactBrowserEventEmitter":389,"./ReactInputSelection":424,"./ReactInstrumentation":426,"./ReactUpdateQueue":440,"./Transaction":459,"_process":357,"object-assign":356}],436:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -18727,7 +26544,7 @@ var ReactReconciler = {
 module.exports = ReactReconciler;
 }).call(this,require('_process'))
 
-},{"./ReactInstrumentation":235,"./ReactRef":246,"_process":166,"fbjs/lib/warning":143}],246:[function(require,module,exports){
+},{"./ReactInstrumentation":426,"./ReactRef":437,"_process":357,"fbjs/lib/warning":333}],437:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -18814,7 +26631,7 @@ ReactRef.detachRefs = function (instance, element) {
 };
 
 module.exports = ReactRef;
-},{"./ReactOwner":241}],247:[function(require,module,exports){
+},{"./ReactOwner":432}],438:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
@@ -18905,7 +26722,7 @@ PooledClass.addPoolingTo(ReactServerRenderingTransaction);
 module.exports = ReactServerRenderingTransaction;
 }).call(this,require('_process'))
 
-},{"./PooledClass":197,"./ReactInstrumentation":235,"./ReactServerUpdateQueue":248,"./Transaction":268,"_process":166,"object-assign":165}],248:[function(require,module,exports){
+},{"./PooledClass":388,"./ReactInstrumentation":426,"./ReactServerUpdateQueue":439,"./Transaction":459,"_process":357,"object-assign":356}],439:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2015-present, Facebook, Inc.
@@ -19045,7 +26862,7 @@ var ReactServerUpdateQueue = function () {
 module.exports = ReactServerUpdateQueue;
 }).call(this,require('_process'))
 
-},{"./ReactUpdateQueue":249,"_process":166,"fbjs/lib/warning":143}],249:[function(require,module,exports){
+},{"./ReactUpdateQueue":440,"_process":357,"fbjs/lib/warning":333}],440:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2015-present, Facebook, Inc.
@@ -19280,7 +27097,7 @@ var ReactUpdateQueue = {
 module.exports = ReactUpdateQueue;
 }).call(this,require('_process'))
 
-},{"./ReactInstanceMap":234,"./ReactInstrumentation":235,"./ReactUpdates":250,"./reactProdInvariant":293,"_process":166,"fbjs/lib/invariant":136,"fbjs/lib/warning":143,"react/lib/ReactCurrentOwner":352}],250:[function(require,module,exports){
+},{"./ReactInstanceMap":425,"./ReactInstrumentation":426,"./ReactUpdates":441,"./reactProdInvariant":484,"_process":357,"fbjs/lib/invariant":326,"fbjs/lib/warning":333,"react/lib/ReactCurrentOwner":543}],441:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -19532,7 +27349,7 @@ var ReactUpdates = {
 module.exports = ReactUpdates;
 }).call(this,require('_process'))
 
-},{"./CallbackQueue":179,"./PooledClass":197,"./ReactFeatureFlags":229,"./ReactReconciler":245,"./Transaction":268,"./reactProdInvariant":293,"_process":166,"fbjs/lib/invariant":136,"object-assign":165}],251:[function(require,module,exports){
+},{"./CallbackQueue":370,"./PooledClass":388,"./ReactFeatureFlags":420,"./ReactReconciler":436,"./Transaction":459,"./reactProdInvariant":484,"_process":357,"fbjs/lib/invariant":326,"object-assign":356}],442:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -19544,7 +27361,7 @@ module.exports = ReactUpdates;
 'use strict';
 
 module.exports = '15.6.2';
-},{}],252:[function(require,module,exports){
+},{}],443:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -19844,7 +27661,7 @@ Object.keys(ATTRS).forEach(function (key) {
 });
 
 module.exports = SVGDOMPropertyConfig;
-},{}],253:[function(require,module,exports){
+},{}],444:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -20030,7 +27847,7 @@ var SelectEventPlugin = {
 };
 
 module.exports = SelectEventPlugin;
-},{"./EventPropagators":192,"./ReactDOMComponentTree":206,"./ReactInputSelection":233,"./SyntheticEvent":259,"./isTextInputElement":291,"fbjs/lib/ExecutionEnvironment":122,"fbjs/lib/getActiveElement":131,"fbjs/lib/shallowEqual":142}],254:[function(require,module,exports){
+},{"./EventPropagators":383,"./ReactDOMComponentTree":397,"./ReactInputSelection":424,"./SyntheticEvent":450,"./isTextInputElement":482,"fbjs/lib/ExecutionEnvironment":312,"fbjs/lib/getActiveElement":321,"fbjs/lib/shallowEqual":332}],445:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -20257,7 +28074,7 @@ var SimpleEventPlugin = {
 module.exports = SimpleEventPlugin;
 }).call(this,require('_process'))
 
-},{"./EventPropagators":192,"./ReactDOMComponentTree":206,"./SyntheticAnimationEvent":255,"./SyntheticClipboardEvent":256,"./SyntheticDragEvent":258,"./SyntheticEvent":259,"./SyntheticFocusEvent":260,"./SyntheticKeyboardEvent":262,"./SyntheticMouseEvent":263,"./SyntheticTouchEvent":264,"./SyntheticTransitionEvent":265,"./SyntheticUIEvent":266,"./SyntheticWheelEvent":267,"./getEventCharCode":279,"./reactProdInvariant":293,"_process":166,"fbjs/lib/EventListener":121,"fbjs/lib/emptyFunction":128,"fbjs/lib/invariant":136}],255:[function(require,module,exports){
+},{"./EventPropagators":383,"./ReactDOMComponentTree":397,"./SyntheticAnimationEvent":446,"./SyntheticClipboardEvent":447,"./SyntheticDragEvent":449,"./SyntheticEvent":450,"./SyntheticFocusEvent":451,"./SyntheticKeyboardEvent":453,"./SyntheticMouseEvent":454,"./SyntheticTouchEvent":455,"./SyntheticTransitionEvent":456,"./SyntheticUIEvent":457,"./SyntheticWheelEvent":458,"./getEventCharCode":470,"./reactProdInvariant":484,"_process":357,"fbjs/lib/EventListener":311,"fbjs/lib/emptyFunction":318,"fbjs/lib/invariant":326}],446:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -20294,7 +28111,7 @@ function SyntheticAnimationEvent(dispatchConfig, dispatchMarker, nativeEvent, na
 SyntheticEvent.augmentClass(SyntheticAnimationEvent, AnimationEventInterface);
 
 module.exports = SyntheticAnimationEvent;
-},{"./SyntheticEvent":259}],256:[function(require,module,exports){
+},{"./SyntheticEvent":450}],447:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -20330,7 +28147,7 @@ function SyntheticClipboardEvent(dispatchConfig, dispatchMarker, nativeEvent, na
 SyntheticEvent.augmentClass(SyntheticClipboardEvent, ClipboardEventInterface);
 
 module.exports = SyntheticClipboardEvent;
-},{"./SyntheticEvent":259}],257:[function(require,module,exports){
+},{"./SyntheticEvent":450}],448:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -20364,7 +28181,7 @@ function SyntheticCompositionEvent(dispatchConfig, dispatchMarker, nativeEvent, 
 SyntheticEvent.augmentClass(SyntheticCompositionEvent, CompositionEventInterface);
 
 module.exports = SyntheticCompositionEvent;
-},{"./SyntheticEvent":259}],258:[function(require,module,exports){
+},{"./SyntheticEvent":450}],449:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -20398,7 +28215,7 @@ function SyntheticDragEvent(dispatchConfig, dispatchMarker, nativeEvent, nativeE
 SyntheticMouseEvent.augmentClass(SyntheticDragEvent, DragEventInterface);
 
 module.exports = SyntheticDragEvent;
-},{"./SyntheticMouseEvent":263}],259:[function(require,module,exports){
+},{"./SyntheticMouseEvent":454}],450:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -20670,7 +28487,7 @@ function getPooledWarningPropertyDefinition(propName, getVal) {
 }
 }).call(this,require('_process'))
 
-},{"./PooledClass":197,"_process":166,"fbjs/lib/emptyFunction":128,"fbjs/lib/warning":143,"object-assign":165}],260:[function(require,module,exports){
+},{"./PooledClass":388,"_process":357,"fbjs/lib/emptyFunction":318,"fbjs/lib/warning":333,"object-assign":356}],451:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -20704,7 +28521,7 @@ function SyntheticFocusEvent(dispatchConfig, dispatchMarker, nativeEvent, native
 SyntheticUIEvent.augmentClass(SyntheticFocusEvent, FocusEventInterface);
 
 module.exports = SyntheticFocusEvent;
-},{"./SyntheticUIEvent":266}],261:[function(require,module,exports){
+},{"./SyntheticUIEvent":457}],452:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -20739,7 +28556,7 @@ function SyntheticInputEvent(dispatchConfig, dispatchMarker, nativeEvent, native
 SyntheticEvent.augmentClass(SyntheticInputEvent, InputEventInterface);
 
 module.exports = SyntheticInputEvent;
-},{"./SyntheticEvent":259}],262:[function(require,module,exports){
+},{"./SyntheticEvent":450}],453:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -20821,7 +28638,7 @@ function SyntheticKeyboardEvent(dispatchConfig, dispatchMarker, nativeEvent, nat
 SyntheticUIEvent.augmentClass(SyntheticKeyboardEvent, KeyboardEventInterface);
 
 module.exports = SyntheticKeyboardEvent;
-},{"./SyntheticUIEvent":266,"./getEventCharCode":279,"./getEventKey":280,"./getEventModifierState":281}],263:[function(require,module,exports){
+},{"./SyntheticUIEvent":457,"./getEventCharCode":470,"./getEventKey":471,"./getEventModifierState":472}],454:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -20891,7 +28708,7 @@ function SyntheticMouseEvent(dispatchConfig, dispatchMarker, nativeEvent, native
 SyntheticUIEvent.augmentClass(SyntheticMouseEvent, MouseEventInterface);
 
 module.exports = SyntheticMouseEvent;
-},{"./SyntheticUIEvent":266,"./ViewportMetrics":269,"./getEventModifierState":281}],264:[function(require,module,exports){
+},{"./SyntheticUIEvent":457,"./ViewportMetrics":460,"./getEventModifierState":472}],455:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -20934,7 +28751,7 @@ function SyntheticTouchEvent(dispatchConfig, dispatchMarker, nativeEvent, native
 SyntheticUIEvent.augmentClass(SyntheticTouchEvent, TouchEventInterface);
 
 module.exports = SyntheticTouchEvent;
-},{"./SyntheticUIEvent":266,"./getEventModifierState":281}],265:[function(require,module,exports){
+},{"./SyntheticUIEvent":457,"./getEventModifierState":472}],456:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -20971,7 +28788,7 @@ function SyntheticTransitionEvent(dispatchConfig, dispatchMarker, nativeEvent, n
 SyntheticEvent.augmentClass(SyntheticTransitionEvent, TransitionEventInterface);
 
 module.exports = SyntheticTransitionEvent;
-},{"./SyntheticEvent":259}],266:[function(require,module,exports){
+},{"./SyntheticEvent":450}],457:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -21028,7 +28845,7 @@ function SyntheticUIEvent(dispatchConfig, dispatchMarker, nativeEvent, nativeEve
 SyntheticEvent.augmentClass(SyntheticUIEvent, UIEventInterface);
 
 module.exports = SyntheticUIEvent;
-},{"./SyntheticEvent":259,"./getEventTarget":282}],267:[function(require,module,exports){
+},{"./SyntheticEvent":450,"./getEventTarget":473}],458:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -21077,7 +28894,7 @@ function SyntheticWheelEvent(dispatchConfig, dispatchMarker, nativeEvent, native
 SyntheticMouseEvent.augmentClass(SyntheticWheelEvent, WheelEventInterface);
 
 module.exports = SyntheticWheelEvent;
-},{"./SyntheticMouseEvent":263}],268:[function(require,module,exports){
+},{"./SyntheticMouseEvent":454}],459:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -21306,7 +29123,7 @@ var TransactionImpl = {
 module.exports = TransactionImpl;
 }).call(this,require('_process'))
 
-},{"./reactProdInvariant":293,"_process":166,"fbjs/lib/invariant":136}],269:[function(require,module,exports){
+},{"./reactProdInvariant":484,"_process":357,"fbjs/lib/invariant":326}],460:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -21329,7 +29146,7 @@ var ViewportMetrics = {
 };
 
 module.exports = ViewportMetrics;
-},{}],270:[function(require,module,exports){
+},{}],461:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
@@ -21388,7 +29205,7 @@ function accumulateInto(current, next) {
 module.exports = accumulateInto;
 }).call(this,require('_process'))
 
-},{"./reactProdInvariant":293,"_process":166,"fbjs/lib/invariant":136}],271:[function(require,module,exports){
+},{"./reactProdInvariant":484,"_process":357,"fbjs/lib/invariant":326}],462:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -21430,7 +29247,7 @@ function adler32(data) {
 }
 
 module.exports = adler32;
-},{}],272:[function(require,module,exports){
+},{}],463:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -21518,7 +29335,7 @@ function checkReactTypeSpec(typeSpecs, values, location, componentName, element,
 module.exports = checkReactTypeSpec;
 }).call(this,require('_process'))
 
-},{"./ReactPropTypeLocationNames":242,"./ReactPropTypesSecret":243,"./reactProdInvariant":293,"_process":166,"fbjs/lib/invariant":136,"fbjs/lib/warning":143,"react/lib/ReactComponentTreeHook":351}],273:[function(require,module,exports){
+},{"./ReactPropTypeLocationNames":433,"./ReactPropTypesSecret":434,"./reactProdInvariant":484,"_process":357,"fbjs/lib/invariant":326,"fbjs/lib/warning":333,"react/lib/ReactComponentTreeHook":542}],464:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -21548,7 +29365,7 @@ var createMicrosoftUnsafeLocalFunction = function (func) {
 };
 
 module.exports = createMicrosoftUnsafeLocalFunction;
-},{}],274:[function(require,module,exports){
+},{}],465:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -21628,7 +29445,7 @@ function dangerousStyleValue(name, value, component, isCustomProperty) {
 module.exports = dangerousStyleValue;
 }).call(this,require('_process'))
 
-},{"./CSSProperty":177,"_process":166,"fbjs/lib/warning":143}],275:[function(require,module,exports){
+},{"./CSSProperty":368,"_process":357,"fbjs/lib/warning":333}],466:[function(require,module,exports){
 /**
  * Copyright (c) 2016-present, Facebook, Inc.
  *
@@ -21748,7 +29565,7 @@ function escapeTextContentForBrowser(text) {
 }
 
 module.exports = escapeTextContentForBrowser;
-},{}],276:[function(require,module,exports){
+},{}],467:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -21809,7 +29626,7 @@ function findDOMNode(componentOrElement) {
 module.exports = findDOMNode;
 }).call(this,require('_process'))
 
-},{"./ReactDOMComponentTree":206,"./ReactInstanceMap":234,"./getHostComponentFromComposite":283,"./reactProdInvariant":293,"_process":166,"fbjs/lib/invariant":136,"fbjs/lib/warning":143,"react/lib/ReactCurrentOwner":352}],277:[function(require,module,exports){
+},{"./ReactDOMComponentTree":397,"./ReactInstanceMap":425,"./getHostComponentFromComposite":474,"./reactProdInvariant":484,"_process":357,"fbjs/lib/invariant":326,"fbjs/lib/warning":333,"react/lib/ReactCurrentOwner":543}],468:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -21886,7 +29703,7 @@ function flattenChildren(children, selfDebugID) {
 module.exports = flattenChildren;
 }).call(this,require('_process'))
 
-},{"./KeyEscapeUtils":195,"./traverseAllChildren":298,"_process":166,"fbjs/lib/warning":143,"react/lib/ReactComponentTreeHook":351}],278:[function(require,module,exports){
+},{"./KeyEscapeUtils":386,"./traverseAllChildren":489,"_process":357,"fbjs/lib/warning":333,"react/lib/ReactComponentTreeHook":542}],469:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -21915,7 +29732,7 @@ function forEachAccumulated(arr, cb, scope) {
 }
 
 module.exports = forEachAccumulated;
-},{}],279:[function(require,module,exports){
+},{}],470:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -21963,7 +29780,7 @@ function getEventCharCode(nativeEvent) {
 }
 
 module.exports = getEventCharCode;
-},{}],280:[function(require,module,exports){
+},{}],471:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -22073,7 +29890,7 @@ function getEventKey(nativeEvent) {
 }
 
 module.exports = getEventKey;
-},{"./getEventCharCode":279}],281:[function(require,module,exports){
+},{"./getEventCharCode":470}],472:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -22114,7 +29931,7 @@ function getEventModifierState(nativeEvent) {
 }
 
 module.exports = getEventModifierState;
-},{}],282:[function(require,module,exports){
+},{}],473:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -22147,7 +29964,7 @@ function getEventTarget(nativeEvent) {
 }
 
 module.exports = getEventTarget;
-},{}],283:[function(require,module,exports){
+},{}],474:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -22175,7 +29992,7 @@ function getHostComponentFromComposite(inst) {
 }
 
 module.exports = getHostComponentFromComposite;
-},{"./ReactNodeTypes":240}],284:[function(require,module,exports){
+},{"./ReactNodeTypes":431}],475:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -22214,7 +30031,7 @@ function getIteratorFn(maybeIterable) {
 }
 
 module.exports = getIteratorFn;
-},{}],285:[function(require,module,exports){
+},{}],476:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -22286,7 +30103,7 @@ function getNodeForCharacterOffset(root, offset) {
 }
 
 module.exports = getNodeForCharacterOffset;
-},{}],286:[function(require,module,exports){
+},{}],477:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -22317,7 +30134,7 @@ function getTextContentAccessor() {
 }
 
 module.exports = getTextContentAccessor;
-},{"fbjs/lib/ExecutionEnvironment":122}],287:[function(require,module,exports){
+},{"fbjs/lib/ExecutionEnvironment":312}],478:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -22416,7 +30233,7 @@ function getVendorPrefixedEventName(eventName) {
 }
 
 module.exports = getVendorPrefixedEventName;
-},{"fbjs/lib/ExecutionEnvironment":122}],288:[function(require,module,exports){
+},{"fbjs/lib/ExecutionEnvironment":312}],479:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -22537,7 +30354,7 @@ var inputValueTracking = {
 };
 
 module.exports = inputValueTracking;
-},{"./ReactDOMComponentTree":206}],289:[function(require,module,exports){
+},{"./ReactDOMComponentTree":397}],480:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -22667,7 +30484,7 @@ _assign(ReactCompositeComponentWrapper.prototype, ReactCompositeComponent, {
 module.exports = instantiateReactComponent;
 }).call(this,require('_process'))
 
-},{"./ReactCompositeComponent":202,"./ReactEmptyComponent":225,"./ReactHostComponent":230,"./reactProdInvariant":293,"_process":166,"fbjs/lib/invariant":136,"fbjs/lib/warning":143,"object-assign":165,"react/lib/getNextDebugID":366}],290:[function(require,module,exports){
+},{"./ReactCompositeComponent":393,"./ReactEmptyComponent":416,"./ReactHostComponent":421,"./reactProdInvariant":484,"_process":357,"fbjs/lib/invariant":326,"fbjs/lib/warning":333,"object-assign":356,"react/lib/getNextDebugID":557}],481:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -22725,7 +30542,7 @@ function isEventSupported(eventNameSuffix, capture) {
 }
 
 module.exports = isEventSupported;
-},{"fbjs/lib/ExecutionEnvironment":122}],291:[function(require,module,exports){
+},{"fbjs/lib/ExecutionEnvironment":312}],482:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -22774,7 +30591,7 @@ function isTextInputElement(elem) {
 }
 
 module.exports = isTextInputElement;
-},{}],292:[function(require,module,exports){
+},{}],483:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -22798,7 +30615,7 @@ function quoteAttributeValueForBrowser(value) {
 }
 
 module.exports = quoteAttributeValueForBrowser;
-},{"./escapeTextContentForBrowser":275}],293:[function(require,module,exports){
+},{"./escapeTextContentForBrowser":466}],484:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -22835,7 +30652,7 @@ function reactProdInvariant(code) {
 }
 
 module.exports = reactProdInvariant;
-},{}],294:[function(require,module,exports){
+},{}],485:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -22849,7 +30666,7 @@ module.exports = reactProdInvariant;
 var ReactMount = require('./ReactMount');
 
 module.exports = ReactMount.renderSubtreeIntoContainer;
-},{"./ReactMount":238}],295:[function(require,module,exports){
+},{"./ReactMount":429}],486:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -22945,7 +30762,7 @@ if (ExecutionEnvironment.canUseDOM) {
 }
 
 module.exports = setInnerHTML;
-},{"./DOMNamespaces":183,"./createMicrosoftUnsafeLocalFunction":273,"fbjs/lib/ExecutionEnvironment":122}],296:[function(require,module,exports){
+},{"./DOMNamespaces":374,"./createMicrosoftUnsafeLocalFunction":464,"fbjs/lib/ExecutionEnvironment":312}],487:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -22995,7 +30812,7 @@ if (ExecutionEnvironment.canUseDOM) {
 }
 
 module.exports = setTextContent;
-},{"./escapeTextContentForBrowser":275,"./setInnerHTML":295,"fbjs/lib/ExecutionEnvironment":122}],297:[function(require,module,exports){
+},{"./escapeTextContentForBrowser":466,"./setInnerHTML":486,"fbjs/lib/ExecutionEnvironment":312}],488:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -23035,7 +30852,7 @@ function shouldUpdateReactComponent(prevElement, nextElement) {
 }
 
 module.exports = shouldUpdateReactComponent;
-},{}],298:[function(require,module,exports){
+},{}],489:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -23212,7 +31029,7 @@ function traverseAllChildren(children, callback, traverseContext) {
 module.exports = traverseAllChildren;
 }).call(this,require('_process'))
 
-},{"./KeyEscapeUtils":195,"./ReactElementSymbol":224,"./getIteratorFn":284,"./reactProdInvariant":293,"_process":166,"fbjs/lib/invariant":136,"fbjs/lib/warning":143,"react/lib/ReactCurrentOwner":352}],299:[function(require,module,exports){
+},{"./KeyEscapeUtils":386,"./ReactElementSymbol":415,"./getIteratorFn":475,"./reactProdInvariant":484,"_process":357,"fbjs/lib/invariant":326,"fbjs/lib/warning":333,"react/lib/ReactCurrentOwner":543}],490:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2015-present, Facebook, Inc.
@@ -23584,7 +31401,7 @@ if (process.env.NODE_ENV !== 'production') {
 module.exports = validateDOMNesting;
 }).call(this,require('_process'))
 
-},{"_process":166,"fbjs/lib/emptyFunction":128,"fbjs/lib/warning":143,"object-assign":165}],300:[function(require,module,exports){
+},{"_process":357,"fbjs/lib/emptyFunction":318,"fbjs/lib/warning":333,"object-assign":356}],491:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -23674,7 +31491,7 @@ function createProvider() {
 exports.default = createProvider();
 }).call(this,require('_process'))
 
-},{"../utils/PropTypes":310,"../utils/warning":314,"_process":166,"prop-types":171,"react":371}],301:[function(require,module,exports){
+},{"../utils/PropTypes":501,"../utils/warning":505,"_process":357,"prop-types":362,"react":562}],492:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -23984,7 +31801,7 @@ selectorFactory) {
 }
 }).call(this,require('_process'))
 
-},{"../utils/PropTypes":310,"../utils/Subscription":311,"_process":166,"hoist-non-react-statics":152,"invariant":153,"react":371}],302:[function(require,module,exports){
+},{"../utils/PropTypes":501,"../utils/Subscription":502,"_process":357,"hoist-non-react-statics":342,"invariant":344,"react":562}],493:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24113,7 +31930,7 @@ function createConnect() {
 }
 
 exports.default = createConnect();
-},{"../components/connectAdvanced":301,"../utils/shallowEqual":312,"./mapDispatchToProps":303,"./mapStateToProps":304,"./mergeProps":305,"./selectorFactory":306}],303:[function(require,module,exports){
+},{"../components/connectAdvanced":492,"../utils/shallowEqual":503,"./mapDispatchToProps":494,"./mapStateToProps":495,"./mergeProps":496,"./selectorFactory":497}],494:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24142,7 +31959,7 @@ function whenMapDispatchToPropsIsObject(mapDispatchToProps) {
 }
 
 exports.default = [whenMapDispatchToPropsIsFunction, whenMapDispatchToPropsIsMissing, whenMapDispatchToPropsIsObject];
-},{"./wrapMapToProps":308,"redux":374}],304:[function(require,module,exports){
+},{"./wrapMapToProps":499,"redux":565}],495:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24162,7 +31979,7 @@ function whenMapStateToPropsIsMissing(mapStateToProps) {
 }
 
 exports.default = [whenMapStateToPropsIsFunction, whenMapStateToPropsIsMissing];
-},{"./wrapMapToProps":308}],305:[function(require,module,exports){
+},{"./wrapMapToProps":499}],496:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -24224,7 +32041,7 @@ function whenMergePropsIsOmitted(mergeProps) {
 exports.default = [whenMergePropsIsFunction, whenMergePropsIsOmitted];
 }).call(this,require('_process'))
 
-},{"../utils/verifyPlainObject":313,"_process":166}],306:[function(require,module,exports){
+},{"../utils/verifyPlainObject":504,"_process":357}],497:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -24341,7 +32158,7 @@ function finalPropsSelectorFactory(dispatch, _ref2) {
 }
 }).call(this,require('_process'))
 
-},{"./verifySubselectors":307,"_process":166}],307:[function(require,module,exports){
+},{"./verifySubselectors":498,"_process":357}],498:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24368,7 +32185,7 @@ function verifySubselectors(mapStateToProps, mapDispatchToProps, mergeProps, dis
   verify(mapDispatchToProps, 'mapDispatchToProps', displayName);
   verify(mergeProps, 'mergeProps', displayName);
 }
-},{"../utils/warning":314}],308:[function(require,module,exports){
+},{"../utils/warning":505}],499:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -24450,7 +32267,7 @@ function wrapMapToPropsFunc(mapToProps, methodName) {
 }
 }).call(this,require('_process'))
 
-},{"../utils/verifyPlainObject":313,"_process":166}],309:[function(require,module,exports){
+},{"../utils/verifyPlainObject":504,"_process":357}],500:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24474,7 +32291,7 @@ exports.Provider = _Provider2.default;
 exports.createProvider = _Provider.createProvider;
 exports.connectAdvanced = _connectAdvanced2.default;
 exports.connect = _connect2.default;
-},{"./components/Provider":300,"./components/connectAdvanced":301,"./connect/connect":302}],310:[function(require,module,exports){
+},{"./components/Provider":491,"./components/connectAdvanced":492,"./connect/connect":493}],501:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24498,7 +32315,7 @@ var storeShape = exports.storeShape = _propTypes2.default.shape({
   dispatch: _propTypes2.default.func.isRequired,
   getState: _propTypes2.default.func.isRequired
 });
-},{"prop-types":171}],311:[function(require,module,exports){
+},{"prop-types":362}],502:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -24595,7 +32412,7 @@ var Subscription = function () {
 }();
 
 exports.default = Subscription;
-},{}],312:[function(require,module,exports){
+},{}],503:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24630,7 +32447,7 @@ function shallowEqual(objA, objB) {
 
   return true;
 }
-},{}],313:[function(require,module,exports){
+},{}],504:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24651,7 +32468,7 @@ function verifyPlainObject(value, displayName, methodName) {
     (0, _warning2.default)(methodName + '() in ' + displayName + ' must return a plain object. Instead received ' + value + '.');
   }
 }
-},{"./warning":314,"lodash/isPlainObject":164}],314:[function(require,module,exports){
+},{"./warning":505,"lodash/isPlainObject":355}],505:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24677,7 +32494,7 @@ function warning(message) {
   } catch (e) {}
   /* eslint-enable no-empty */
 }
-},{}],315:[function(require,module,exports){
+},{}],506:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24747,7 +32564,7 @@ BrowserRouter.propTypes = {
   children: _propTypes2.default.node
 };
 exports.default = BrowserRouter;
-},{"./Router":323,"history/createBrowserHistory":147,"prop-types":171,"react":371,"warning":379}],316:[function(require,module,exports){
+},{"./Router":514,"history/createBrowserHistory":337,"prop-types":362,"react":562,"warning":570}],507:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24816,7 +32633,7 @@ HashRouter.propTypes = {
   children: _propTypes2.default.node
 };
 exports.default = HashRouter;
-},{"./Router":323,"history/createHashHistory":148,"prop-types":171,"react":371,"warning":379}],317:[function(require,module,exports){
+},{"./Router":514,"history/createHashHistory":338,"prop-types":362,"react":562,"warning":570}],508:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24927,7 +32744,7 @@ Link.contextTypes = {
   }).isRequired
 };
 exports.default = Link;
-},{"invariant":153,"prop-types":171,"react":371}],318:[function(require,module,exports){
+},{"invariant":344,"prop-types":362,"react":562}],509:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24939,7 +32756,7 @@ var _MemoryRouter2 = _interopRequireDefault(_MemoryRouter);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = _MemoryRouter2.default; // Written in this round about way for babel-transform-imports
-},{"react-router/MemoryRouter":334}],319:[function(require,module,exports){
+},{"react-router/MemoryRouter":525}],510:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25026,7 +32843,7 @@ NavLink.defaultProps = {
 };
 
 exports.default = NavLink;
-},{"./Link":317,"./Route":322,"prop-types":171,"react":371}],320:[function(require,module,exports){
+},{"./Link":508,"./Route":513,"prop-types":362,"react":562}],511:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25038,7 +32855,7 @@ var _Prompt2 = _interopRequireDefault(_Prompt);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = _Prompt2.default; // Written in this round about way for babel-transform-imports
-},{"react-router/Prompt":335}],321:[function(require,module,exports){
+},{"react-router/Prompt":526}],512:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25050,7 +32867,7 @@ var _Redirect2 = _interopRequireDefault(_Redirect);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = _Redirect2.default; // Written in this round about way for babel-transform-imports
-},{"react-router/Redirect":336}],322:[function(require,module,exports){
+},{"react-router/Redirect":527}],513:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25062,7 +32879,7 @@ var _Route2 = _interopRequireDefault(_Route);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = _Route2.default; // Written in this round about way for babel-transform-imports
-},{"react-router/Route":337}],323:[function(require,module,exports){
+},{"react-router/Route":528}],514:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25074,7 +32891,7 @@ var _Router2 = _interopRequireDefault(_Router);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = _Router2.default; // Written in this round about way for babel-transform-imports
-},{"react-router/Router":338}],324:[function(require,module,exports){
+},{"react-router/Router":529}],515:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25086,7 +32903,7 @@ var _StaticRouter2 = _interopRequireDefault(_StaticRouter);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = _StaticRouter2.default; // Written in this round about way for babel-transform-imports
-},{"react-router/StaticRouter":339}],325:[function(require,module,exports){
+},{"react-router/StaticRouter":530}],516:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25098,7 +32915,7 @@ var _Switch2 = _interopRequireDefault(_Switch);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = _Switch2.default; // Written in this round about way for babel-transform-imports
-},{"react-router/Switch":340}],326:[function(require,module,exports){
+},{"react-router/Switch":531}],517:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25171,7 +32988,7 @@ exports.StaticRouter = _StaticRouter3.default;
 exports.Switch = _Switch3.default;
 exports.matchPath = _matchPath3.default;
 exports.withRouter = _withRouter3.default;
-},{"./BrowserRouter":315,"./HashRouter":316,"./Link":317,"./MemoryRouter":318,"./NavLink":319,"./Prompt":320,"./Redirect":321,"./Route":322,"./Router":323,"./StaticRouter":324,"./Switch":325,"./matchPath":327,"./withRouter":328}],327:[function(require,module,exports){
+},{"./BrowserRouter":506,"./HashRouter":507,"./Link":508,"./MemoryRouter":509,"./NavLink":510,"./Prompt":511,"./Redirect":512,"./Route":513,"./Router":514,"./StaticRouter":515,"./Switch":516,"./matchPath":518,"./withRouter":519}],518:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25183,7 +33000,7 @@ var _matchPath2 = _interopRequireDefault(_matchPath);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = _matchPath2.default; // Written in this round about way for babel-transform-imports
-},{"react-router/matchPath":342}],328:[function(require,module,exports){
+},{"react-router/matchPath":533}],519:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25195,7 +33012,7 @@ var _withRouter2 = _interopRequireDefault(_withRouter);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = _withRouter2.default; // Written in this round about way for babel-transform-imports
-},{"react-router/withRouter":345}],329:[function(require,module,exports){
+},{"react-router/withRouter":536}],520:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25233,7 +33050,7 @@ var goBack = exports.goBack = updateLocation('goBack');
 var goForward = exports.goForward = updateLocation('goForward');
 
 var routerActions = exports.routerActions = { push: push, replace: replace, go: go, goBack: goBack, goForward: goForward };
-},{}],330:[function(require,module,exports){
+},{}],521:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25313,7 +33130,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 
 exports.syncHistoryWithStore = _sync2['default'];
 exports.routerMiddleware = _middleware2['default'];
-},{"./actions":329,"./middleware":331,"./reducer":332,"./sync":333}],331:[function(require,module,exports){
+},{"./actions":520,"./middleware":522,"./reducer":523,"./sync":524}],522:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25347,7 +33164,7 @@ function routerMiddleware(history) {
     };
   };
 }
-},{"./actions":329}],332:[function(require,module,exports){
+},{"./actions":520}],523:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25386,7 +33203,7 @@ function routerReducer() {
 
   return state;
 }
-},{}],333:[function(require,module,exports){
+},{}],524:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25542,7 +33359,7 @@ function syncHistoryWithStore(history, store) {
     }
   });
 }
-},{"./reducer":332}],334:[function(require,module,exports){
+},{"./reducer":523}],525:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25612,7 +33429,7 @@ MemoryRouter.propTypes = {
   children: _propTypes2.default.node
 };
 exports.default = MemoryRouter;
-},{"./Router":338,"history/createMemoryHistory":149,"prop-types":171,"react":371,"warning":379}],335:[function(require,module,exports){
+},{"./Router":529,"history/createMemoryHistory":339,"prop-types":362,"react":562,"warning":570}],526:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25703,7 +33520,7 @@ Prompt.contextTypes = {
   }).isRequired
 };
 exports.default = Prompt;
-},{"invariant":153,"prop-types":171,"react":371}],336:[function(require,module,exports){
+},{"invariant":344,"prop-types":362,"react":562}],527:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25812,7 +33629,7 @@ Redirect.contextTypes = {
   }).isRequired
 };
 exports.default = Redirect;
-},{"history":151,"invariant":153,"prop-types":171,"react":371,"warning":379}],337:[function(require,module,exports){
+},{"history":341,"invariant":344,"prop-types":362,"react":562,"warning":570}],528:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25965,7 +33782,7 @@ Route.childContextTypes = {
   router: _propTypes2.default.object.isRequired
 };
 exports.default = Route;
-},{"./matchPath":342,"invariant":153,"prop-types":171,"react":371,"warning":379}],338:[function(require,module,exports){
+},{"./matchPath":533,"invariant":344,"prop-types":362,"react":562,"warning":570}],529:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26085,7 +33902,7 @@ Router.childContextTypes = {
   router: _propTypes2.default.object.isRequired
 };
 exports.default = Router;
-},{"invariant":153,"prop-types":171,"react":371,"warning":379}],339:[function(require,module,exports){
+},{"invariant":344,"prop-types":362,"react":562,"warning":570}],530:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26271,7 +34088,7 @@ StaticRouter.childContextTypes = {
   router: _propTypes2.default.object.isRequired
 };
 exports.default = StaticRouter;
-},{"./Router":338,"history/PathUtils":146,"invariant":153,"prop-types":171,"react":371,"warning":379}],340:[function(require,module,exports){
+},{"./Router":529,"history/PathUtils":336,"invariant":344,"prop-types":362,"react":562,"warning":570}],531:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26368,7 +34185,7 @@ Switch.propTypes = {
   location: _propTypes2.default.object
 };
 exports.default = Switch;
-},{"./matchPath":342,"invariant":153,"prop-types":171,"react":371,"warning":379}],341:[function(require,module,exports){
+},{"./matchPath":533,"invariant":344,"prop-types":362,"react":562,"warning":570}],532:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26421,7 +34238,7 @@ exports.StaticRouter = _StaticRouter3.default;
 exports.Switch = _Switch3.default;
 exports.matchPath = _matchPath3.default;
 exports.withRouter = _withRouter3.default;
-},{"./MemoryRouter":334,"./Prompt":335,"./Redirect":336,"./Route":337,"./Router":338,"./StaticRouter":339,"./Switch":340,"./matchPath":342,"./withRouter":345}],342:[function(require,module,exports){
+},{"./MemoryRouter":525,"./Prompt":526,"./Redirect":527,"./Route":528,"./Router":529,"./StaticRouter":530,"./Switch":531,"./matchPath":533,"./withRouter":536}],533:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26499,12 +34316,12 @@ var matchPath = function matchPath(pathname) {
 };
 
 exports.default = matchPath;
-},{"path-to-regexp":344}],343:[function(require,module,exports){
+},{"path-to-regexp":535}],534:[function(require,module,exports){
 module.exports = Array.isArray || function (arr) {
   return Object.prototype.toString.call(arr) == '[object Array]';
 };
 
-},{}],344:[function(require,module,exports){
+},{}],535:[function(require,module,exports){
 var isarray = require('isarray')
 
 /**
@@ -26932,7 +34749,7 @@ function pathToRegexp (path, keys, options) {
   return stringToRegexp(/** @type {string} */ (path), /** @type {!Array} */ (keys), options)
 }
 
-},{"isarray":343}],345:[function(require,module,exports){
+},{"isarray":534}],536:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26982,9 +34799,9 @@ var withRouter = function withRouter(Component) {
 };
 
 exports.default = withRouter;
-},{"./Route":337,"hoist-non-react-statics":152,"prop-types":171,"react":371}],346:[function(require,module,exports){
-arguments[4][195][0].apply(exports,arguments)
-},{"dup":195}],347:[function(require,module,exports){
+},{"./Route":528,"hoist-non-react-statics":342,"prop-types":362,"react":562}],537:[function(require,module,exports){
+arguments[4][386][0].apply(exports,arguments)
+},{"dup":386}],538:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -27097,7 +34914,7 @@ var PooledClass = {
 module.exports = PooledClass;
 }).call(this,require('_process'))
 
-},{"./reactProdInvariant":369,"_process":166,"fbjs/lib/invariant":136}],348:[function(require,module,exports){
+},{"./reactProdInvariant":560,"_process":357,"fbjs/lib/invariant":326}],539:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -27230,7 +35047,7 @@ if (process.env.NODE_ENV !== 'production') {
 module.exports = React;
 }).call(this,require('_process'))
 
-},{"./ReactBaseClasses":349,"./ReactChildren":350,"./ReactDOMFactories":353,"./ReactElement":354,"./ReactElementValidator":356,"./ReactPropTypes":359,"./ReactVersion":361,"./canDefineProperty":362,"./createClass":364,"./lowPriorityWarning":367,"./onlyChild":368,"_process":166,"object-assign":165}],349:[function(require,module,exports){
+},{"./ReactBaseClasses":540,"./ReactChildren":541,"./ReactDOMFactories":544,"./ReactElement":545,"./ReactElementValidator":547,"./ReactPropTypes":550,"./ReactVersion":552,"./canDefineProperty":553,"./createClass":555,"./lowPriorityWarning":558,"./onlyChild":559,"_process":357,"object-assign":356}],540:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -27374,7 +35191,7 @@ module.exports = {
 };
 }).call(this,require('_process'))
 
-},{"./ReactNoopUpdateQueue":357,"./canDefineProperty":362,"./lowPriorityWarning":367,"./reactProdInvariant":369,"_process":166,"fbjs/lib/emptyObject":129,"fbjs/lib/invariant":136,"object-assign":165}],350:[function(require,module,exports){
+},{"./ReactNoopUpdateQueue":548,"./canDefineProperty":553,"./lowPriorityWarning":558,"./reactProdInvariant":560,"_process":357,"fbjs/lib/emptyObject":319,"fbjs/lib/invariant":326,"object-assign":356}],541:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -27563,7 +35380,7 @@ var ReactChildren = {
 };
 
 module.exports = ReactChildren;
-},{"./PooledClass":347,"./ReactElement":354,"./traverseAllChildren":370,"fbjs/lib/emptyFunction":128}],351:[function(require,module,exports){
+},{"./PooledClass":538,"./ReactElement":545,"./traverseAllChildren":561,"fbjs/lib/emptyFunction":318}],542:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2016-present, Facebook, Inc.
@@ -27943,7 +35760,7 @@ var ReactComponentTreeHook = {
 module.exports = ReactComponentTreeHook;
 }).call(this,require('_process'))
 
-},{"./ReactCurrentOwner":352,"./reactProdInvariant":369,"_process":166,"fbjs/lib/invariant":136,"fbjs/lib/warning":143}],352:[function(require,module,exports){
+},{"./ReactCurrentOwner":543,"./reactProdInvariant":560,"_process":357,"fbjs/lib/invariant":326,"fbjs/lib/warning":333}],543:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -27970,7 +35787,7 @@ var ReactCurrentOwner = {
 };
 
 module.exports = ReactCurrentOwner;
-},{}],353:[function(require,module,exports){
+},{}],544:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -28140,7 +35957,7 @@ var ReactDOMFactories = {
 module.exports = ReactDOMFactories;
 }).call(this,require('_process'))
 
-},{"./ReactElement":354,"./ReactElementValidator":356,"_process":166}],354:[function(require,module,exports){
+},{"./ReactElement":545,"./ReactElementValidator":547,"_process":357}],545:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
@@ -28482,9 +36299,9 @@ ReactElement.isValidElement = function (object) {
 module.exports = ReactElement;
 }).call(this,require('_process'))
 
-},{"./ReactCurrentOwner":352,"./ReactElementSymbol":355,"./canDefineProperty":362,"_process":166,"fbjs/lib/warning":143,"object-assign":165}],355:[function(require,module,exports){
-arguments[4][224][0].apply(exports,arguments)
-},{"dup":224}],356:[function(require,module,exports){
+},{"./ReactCurrentOwner":543,"./ReactElementSymbol":546,"./canDefineProperty":553,"_process":357,"fbjs/lib/warning":333,"object-assign":356}],546:[function(require,module,exports){
+arguments[4][415][0].apply(exports,arguments)
+},{"dup":415}],547:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
@@ -28740,7 +36557,7 @@ var ReactElementValidator = {
 module.exports = ReactElementValidator;
 }).call(this,require('_process'))
 
-},{"./ReactComponentTreeHook":351,"./ReactCurrentOwner":352,"./ReactElement":354,"./canDefineProperty":362,"./checkReactTypeSpec":363,"./getIteratorFn":365,"./lowPriorityWarning":367,"_process":166,"fbjs/lib/warning":143}],357:[function(require,module,exports){
+},{"./ReactComponentTreeHook":542,"./ReactCurrentOwner":543,"./ReactElement":545,"./canDefineProperty":553,"./checkReactTypeSpec":554,"./getIteratorFn":556,"./lowPriorityWarning":558,"_process":357,"fbjs/lib/warning":333}],548:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2015-present, Facebook, Inc.
@@ -28836,7 +36653,7 @@ var ReactNoopUpdateQueue = {
 module.exports = ReactNoopUpdateQueue;
 }).call(this,require('_process'))
 
-},{"_process":166,"fbjs/lib/warning":143}],358:[function(require,module,exports){
+},{"_process":357,"fbjs/lib/warning":333}],549:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -28862,7 +36679,7 @@ if (process.env.NODE_ENV !== 'production') {
 module.exports = ReactPropTypeLocationNames;
 }).call(this,require('_process'))
 
-},{"_process":166}],359:[function(require,module,exports){
+},{"_process":357}],550:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -28879,11 +36696,11 @@ var _require = require('./ReactElement'),
 var factory = require('prop-types/factory');
 
 module.exports = factory(isValidElement);
-},{"./ReactElement":354,"prop-types/factory":168}],360:[function(require,module,exports){
-arguments[4][243][0].apply(exports,arguments)
-},{"dup":243}],361:[function(require,module,exports){
-arguments[4][251][0].apply(exports,arguments)
-},{"dup":251}],362:[function(require,module,exports){
+},{"./ReactElement":545,"prop-types/factory":359}],551:[function(require,module,exports){
+arguments[4][434][0].apply(exports,arguments)
+},{"dup":434}],552:[function(require,module,exports){
+arguments[4][442][0].apply(exports,arguments)
+},{"dup":442}],553:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -28910,7 +36727,7 @@ if (process.env.NODE_ENV !== 'production') {
 module.exports = canDefineProperty;
 }).call(this,require('_process'))
 
-},{"_process":166}],363:[function(require,module,exports){
+},{"_process":357}],554:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -28998,7 +36815,7 @@ function checkReactTypeSpec(typeSpecs, values, location, componentName, element,
 module.exports = checkReactTypeSpec;
 }).call(this,require('_process'))
 
-},{"./ReactComponentTreeHook":351,"./ReactPropTypeLocationNames":358,"./ReactPropTypesSecret":360,"./reactProdInvariant":369,"_process":166,"fbjs/lib/invariant":136,"fbjs/lib/warning":143}],364:[function(require,module,exports){
+},{"./ReactComponentTreeHook":542,"./ReactPropTypeLocationNames":549,"./ReactPropTypesSecret":551,"./reactProdInvariant":560,"_process":357,"fbjs/lib/invariant":326,"fbjs/lib/warning":333}],555:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -29019,9 +36836,9 @@ var ReactNoopUpdateQueue = require('./ReactNoopUpdateQueue');
 var factory = require('create-react-class/factory');
 
 module.exports = factory(Component, isValidElement, ReactNoopUpdateQueue);
-},{"./ReactBaseClasses":349,"./ReactElement":354,"./ReactNoopUpdateQueue":357,"create-react-class/factory":120}],365:[function(require,module,exports){
-arguments[4][284][0].apply(exports,arguments)
-},{"dup":284}],366:[function(require,module,exports){
+},{"./ReactBaseClasses":540,"./ReactElement":545,"./ReactNoopUpdateQueue":548,"create-react-class/factory":151}],556:[function(require,module,exports){
+arguments[4][475][0].apply(exports,arguments)
+},{"dup":475}],557:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -29040,7 +36857,7 @@ function getNextDebugID() {
 }
 
 module.exports = getNextDebugID;
-},{}],367:[function(require,module,exports){
+},{}],558:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
@@ -29106,7 +36923,7 @@ if (process.env.NODE_ENV !== 'production') {
 module.exports = lowPriorityWarning;
 }).call(this,require('_process'))
 
-},{"_process":166}],368:[function(require,module,exports){
+},{"_process":357}],559:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -29145,9 +36962,9 @@ function onlyChild(children) {
 module.exports = onlyChild;
 }).call(this,require('_process'))
 
-},{"./ReactElement":354,"./reactProdInvariant":369,"_process":166,"fbjs/lib/invariant":136}],369:[function(require,module,exports){
-arguments[4][293][0].apply(exports,arguments)
-},{"dup":293}],370:[function(require,module,exports){
+},{"./ReactElement":545,"./reactProdInvariant":560,"_process":357,"fbjs/lib/invariant":326}],560:[function(require,module,exports){
+arguments[4][484][0].apply(exports,arguments)
+},{"dup":484}],561:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -29324,12 +37141,12 @@ function traverseAllChildren(children, callback, traverseContext) {
 module.exports = traverseAllChildren;
 }).call(this,require('_process'))
 
-},{"./KeyEscapeUtils":346,"./ReactCurrentOwner":352,"./ReactElementSymbol":355,"./getIteratorFn":365,"./reactProdInvariant":369,"_process":166,"fbjs/lib/invariant":136,"fbjs/lib/warning":143}],371:[function(require,module,exports){
+},{"./KeyEscapeUtils":537,"./ReactCurrentOwner":543,"./ReactElementSymbol":546,"./getIteratorFn":556,"./reactProdInvariant":560,"_process":357,"fbjs/lib/invariant":326,"fbjs/lib/warning":333}],562:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./lib/React');
 
-},{"./lib/React":348}],372:[function(require,module,exports){
+},{"./lib/React":539}],563:[function(require,module,exports){
 (function (process){
 "use strict";
 
@@ -29356,7 +37173,7 @@ exports.devToolsEnhancer = (
 
 }).call(this,require('_process'))
 
-},{"_process":166,"redux":374}],373:[function(require,module,exports){
+},{"_process":357,"redux":565}],564:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -29380,7 +37197,7 @@ var thunk = createThunkMiddleware();
 thunk.withExtraArgument = createThunkMiddleware;
 
 exports['default'] = thunk;
-},{}],374:[function(require,module,exports){
+},{}],565:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -29984,7 +37801,7 @@ exports.__DO_NOT_USE__ActionTypes = ActionTypes;
 
 }).call(this,require('_process'))
 
-},{"_process":166,"symbol-observable":376}],375:[function(require,module,exports){
+},{"_process":357,"symbol-observable":567}],566:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -30059,7 +37876,7 @@ function resolvePathname(to) {
 
 exports.default = resolvePathname;
 module.exports = exports['default'];
-},{}],376:[function(require,module,exports){
+},{}],567:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -30092,7 +37909,7 @@ var result = (0, _ponyfill2['default'])(root);
 exports['default'] = result;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./ponyfill.js":377}],377:[function(require,module,exports){
+},{"./ponyfill.js":568}],568:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -30116,7 +37933,7 @@ function symbolObservablePonyfill(root) {
 
 	return result;
 };
-},{}],378:[function(require,module,exports){
+},{}],569:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -30160,7 +37977,7 @@ function valueEqual(a, b) {
 
 exports.default = valueEqual;
 module.exports = exports['default'];
-},{}],379:[function(require,module,exports){
+},{}],570:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-2015, Facebook, Inc.
@@ -30225,6 +38042,6 @@ module.exports = warning;
 
 }).call(this,require('_process'))
 
-},{"_process":166}]},{},[6])
+},{"_process":357}]},{},[10])
 
 //# sourceMappingURL=app.js.map

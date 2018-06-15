@@ -8,6 +8,7 @@ const championships = require('./championships/routes')
 const videos = require('./video/routes')
 const news = require('./news/routes')
 const files = require('./file/routes')
+const users = require('./users/routes')
 
 let app = express()
 app.use(bodyParser.json())
@@ -19,5 +20,6 @@ app.use('/api/', championships)
 app.use('/api/', videos)
 app.use('/api/', files)
 app.use('/api/', news)
+app.use('/api/', users)
 
 module.exports = app

@@ -24,7 +24,7 @@ const config = {
   mainStyleFile: './client/styles/main.scss',
   outputStyles: './public/dist/styles',
   entryScriptsPath: '/client/components/',
-  entryScripts: './client/**/*.jsx',
+  entryScripts: ['./client/**/*.jsx', './client/**/*.js'],
   outputScripts: './public/dist/scripts/',
   mainentryScriptFile: './client/main.js',
   entryFonts: './client/fonts/**/*',
@@ -215,7 +215,7 @@ gulp.task('browserSync', function () {
     server: {
       baseDir: './public'
     },
-    port: 3141,
+    port: 2718,
     open: true,
     notify: false
   })

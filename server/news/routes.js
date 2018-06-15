@@ -18,6 +18,14 @@ router.get('/news', (req, res, next) => {
     .catch(error => console.error(error))
 })
 
+router.get('/allNews', (req, res, next) => {
+  newsService.getAllNews(req.query)
+    .then((result) => {
+      res.json(result)
+    })
+    .catch(error => console.error(error))
+})
+
 router.get('/news/championship/:id', (req, res, next) => {
   newsService.getNewToChampionship(req.params.id)
     .then((result) => {

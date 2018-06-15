@@ -56,5 +56,8 @@ export const dropdownMenu = [
   },
   {
     title: 'Videos'
+  },
+  {
+    title: 'Login'
   }
 ]

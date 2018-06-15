@@ -18,6 +18,19 @@ const getNews = (query) => {
   })
 }
 
+const getAllNews = (query) => {
+  return new Promise((resolve, reject) => {
+    connection.query(`SELECT New.newId, New.newName, New.newDesc, New.newDate, NewToGame.newImage FROM New INNER JOIN NewToGame ON NewToGame.newId = New.newId;
+      SELECT New.newId, New.newName, New.newDesc, New.newDate, NewToChampionship.newImage FROM New INNER JOIN NewToChampionship ON NewToChampionship.newId = New.newId`, [], (err, result, docs) => {
+      if (err) {
+        reject(err)
+      }
+      console.log('succesful select games', result)
+      resolve([...result[0], ...result[1]])
+    })
+  })
+}
+
 const getSingleNew = (id) => {
   return new Promise((resolve, reject) => {
     connection.query(`SELECT * FROM New WHERE newId = ?`, [id], (err, result, docs) => {
@@ -143,6 +156,7 @@ const addCommentToNew = (news) => {
 }
 
 module.exports.getNews = getNews
+module.exports.getAllNews = getAllNews
 module.exports.getSingleNew = getSingleNew
 module.exports.getNewToChampionship = getNewToChampionship
 module.exports.getNewToGame = getNewToGame
