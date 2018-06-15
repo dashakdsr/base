@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const filterService = require('./service')
 
-router.post('/games-by-category', (req, res, next) => {
+router.post('/games-by-category', async (req, res, next) => {
   let query = {
     tags: req.body.tags,
     categories: req.body.categories,
@@ -11,28 +11,48 @@ router.post('/games-by-category', (req, res, next) => {
     companies: req.body.companies,
     response: []
   }
+  filterService.clearArray()
   if (query.tags.length > 0) {
-    query.response = filterService.filter(filterService.getGamesMultiple(query.tags, 'getGamesByTag'))
+    await filterService.getGamesMultiple(query.tags, 'getGamesByTag').then((result) => {
+      query.response = filterService.filter(result)
+    }).catch((e) => {
+      console.log('error', e)
+    })
   }
   if (query.categories.length > 0) {
-    query.response = filterService.filter(filterService.getGamesMultiple(query.categories, 'getGamesByCategory'))
+    await filterService.getGamesMultiple(query.categories, 'getGamesByCategory').then((result) => {
+      query.response = filterService.filter(result)
+    }).catch((e) => {
+      console.log('error', e)
+    })
   }
   if (query.platforms.length > 0) {
-    query.response = filterService.filter(filterService.getGamesMultiple(query.platforms, 'getGamesByPlatform'))
+    await filterService.getGamesMultiple(query.platforms, 'getGamesByPlatform').then((result) => {
+      query.response = filterService.filter(result)
+    }).catch((e) => {
+      console.log('error', e)
+    })
   }
   if (query.episodes.length > 0) {
-    query.response = filterService.filter(filterService.getGamesMultiple(query.episodes, 'getGamesByEpisode'))
+    await filterService.getGamesMultiple(query.episodes, 'getGamesByEpisode').then((result) => {
+      query.response = filterService.filter(result)
+    }).catch((e) => {
+      console.log('error', e)
+    })
   }
   if (query.companies.length > 0) {
-    query.response = filterService.filter(filterService.getGamesMultiple(query.companies, 'getGamesByCompany'))
+    await filterService.getGamesMultiple(query.companies, 'getGamesByCompany').then((result) => {
+      query.response = filterService.filter(result)
+    }).catch((e) => {
+      console.log('error', e)
+    })
   }
-  res.json(query.response)
+  await res.json(query.response)
 })
 
 router.get('/categories', (req, res, next) => {
   filterService.getCategories()
     .then((result) => {
-      console.log('result in cstegiry', result)
       res.json(result)
     })
     .catch(error => console.error(error))
@@ -41,7 +61,6 @@ router.get('/categories', (req, res, next) => {
 router.get('/tags', (req, res, next) => {
   filterService.getTags()
     .then((result) => {
-      console.log('result in cstegiry', result)
       res.json(result)
     })
     .catch(error => console.error(error))
@@ -50,7 +69,6 @@ router.get('/tags', (req, res, next) => {
 router.get('/episodes', (req, res, next) => {
   filterService.getEpisodes()
     .then((result) => {
-      console.log('result in cstegiry', result)
       res.json(result)
     })
     .catch(error => console.error(error))
@@ -59,7 +77,6 @@ router.get('/episodes', (req, res, next) => {
 router.get('/companies', (req, res, next) => {
   filterService.getCompanies()
     .then((result) => {
-      console.log('result in cstegiry', result)
       res.json(result)
     })
     .catch(error => console.error(error))
@@ -68,27 +85,9 @@ router.get('/companies', (req, res, next) => {
 router.get('/platforms', (req, res, next) => {
   filterService.getPlatforms()
     .then((result) => {
-      console.log('result in cstegiry', result)
       res.json(result)
     })
     .catch(error => console.error(error))
 })
-// router.get('/games-by-category/:platform', (req, res, next) => {
-//   filterService.getGamesByPlatform(req.params.platform)
-//     .then((result) => {
-//       console.log('result in cstegiry', result)
-//       res.json(result)
-//     })
-//     .catch(error => console.error(error))
-// })
-
-// router.get('/games-by-category/:episode', (req, res, next) => {
-//   filterService.getGamesByEpisode(req.params.episode)
-//     .then((result) => {
-//       console.log('result in cstegiry', result)
-//       res.json(result)
-//     })
-//     .catch(error => console.error(error))
-// })
 
 module.exports = router

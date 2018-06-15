@@ -3,7 +3,7 @@ const router = express.Router()
 const fileService = require('./service')
 
 router.get('/files', (req, res, next) => {
-  fileService.getfiles(req.query)
+  fileService.getFiles(req.query)
     .then((result) => {
       console.log('result', result)
       res.json(result)

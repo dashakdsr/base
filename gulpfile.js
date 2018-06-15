@@ -4,6 +4,8 @@ const gulp = require('gulp')
 const scss = require('gulp-sass')
 const sourcemaps = require('gulp-sourcemaps')
 const htmlMin = require('gulp-htmlmin')
+const url = require('url');
+const proxy = require('proxy-middleware');
 const imagemin = require('gulp-imagemin')
 const gutil = require('gulp-util')
 const chalk = require('chalk')
@@ -123,6 +125,21 @@ gulp.task('images', () => {
     .pipe(gulp.dest(config.outputImages))
 })
 
+gulp.task('browser-sync', function () {
+  var proxyOptions = url.parse('http://localhost:3141/api')
+  proxyOptions.route = '/api'
+  // requests to `/api/x/y/z` are proxied to `http://localhost:3000/secret-api`
+
+  browserSync({
+    open: true,
+    port: 3000,
+    server: {
+      baseDir: "./public",
+      middleware: [proxy(proxyOptions)]
+    }
+  })
+})
+
 gulp.task('watch', () => {
   gulp.watch(paths.es6, ['eslint', 'commonjs'])
   runSequence(
@@ -161,7 +178,7 @@ gulp.task('watch', () => {
   // gulp.watch(config.entryFavicon, ['favicon'])
 })
 
-gulp.task('default', ['styles', 'js', 'images'], () => {
+gulp.task('default', ['styles', 'js', 'images', 'browser-sync'], () => {
 
 })
 
@@ -198,7 +215,7 @@ gulp.task('browserSync', function () {
     server: {
       baseDir: './public'
     },
-    port: 2718,
+    port: 3141,
     open: true,
     notify: false
   })

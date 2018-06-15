@@ -6,7 +6,7 @@ const getGamesByCategory = (category) => {
       if (err) {
         reject(err)
       }
-      console.log('succesful', result)
+      console.log('succesful by category', result)
       resolve(result)
     })
   })
@@ -42,7 +42,7 @@ const getGamesByPlatform = (platform) => {
       if (err) {
         reject(err)
       }
-      console.log('succesful', result)
+      console.log('succesful by platform', result)
       resolve(result)
     })
   })
@@ -90,7 +90,7 @@ const getPlatforms = () => {
       if (err) {
         reject(err)
       }
-      console.log('succesful select games', result)
+      console.log('succesful select games by platform', result)
       resolve(result)
     })
   })
@@ -130,15 +130,28 @@ const processing = {
 }
 
 const getGamesMultiple = (data, methodName) => {
-  return Promise.all(() => data.forEach(element => {
+  return Promise.all(data.map(element => {
     return processing[methodName](element)
   })).then(games => {
-    resolve({games: games})
+    return [].concat.apply([], games)
+  }).catch((error) => {
+    console.log('another error', error)
   })
 }
 
+const clearArray = () => {
+  processing.data = []
+}
+
 const filter = (currentArray) => {
-  processing.data = currentArray.filter(prevItem => !processing.data.find(item => prevItem.gameId === item.gameId))
+  let array = currentArray.filter(prevItem => {
+    return !processing.data.find(item => prevItem.gameId === item.gameId)
+  })
+  if (array.length > 0 && processing.data.length > 0) {
+    processing.data.concat(array)
+  } else if (processing.data.length === 0) {
+    processing.data = array
+  }
   return processing.data
 }
 
@@ -154,3 +167,4 @@ module.exports.getPlatforms = getPlatforms
 module.exports.getEpisodes = getEpisodes
 module.exports.getTags = getTags
 module.exports.filter = filter
+module.exports.clearArray = clearArray

@@ -36,6 +36,7 @@
     "browser-sync": "^2.24.4",
     "browserify": "^16.2.2",
     "chalk": "^2.4.1",
+    "cors": "^2.8.4",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^5.0.0",
     "gulp-babel": "^7.0.1",
@@ -47,8 +48,10 @@
     "gulp-sourcemaps": "^2.6.4",
     "gulp-util": "^3.0.8",
     "path": "^0.12.7",
+    "proxy-middleware": "^0.15.0",
     "run-sequence": "^2.2.1",
     "scss": "^0.2.4",
+    "url": "^0.11.0",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0"
   }

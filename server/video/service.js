@@ -30,17 +30,5 @@ const getVideoByGame = (gameId) => {
   })
 }
 
-const getTrailersByGame = (gameId) => {
-  return new Promise((resolve, reject) => {
-    connection.query(`SELECT * FROM Video WHERE gameId = ? AND type == 'trailer'`, [gameId], (err, result, docs) => {
-      if (err) {
-        reject(err)
-      }
-      console.log('succesful select popular', result)
-      resolve(result)
-    })
-  })
-}
-
 module.exports.getVideos = getVideos
 module.exports.getVideoByGame = getVideoByGame
